@@ -1,0 +1,131 @@
+= Java EE
+
+:experimental:
+:icons: font
+:imagesdir: ./images
+
+== Votre enseignant
+
+* Travaille à SAP
+* Comme consultant
+** Développeur Java
+** Architecte logiciel
+** Architecte de solutions
+
+=== Clients
+
+** BNP Paribas
+** Nespresso
+** Ville de Lausanne
+** Etat de Genève
+** (Groupama, Orange, etc.)
+
+=== Publications
+
+image:learning_vaadin.jpg[Learning Vaadin 7,406,500,role="left"]
+image:integration_testing.jpg[Integration Testing from the Trenches,384,499,role="right"]
+
+=== Talks
+
+* Java One
+* Devoxx
+* JEE Conf
+* etc.
+
+=== !
+
+video::E4UuxVWYCVQ[youtube]
+
+== Pourquoi étudier une plate-forme ?
+
+[.stretch]
+image::backend_architecture.svg[]
+
+////
+skinparam backgroundColor white
+[Server] as back
+[JavaScript client] as js
+[Android client] as android
+[iOS client] as ios
+[Microservice] as microservice
+[Browser] as browser
+() " " as i
+back -up- i
+js ..> i
+android ..> i
+ios ..> i
+microservice .left.> i
+browser .right.> i
+////
+
+=== Notion de plate-forme
+
+* Environnement d'exécution
+* Fournit des services _standards_
+** Une spécification unique
+** De multiples implémentations
+
+=== https://en.wikipedia.org/wiki/Java_Platform,_Enterprise_Edition[Java Enterprise Edition^]
+
+* Plate-forme bâtie au-dessus du langage Java
+** Java SE
+** Java ME
+* Ensemble de spécifications
+** Une par fonctionnalité
+** API
+** Oracle est l'éditeur
+** Des tiers fournissent les implémentations
+
+=== https://en.wikipedia.org/wiki/Technology_Compatibility_Kit[Technology Compatibility Kit^]
+
+* Ensemble des tests de chaque spécification
+* Permet à une plate-forme d'être certifiée compatible avec une version de Java EE
+* Disponible sous license GPL
+
+=== Versions
+
+La version actuelle est 1.7.
+
+== https://en.wikipedia.org/wiki/Application_server[Serveur d'applications^]
+
+* Offre les fonctionnalités de Java EE via des API
+
+=== Principaux éditeurs
+
+[options="header"]
+|===
+
+| Editeur | Serveur d'apps | License  
+
+| IBM | Websphere AS | Commercial
+
+| Oracle | WebLogic | Commercial
+
+| Red Hat | WildFly | LGPL 2.1
+
+| Tomitribe | TomEE | Apache v2
+
+| Payara | Payara Server | CDDL / GPL v2
+
+|=== 
+
+== Profils
+
+* Travail énorme pour implémenter l'intégralité des API Java EE
+** Permet de faciliter l'entrée de nouveaux acteurs avec des sous-ensembles
+* Profils disponibles :
+** Full
+** Web
+** https://microprofile.io/[Micro^] (_Non standard !_)
+
+=== !
+
+[.stretch]
+image::java-eefullprofile.jpg[]
+
+=== !
+
+[.stretch]
+image::java-eewebprofile.jpg[]
+
+// https://www.slideshare.net/khasunuma/java-eewebprofile-75404485

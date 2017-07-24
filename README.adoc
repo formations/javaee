@@ -1,0 +1,7 @@
+= Java EE
+ifdef::env-github,env-browser[:outfilesuffix: .adoc]
+
+1. Vue générale de <<javaee.adoc#,Java EE>>
+2. API Servlet
+3. Accès aux données
+4. Injection de dépendances
