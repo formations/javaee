@@ -6,7 +6,7 @@
 
 == Votre enseignant
 
-* Travaille à SAP
+* Travaille chez SAP
 * Comme consultant
 ** Développeur Java
 ** Architecte logiciel
@@ -25,7 +25,7 @@
 image:learning_vaadin.jpg[Learning Vaadin 7,406,500,role="left"]
 image:integration_testing.jpg[Integration Testing from the Trenches,384,499,role="right"]
 
-=== Talks
+=== Interventions en conférences
 
 * Java One
 * Devoxx
@@ -76,19 +76,65 @@ browser .right.> i
 ** Oracle est l'éditeur
 ** Des tiers fournissent les implémentations
 
+=== Exemples d'API
+
+[cols="1,5",options="header"]
+|===
+
+| API | Fonctionnalité
+
+| JTA | Gère les transactions distribuées
+| JavaMail | Crée, envoie et réceptionne les mails
+| JAX-WS | Génère et appelle des web services SOAP
+| JAX-RS | Génère et appelle des web services REST
+| CDI | Injection de dépendances
+
+|===
+
 === https://en.wikipedia.org/wiki/Technology_Compatibility_Kit[Technology Compatibility Kit^]
 
 * Ensemble des tests de chaque spécification
 * Permet à une plate-forme d'être certifiée compatible avec une version de Java EE
 * Disponible sous license GPL
 
+=== https://en.wikipedia.org/wiki/Reference_implementation[Implémentation de référence^]
+
+* Preuve formelle qu'il est possible d'implémenter la spécification
+* Responsabilité du Spec Lead
+* Exemple :
+** http://weld.cdi-spec.org/[Weld^] est la RI de CDI
+
+=== Spécification vs. implémentation
+
+* Séparation nette
+** Via des composants séparés (JAR)
+
+=== !
+
+[.stretch]
+image:spec-impl.svg[]
+
+////
+component [JPA] as jpa << API >>
+component [Hibernate] as hibernate
+component [EclipseLink] as eclipse
+hibernate .up.> jpa : implements
+eclipse .up.> jpa : implements
+////
+
 === Versions
 
-La version actuelle est 1.7.
+* Une version unique pour la plate-forme
+** La version actuelle est 1.7
+* Une version spécifique pour chaque API, par exemple :
+** JTA 1.1
+** JMX 1.0
 
 == https://en.wikipedia.org/wiki/Application_server[Serveur d'applications^]
 
-* Offre les fonctionnalités de Java EE via des API
+* Offre les fonctionnalités de Java EE via les API
+* Permet la portabilité d'applications Java EE entre différents serveurs d'applications
+** Portabilité toute relative
 
 === Principaux éditeurs
 
@@ -98,14 +144,22 @@ La version actuelle est 1.7.
 | Editeur | Serveur d'apps | License  
 
 | IBM | Websphere AS | Commercial
-
 | Oracle | WebLogic | Commercial
-
 | Red Hat | WildFly | LGPL 2.1
-
 | Tomitribe | TomEE | Apache v2
-
 | Payara | Payara Server | CDDL / GPL v2
+
+|=== 
+
+=== Containers de servlets
+
+[options="header"]
+|===
+
+| Editeur | Serveur d'apps | License  
+
+| Apache | Tomcat | Apache v2
+| Eclipse | Jetty | Apache v2 / EPL
 
 |=== 
 
@@ -129,3 +183,97 @@ image::java-eefullprofile.jpg[]
 image::java-eewebprofile.jpg[]
 
 // https://www.slideshare.net/khasunuma/java-eewebprofile-75404485
+
+== Archives
+
+[cols="4,2,1",options="header"]
+|===
+
+| Nom | Acronyme | Extension
+
+| Java Archive | JAR | .jar
+| JAR d'EJB | EJB JAR | .jar
+| Resource Archive | RAR | .rar
+| Web Archive | WAR | .war
+| Enterprise Archive | EAR | .ear
+
+|===
+
+=== !
+
+[.stretch]
+image::archives.svg[]
+
+////
+class "EJB JAR" as EJB
+class JAR
+class WAR
+class EAR
+class Class
+JAR ..> "*" Class
+EJB ..> "*" Class
+WAR ..> "*" JAR
+WAR ..> "*" EJB
+WAR ..> "*" Class
+EAR .right.> "*" WAR
+EAR ..> "*" JAR
+EAR ..> "*" EJB
+hide empty members
+////
+
+=== Bibliothèque d'un serveur d'applications
+
+* Comporte de nombreux JAR
+* Un (ou plusieurs) JAR par fonctionnalité
+** Standard
+** Non-standard
+
+=== !
+
+[.stretch]
+image::wildfly-jars.svg[]
+
+////
+node "WildFly" {
+ component [javaee-api.jar] << CDI, JPA, etc. >> as javaee
+ component [weld-core.jar] << CDI >> as weld
+ component [hibernate-core.jar] << JPA >> as hibernate
+ component [jsoup.jar]
+ weld .up.> javaee : implements
+ hibernate .up.> javaee : implements
+}
+////
+
+=== Descripteur de déploiement
+
+[quote, Wikipedia, https://en.wikipedia.org/wiki/Deployment_descriptor]
+____
+A deployment descriptor describes how a component, module or application should be deployed.
+____
+
+=== Descripteurs de déploiement
+
+[cols="1,3",options="header"]
+|===
+
+| Archive | Descripteur de déploiement
+
+| JAR | `META-INF/MANIFEST.MF`
+| JAR d'EJB | `META-INF/ejb-jar.xml`
+| WAR | `WEB-INF/web.xml`
+| EAR | `META-INF/application.xml`
+
+|=== 
+
+=== Exemple : MANIFEST.MF
+
+[source]
+----
+Main-Class: ch.frankel.app.EntryPoint
+----
+
+=== Déploiement d'applications
+
+* Une application est déployée dans un serveur d'applications
+** La norme Java EE garantit l'interopérabilité
+** Le déploiement d'applications est spécifique au type serveur d'applications
