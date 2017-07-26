@@ -12,6 +12,6 @@ include::license.adoc[]
 * <<cours/javaee.adoc#,Cours>>
 2. API Servlet
 * <<cours/servlet.adoc#,Cours>>
-* Travaux Pratiques
+* <<tp/servlet.adoc#,Travaux Pratiques>>
 3. Accès aux données
 4. Injection de dépendances

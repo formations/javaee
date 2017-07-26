@@ -1,0 +1,15 @@
+= Travaux pratiques - API Servlet
+Nicolas Frankel
+:doctype: article
+:encoding: utf-8
+:lang: fr
+:toc:
+:toc-placement!:
+:sectanchors:
+:numbered:
+:experimental:
+:imagesdir: images/servlet
+
+include::../license.adoc[]
+
+

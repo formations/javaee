@@ -1,0 +1,121 @@
+= API Servlet
+
+:imagesdir: ./images/servlet
+
+== Définition
+
+[quote, Wikipedia, https://en.wikipedia.org/wiki/Java_servlet]
+____
+Java component that extends the capabilities of a server.
+____
+
+* Partie intégrante d'une application web
+
+=== Application web
+
+* Web archive - WAR
+* Structure spécifique
+
+=== !
+
+[.stretch]
+image::web-module.gif[]
+
+// http://docs.oracle.com/javaee/5/tutorial/doc/bnadx.html
+
+== Composant servlet
+
+* Corrélé à une URL
+** Activé par l'envoi d'une requête
+** Retourne (souvent) une réponse
+
+=== Cycle de vie
+
+* Le cycle de vie d'un servlet est géré par le serveur d'applications
+1. Instanciation
+2. Service
+3. Destruction
+* Il peut exister _n_ instances d'un servlet à un moment _t_
+* On ne sait pas quelle instance d'un servlet est appelée
+
+=== Déploiement
+
+* 2 liens
+** URL -> Nom logique
+** Nom logique -> Classe pleinement qualifiée
+
+=== Via le descripteur
+
+[source,xml]
+----
+<web...>
+  <servlet>
+    <servlet-name>HelloWorld</servlet-name>
+    <servlet-class>ch.frankel.HelloServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HelloWorld</servlet-name>
+    <url-pattern>/hello</url-pattern>
+  </servlet-mapping>
+</web>
+----
+
+=== Via les annotations
+
+[source,java]
+----
+package ch.frankel;
+
+@WebServlet("/hello")
+public class HelloServlet extends HttpServlet {
+}
+----
+
+=== !
+
+[.stretch]
+image::servlet.svg[]
+
+////
+package "javax.servlet" {
+ interface Servlet {
+  {abstract} + init(ServletConfig config)
+  {abstract} + service(req: ServletRequest, res: ServletResponse)
+  {abstract} + destroy()
+ }
+ interface ServletConfig {
+  {abstract} + getServletName(): String
+  {abstract} + getServletContext(): ServletContext
+  {abstract} + getInitParameter(name: String): String
+  {abstract} + getInitParameterNames(): Enumeration<String>
+ }
+ abstract class GenericServlet {
+
+ }
+ GenericServlet -up-|> Servlet
+ GenericServlet -up-|> ServletConfig
+}
+package "javax.servlet.http" {
+ abstract class HttpServlet {
+  # doDelete(req: HttpServletRequest, res: HttpServletResponse)
+  # doGet(req: HttpServletRequest, res: HttpServletResponse)
+  # doHead(req: HttpServletRequest, res: HttpServletResponse)
+  # doOptions(req: HttpServletRequest, res: HttpServletResponse)
+  # doPost(req: HttpServletRequest, res: HttpServletResponse)
+  # doPut(req: HttpServletRequest, res: HttpServletResponse)
+  # doTrace(req: HttpServletRequest, res: HttpServletResponse)
+  # service(req: HttpServletRequest, res: HttpServletResponse)
+  }
+}
+HttpServlet -up-|> GenericServlet
+hide empty attributes
+hide empty methods
+////
+
+=== Implémentation de servlet
+
+1. Créer une classe enfant de `HttpServlet`
+2. Implémenter la méthode qui correspond au verbe HTTP désiré
+* `doGet()`
+* `doPost()`
+* etc.
