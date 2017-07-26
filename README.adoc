@@ -1,7 +1,19 @@
 = Java EE
+Nicolas Frankel
+:doctype: article
+:encoding: utf-8
+:lang: fr
+
 ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 
-1. Vue générale de <<javaee.adoc#,Java EE>>
-2. <<servlet.adoc#,API Servlet>>
+image::https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png[Licence Creative Commons, link="http://creativecommons.org/licenses/by-nc-sa/4.0/"]
+
+Ce cours est mis à disposition selon les termes de la http://creativecommons.org/licenses/by-nc-sa/4.0/[Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International].
+
+1. Vue générale de Java EE
+* <<cours/javaee.adoc#,Cours>>
+2. API Servlet
+* <<cours/servlet.adoc#,Cours>>
+* Travaux Pratiques
 3. Accès aux données
 4. Injection de dépendances

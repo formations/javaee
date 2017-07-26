@@ -1,8 +1,6 @@
 = Java EE
 
-:experimental:
-:icons: font
-:imagesdir: ./images
+:imagesdir: ./images/javaee
 
 == Votre enseignant
 

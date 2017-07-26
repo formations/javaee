@@ -1,17 +1,17 @@
 language: ruby
 
-before_install: mkdir -p output
+before_install: mkdir -p output/cours
 
 install:
   - bundle config --local github.https true
   - bundle --path=.bundle/gems --binstubs=.bundle/.bin
 
 script:
-  - bundle exec asciidoctor-revealjs -D output -a revealjs_history=true -a revealjs_theme=white -a revealjs_slideNumber=true -a linkcss -a customcss=style.css -a revealjsdir=https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0 *.adoc
+  - bundle exec asciidoctor-revealjs -D output/cours -a revealjs_history=true -a revealjs_theme=white -a revealjs_slideNumber=true -a linkcss -a customcss=../style.css -a revealjsdir=https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0 cours/*.adoc
   - bundle exec asciidoctor -D output README.adoc
 
 after_success:      
-  - cd output ; mv README.html index.html ; cp -R ../images images ; cp ../style.css .
+  - cd output ; mv README.html index.html ; cp -R ../cours/images cours ; cp ../style.css .
   - git init
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"
