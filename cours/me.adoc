@@ -1,0 +1,43 @@
+= Votre enseignant
+
+:imagesdir: ./images/me
+
+== Nicolas Fränkel
+
+* Travaille chez SAP
+* Comme consultant
+** Développeur Java
+** Architecte logiciel
+** Architecte de solutions
+
+== Clients
+
+** BNP Paribas
+** Nespresso
+** Ville de Lausanne
+** Etat de Genève
+** (Groupama, Orange, etc.)
+
+== Publications
+
+image:learning_vaadin.jpg[Learning Vaadin 7,406,500,role="left"]
+image:integration_testing.jpg[Integration Testing from the Trenches,384,499,role="right"]
+
+== Interventions en conférence
+
+* Java One
+* Devoxx
+* JEE Conf
+* etc.
+
+https://blog.frankel.ch/speaking/[Liste exhaustive^]
+
+=== !
+
+video::E4UuxVWYCVQ[youtube]
+
+== Médias sociaux
+
+* https://twitter.com/nicolas_frankel[Twitter^]
+* http://frankel.in[LinkedIn^]
+* https://blog.frankel.ch/[Blog^]

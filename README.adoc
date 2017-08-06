@@ -8,10 +8,11 @@ ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 
 include::license.adoc[]
 
-1. Vue générale de Java EE
+. <<cours/me.adoc#,Votre enseignant>>
+. Vue générale de Java EE
 * <<cours/javaee.adoc#,Cours>>
-2. API Servlet
+. API Servlet
 * <<cours/servlet.adoc#,Cours>>
 * <<tp/servlet.adoc#,Travaux Pratiques>>
-3. Accès aux données
-4. Injection de dépendances
+. Accès aux données
+. Injection de dépendances

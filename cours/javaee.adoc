@@ -2,38 +2,6 @@
 
 :imagesdir: ./images/javaee
 
-== Votre enseignant
-
-* Travaille chez SAP
-* Comme consultant
-** Développeur Java
-** Architecte logiciel
-** Architecte de solutions
-
-=== Clients
-
-** BNP Paribas
-** Nespresso
-** Ville de Lausanne
-** Etat de Genève
-** (Groupama, Orange, etc.)
-
-=== Publications
-
-image:learning_vaadin.jpg[Learning Vaadin 7,406,500,role="left"]
-image:integration_testing.jpg[Integration Testing from the Trenches,384,499,role="right"]
-
-=== Interventions en conférences
-
-* Java One
-* Devoxx
-* JEE Conf
-* etc.
-
-=== !
-
-video::E4UuxVWYCVQ[youtube]
-
 == Pourquoi étudier une plate-forme ?
 
 [.stretch]
