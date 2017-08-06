@@ -19,10 +19,17 @@ toc::[]
 
 == Références
 
+En français : ::
 * <<../cours/servlet.adoc#,Slides>>
+* http://www.jmdoudoux.fr/java/dej/chap-servlets.htm[Les Servlets^]
+* http://www.jmdoudoux.fr/java/dej/chap-jsp.htm[Les JSP^]
+* http://www.jmdoudoux.fr/java/dej/chap-jstl.htm[JSTL^]
+En anglais : ::
+* https://docs.oracle.com/javaee/7/api/[Java EE 7 API^]
 * http://docs.oracle.com/javaee/7/tutorial/webapp001.htm[Web Applications^]
 * http://docs.oracle.com/javaee/7/tutorial/webapp002.htm[Web Application Lifecycle^]
 * http://docs.oracle.com/javaee/7/tutorial/webapp004.htm[Web Module That Uses Java Servlet Technology^]
+* http://www.oracle.com/technetwork/java/filters-137243.html[The Essentials of Filters^]
 
 == Mise en place
 
@@ -111,9 +118,176 @@ De fait, le lancement du serveur déploiera l'application.
 +
 image::browser-default-page.png[Browser displaying default page,488,274,role="text-center"]
 +
-
 [IMPORTANT] 
 .Diagnostic
 ====
 Si le navigateur affiche une page de type 404 Not Found, appeler l'enseignant/l'assistant.
 ====
++
+. Avec les connaissances vues en cours, tenter d'expliquer pourquoi cette page est affichée.
+
+== Manipulation de servlets
+
+Cette section permet de mettre en oeuvre les concepts liés aux servlets étudiés <<../cours/servlet.adoc#,en cours>>.
+
+=== Premiers pas
+
+NOTE: L'objectif est de créer un servlet qui écrit dans la log système lorsqu'il est accédé en `GET`.
+
+. Créer un nouveau package _p.e._ `ch.hesge.programmation`.
++
+TIP: Il est fortement déconseillé de créer des classes dans le _package_ racine.
++
+. Créer une nouvelle classe de servlet, `SysoutServlet` :
+* Hériter de `HttpServlet`.
+* Implémenter la méthode `doGet()` : le corps de celle-ci fait un appel à la méthode `System.out.println()`.
+. Modifier le descripteur de déploiement `web.xml` pour lier ce servlet au fragment d'URL `/sysout`.
++
+[NOTE]
+.Rappel
+====
+Il faut créer une section `<servlet>` pour lier la classe à un nom logique *et* une section `<servlet-mapping` pour lier le nom logique à un modèle d'URL.
+====
++
+. Reconstruire l'application et re-démarrer le serveur (cf. link:#_lancement_de_l_application[ci-dessus]).
+. Accéder à <http://localhost:8080/sysout> via `GET`.
+. Vérifier la sortie de la console dans l'AGL.
+
+=== Configuration par annotations
+
+NOTE: L'objectif est de créer un servlet configuré avec les annotations - et non pas dans le descripteur de déploiement.
+
+. Copier-coller la classe ci-dessus en `AnnotatedServlet`.
+. Configurer le servlet via les annotations pour qu'il soit accessible en `GET` via le fragment `/annotate`.
+. Accéder à <http://localhost:8080/annotate>.
+. Vérifier la sortie de la console dans l'AGL.
+
+=== Redirection
+
+NOTE: L'objectif est de créer un servlet qui redirige l'utilisateur vers un site externe
+
+Via l'API native::
++
+. Créer une nouvelle classe de servlet, `RedirectServlet`.
+. Implémenter la méthode `doGet()` pour rediriger l'utilisateur vers un site externe, _p.e._ <https://google.com>.
+. Configurer le servlet soit par annotations, soit dans le descripteur de déploiement pour être accessible via `/redirect`.
+. Accéder à <http://localhost:8080/redirect>.
+. Vérifier que le navigateur redirige vers le site externe précédemment utilisé.
++
+En utilisant un autre mécanisme de bas niveau::
++
+. Copier-coller la classe ci-dessus en `RedirectServlet2`.
+. Remplacer l'implémentation de la méthode `doGet()`:
+* Ajouter le header `Location` avec l'URL précédente
+* Renvoyer un code statut HTTP de redirection
+. Configurer le servlet pour être accessible via `/redirect2`.
+. Accéder à <http://localhost:8080/redirect2>.
+. Vérifier que le navigateur redirige vers le site externe précédemment utilisé.
+
+=== Ecriture dans la réponse
+
+NOTE: L'objectif est de créer un servlet qui écrit directement dans le flux de réponse.
+
+. Créer une nouvelle classe de servlet, `WriteServlet`.
+. Implémenter la méthode `doGet()` pour écrire du contenu HTML dans le flux de réponse en utilisant `response.getWriter()`.
++
+[IMPORTANT]
+.Ne pas oublier
+====
+* De fermer le flux de sortie, sinon la page ne sera pas affichée
+* D'indiquer le type MIME afin que le contenu HTML soit correctement interprété et non pas affiché comme du simple texte.
+Pour information, la plupart des navigateurs "sniffent" le type mais il s'agit d'une faille de sécurité.
+====
++
+. Configurer le servlet pour être accessible via `/write`.
+. Accéder à <http://localhost:8080/write>.
+. Vérifier que le navigateur affiche correctement le contenu HTML.
+
+=== Utilisation des paramètres
+
+NOTE: L'objectif est de lire et d'afficher les paramètres de requête.
+
+. Créer un servlet, `ParamServlet`.
+. Configurer le servlet pour être accessible via `/param`.
+. Ecrire dans le flux de réponse les paramètres sous forme de tableau HTML :
+. Vérifier l'affichage des résultats avec les URL suivantes :
+* <http://localhost:8080/param>.
+* <http://localhost:8080/param?key>.
+* <http://localhost:8080/param?key=value>.
+* <http://localhost:8080/param?key1&key2>.
+* <http://localhost:8080/param?key1=value1&key2=value2>.
+* <http://localhost:8080/param?key1=value1&key2=value2&key3=value3>.
+
+=== Forward
+
+NOTE: L'objectif est de créer un servlet qui _forward_ vers une autre ressource.
+
+. Créer deux servlets, `InitialServlet` et `ForwardServlet`.
+. Les configurer pour être respectivement accessibles via `/initial` et `/forward`.
+. Dans le premier servlet, implémenter le _forward_ vers le second.
+. Dans le second servlet, écrire quelque chose dans le flux de réponse.
+. Accéder à <http://localhost:8080/initial>.
+. Vérifier que le navigateur affiche ce qui a été écrit dans `ForwardServlet`.
+
+=== Inclusion
+
+NOTE: L'objectif est de créer un servlet qui inclut une autre ressource.
+
+. Créer deux servlets, `InitialServlet2` et `ForwardServlet`.
+. Les configurer pour être respectivement accessibles via `/initial2` et `/include`.
+. Dans le premier servlet, implémenter :
+* une écriture dans le flux de réponse
+* l'_include_ vers le second servlet
+* une seconde écriture dans le flux de réponse
+. Dans le second servlet, écrire quelque chose dans le flux de réponse.
+. Accéder à <http://localhost:8080/initial2>.
+. Vérifier que le navigateur affiche ce qui a été écrit dans le flux de réponse dans le bon ordre.
+
+== Manipulation de JSP
+
+=== Premiers pas
+
+NOTE: L'objectif est d'afficher une page HTML.
+
+. Créer une JSP `hello.html` dans le répertoire racine de l'application web.
+. Accéder à <http://localhost:8080/hello.html>.
+. Vérifier que le navigateur affiche le contenu.
+
+=== Contenu statique
+
+NOTE: L'objectif est d'afficher le contenu statique d'une JSP.
+
+. Créer une JSP `hello.jsp` avec un contenu statique dans le répertoire racine de l'application web.
+. Accéder à <http://localhost:8080/hello.jsp>.
+. Vérifier que le navigateur affiche le contenu statique.
+
+=== Contenu dynamique
+
+NOTE: L'objectif est d'afficher le contenu dynamique d'une JSP.
+
+. Créer une JSP `date.jsp` avec un contenu dynamique dans le répertoire racine de l'application web.
+Par exemple, afficher l'instant présent `<%= new Date() %>`.
+. Accéder à <http://localhost:8080/date.jsp>.
+. Vérifier que le navigateur affiche le contenu dynamique en rafraichissant plusieurs fois la page.
+
+=== Implémentation du modèle MVC
+
+NOTE: L'objectif est d'implémenter le modèle MVC avec un servlet frontal qui joue le rôle de contrôleur et une JSP qui joue le rôle de la vue.
+
+. Créer un servlet `DateServlet` qui génère la date comme dans la section précédente.
+. Implémenter un _forward_ vers la JSP.
+. Le rendre accessible via `/date`.
+. Créer une JSP `date2.jsp` dans le répertoire racine de l'application web.
+. Faire en sorte que la JSP récupère la date générée par le servlet et l'affiche.
+. Accéder à <http://localhost:8080/date>.
+. Vérifier que la date est bien affichée.
+. Accéder à <http://localhost:8080/date2.jsp>.
+. Que se passe-t'il ? Pourquoi ?
+
+=== Protection de JSP
+
+Corriger la link:#_implémentation_du_modèle_mvc[solution précédente] pour que la JSP ne soit pas accessible directement via <http://localhost:8080/date2.jsp>.
+
+=== Exemple complet
+
+Reprendre l'link:#_utilisation_des_paramètres[exercice d'affichage des paramètres] et l'implémenter avec le modèle MVC.
