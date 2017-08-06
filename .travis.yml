@@ -12,7 +12,7 @@ script:
   - bundle exec asciidoctor -D output/tp tp/*.adoc
 
 after_success:      
-  - cd output ; mv README.html index.html ; cp -R ../cours/images cours ; cp ../style.css .
+  - cd output ; mv README.html index.html ; cp -R ../cours/images cours ; cp -R ../tp/images tp ; cp ../style.css .
   - git init
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"
