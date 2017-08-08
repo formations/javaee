@@ -57,12 +57,6 @@ browser .right.> i
 
 |===
 
-=== https://en.wikipedia.org/wiki/Technology_Compatibility_Kit[Technology Compatibility Kit^]
-
-* Ensemble des tests de chaque spécification
-* Permet à une plate-forme d'être certifiée compatible avec une version de Java EE
-* Disponible sous license GPL
-
 === https://en.wikipedia.org/wiki/Reference_implementation[Implémentation de référence^]
 
 * Preuve formelle qu'il est possible d'implémenter la spécification
@@ -78,7 +72,7 @@ browser .right.> i
 === !
 
 [.stretch]
-image:spec-impl.svg[]
+image:spec-impl.svg[Spécification vs implémentation]
 
 ////
 component [JPA] as jpa << API >>
@@ -88,6 +82,12 @@ hibernate .up.> jpa : implements
 eclipse .up.> jpa : implements
 ////
 
+=== https://en.wikipedia.org/wiki/Technology_Compatibility_Kit[Technology Compatibility Kit^]
+
+* Ensemble des tests de chaque spécification
+* Permet à une plate-forme d'être certifiée compatible avec une version de Java EE
+* Disponible sous license GPL
+
 === Versions
 
 * Une version unique pour la plate-forme
@@ -95,6 +95,13 @@ eclipse .up.> jpa : implements
 * Une version spécifique pour chaque API, par exemple :
 ** JTA 1.1
 ** JMX 1.0
+
+=== Historique
+
+[.stretch]
+image::java-ee-history.png[Historique des versions de Java EE,962,590]
+
+// https://dzone.com/articles/java-ee-past-present-and-future
 
 == https://en.wikipedia.org/wiki/Application_server[Serveur d'applications^]
 

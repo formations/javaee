@@ -9,7 +9,7 @@ ____
 Java component that extends the capabilities of a server.
 ____
 
-* Partie intégrante d'une application web
+Partie intégrante d'une application web
 
 === Application web
 
@@ -23,26 +23,96 @@ image::web-module.gif[]
 
 // http://docs.oracle.com/javaee/5/tutorial/doc/bnadx.html
 
+=== Accessibilité des resources
+
+* Dans `WEB-INF`, inaccessible en HTTP
+* En dehors de `WEB-INF`, accessible en HTTP via le chemin vers la ressource :
+** `/page/hello.html` est accessible via <http://domain:port/page/hello.html>
+
+== Descripteur de déploiement
+
+* Pages d'accueil
+* Déclaration de servlets
+* Déclaration de filtres
+* Paramètres d'initialisation
+* etc.
+
+=== web.xml
+
+* Situé dans répertoire `WEB-INF`
+* Référence un schéma XSD
+* Dépend de la version de Java EE
+* Optionnel !
+
+=== !
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+  xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://xmlns.jcp.org/xml/ns/javaee
+    http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+  version="3.1">
+</web-app> 
+----
+
 == Composant servlet
 
 * Corrélé à une URL
+* Modèle requête réponse :
 ** Activé par l'envoi d'une requête
 ** Retourne (souvent) une réponse
 
 === Cycle de vie
 
-* Le cycle de vie d'un servlet est géré par le serveur d'applications
+* Le cycle de vie est géré par le serveur d'applications
 1. Instanciation
 2. Service
 3. Destruction
-* Il peut exister _n_ instances d'un servlet à un moment _t_
-* On ne sait pas quelle instance d'un servlet est appelée
+* Il peut exister _n_ instances à un moment _t_
+* On ne sait pas quelle instance est appelée
 
-=== Déploiement
+=== !
 
-* 2 liens
-** URL -> Nom logique
-** Nom logique -> Classe pleinement qualifiée
+image::servlet-sequence.svg[]
+
+////
+actor "<u>b:Browser</u>" as browser
+boundary "<u>c:Container</u>" as container
+participant "<u>req:HttpServletRequest</u>" as req
+participant "<u>resp:HttpServletResponse</u>" as resp
+control "<u>s:MyServlet</u>" as servlet
+activate browser
+browser -> container: HTTP request
+activate container
+create req
+container -> req: new()
+create resp
+container -> resp: new()
+create servlet
+alt If necessary
+container -> servlet: new()
+end alt
+container -> servlet: service(req, resp)
+activate servlet
+servlet -> servlet: doXXX(req, resp)
+activate servlet
+deactivate servlet
+deactivate servlet
+browser <- container : HTTP response
+deactivate container
+deactivate browser
+hide footbox
+////
+
+=== Mapping d'URL
+
+* Double lien :
+** URL - Nom logique
+** Nom logique - Classe pleinement qualifiée
 
 === Via le descripteur
 
@@ -67,9 +137,18 @@ image::web-module.gif[]
 package ch.frankel;
 
 @WebServlet("/hello")
-public class HelloServlet extends HttpServlet {
-}
+public class HelloServlet extends HttpServlet { ... }
 ----
+
+=== Modèles d'URL
+
+. Strict, par exemple `/hello`
+. Générique, mais limité :
+** `/hello/*`
+** `*.do`
+. Spécifiques :
+* `/*`
+* `/`
 
 === !
 
@@ -119,3 +198,575 @@ hide empty methods
 * `doGet()`
 * `doPost()`
 * etc.
+
+== Http Servlet Response
+
+Représentation Java d'une réponse HTTP :
+
+* Envoi d’un code erreur HTTP
+* Redirection vers une autre URL
+* Gestion des en-têtes HTTP
+* Gestion des cookies
+* Ecriture :
+** de caractères (texte)
+**  d’octets (binaire)
+
+=== !
+
+image::servlet-response.svg[]
+
+////
+package javax.servlet {
+ abstract class ServletOutputStream {
+  {abstract} + print(value: primitive)
+  {abstract} + print(value: String)
+  {abstract} + println(value: primitive)
+  {abstract} + println(value: String)
+ }
+ interface ServletResponse {
+  {abstract} + getOutputStream(): ServletOutputStream
+  {abstract} + getWriter(): PrintWriter
+  {abstract} + setContentType(type: String)
+ }
+ package http {
+  interface HttpServletResponse {
+   {abstract} + addCookie(cookie: Cookie)
+   {abstract} + addHeader(name: String, value: String)
+   {abstract} + sendError(sc: int)
+   {abstract} + sendRedirect(location: String)
+   {abstract} + setHeader(name: String, value: String)
+  }
+ }
+}
+package java.io {
+ class PrintWriter {
+  {abstract} + print(value: primitive)
+  {abstract} + print(value: String)
+  {abstract} + println(value: primitive)
+  {abstract} + println(value: String)
+ }
+}
+HttpServletResponse -up-|> ServletResponse
+ServletResponse .left.> ServletOutputStream
+HttpServletResponse .right.> PrintWriter
+hide empty attributes
+hide empty methods
+////
+
+
+=== Envoi de code d'erreur
+
+[source,java]
+----
+public class SendErrorServlet {
+
+    @Override
+    public void doGet(HttpServletRequest req,
+                      HttpServletResponse res) {
+        res.sendError(500);
+    }
+}
+----
+
+=== Redirection
+
+* Le navigateur reçoit un code HTTP _30x_ :
+** Lecture de l'URL configurée dans l'en-tête HTTP `Location`
+** Nouvelle requête `GET` à cette URL
+
+=== Redirection
+
+[.stretch]
+image::redirect.svg[]
+
+////
+actor "Client" as client
+participant "HTTP Server" as server
+activate client
+client -> server: 1. GET request
+activate server
+client <- server: 2. 302 response code
+deactivate server
+client -> server: 3. Request for redirected page
+activate server
+client <- server: 4. 200 response code
+deactivate server
+deactivate client
+hide footbox
+////
+
+=== Types de redirection
+
+[options="header"]
+|===
+
+| Type | Code statut HTTP
+
+| _Permanent_ | 301
+| _Temporary_ | 302
+
+|===
+
+=== Redirection
+
+[source,java]
+----
+public class RedirectServlet {
+
+    @Override
+    public void doGet(HttpServletRequest req,
+                      HttpServletResponse resp) {
+        resp.sendRedirect("https://www.google.com");
+    }
+}
+----
+
+=== Print Writer
+
+* Permet d'écrire du texte dans le flux de réponse
+* Nécessite de spécifier le type MIME
+* Nécessite de fermer le flux après utilisation
+
+=== Print Writer
+
+[source,java]
+----
+public class PrintServlet {
+
+    @Override
+    public void doGet(HttpServletRequest req,
+                      HttpServletResponse resp) {
+        resp.setContentType("text/html");
+        PrintWriter out = resp.getWriter();
+        out.println("<html><body>");
+        out.println("Hello world!");
+        out.println("</body></html>");
+        out.close();
+    }
+}
+----
+
+=== Output Stream
+
+* Permet d'écrire des octets dans le flux de réponse
+* Nécessite de spécifier le type MIME
+* Nécessite de fermer le flux après utilisation
+* Génération dynamique :
+** d'images
+** de tableaux Excel
+** etc.
+
+== Http Servlet Request
+
+Représentation Java d'une requête HTTP :
+
+[source]
+----
+GET /java/index.html HTTP/1.1
+Host: formations.github.io
+Accept: image/gif, image/jpeg, */*
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
+----
+
+// https://www.ntu.edu.sg/home/ehchua/programming/webprogramming/HTTP_Basics.html
+
+=== API
+
+* Analyse de la requête :
+** Accès à l'URL (protocole, domaine, paramètres, etc.)
+** Accès aux cookies
+** Accès aux en-têtes HTTP
+* Accès à la session HTTP
+* Accès au `RequestDispatcher`
+
+=== !
+
+[.stretch]
+image::servlet-request.svg[]
+
+////
+package javax.servlet {
+ interface ServletRequest {
+  {abstract} + getAttribute(name: String): Object
+  {abstract} + setAttribute(name: String, value: Object)
+  {abstract} + removeAttribute(name: String)
+  ....
+  {abstract} + getParameter(name: String): String
+  {abstract} + getParameterValues(name: String): String[]
+  {abstract} + getParameterMap(): Map<String, String[]>
+  {abstract} + getParameterNames(): Enumeration<String>
+  ....
+  {abstract} + getRequestDispatcher(path : String): RequestDispatcher
+
+ }
+ interface RequestDispatcher {
+  {abstract} + include(req: ServletRequest, resp: ServletResponse)
+  {abstract} + forward(req: ServletRequest, resp: ServletResponse)
+ }
+ package http {
+  interface HttpServletRequest {
+   {abstract} + getHeader(name: String)
+   {abstract} + getHeaderNames(): Enumeration<String>
+   {abstract} + getHeaderNames(name: String): Enumeration<String>
+   {abstract} + getIntHeader(name: String): int
+   {abstract} + getDateHeader(name: String): long
+   ....
+   {abstract} + getSession(): HttpSession
+   {abstract} + getSession(create: boolean): HttpSession
+   ....
+   {abstract} + getContextPath(): String
+   {abstract} + getQueryString(): String
+   {abstract} + getPathInfo(): String
+   {abstract} + getPathTranslated(): String
+   {abstract} + getRequestURI(): String
+   {abstract} + getServletPath(): String
+  }
+ }
+}
+HttpServletRequest -up-|> ServletRequest
+ServletRequest .right.> RequestDispatcher
+hide empty attributes
+hide empty methods
+////
+
+=== URL
+
+image::complex_url.png[]
+
+// https://doepud.co.uk/blog/anatomy-of-a-url
+
+== Request Dispatcher
+
+* Fait suivre la chaîne de traitement au prochain servlet
+* Inclut la réponse du prochain servlet dans le flux actuel
+
+=== Utilisation du Request Dispatcher
+
+[source,java]
+----
+public class ForwardServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req,
+                         HttpServletResponse res)
+                   throws ServletException, IOException {
+
+        req.getRequestDispatcher("/resource")
+                          .forward(req, resp);
+    }
+}
+----
+
+=== !
+
+image::rd-forward-include.svg[]
+
+////
+actor "<u>c:Client</u>" as client
+participant "<u>s1:Servlet</u>" as servlet1
+participant "<u>d:RequestDispatcher</u>" as dispatch
+participant "<u>s2:Servlet</u>" as servlet2
+participant "<u>w:PrintWriter</u>" as writer
+activate client
+ client -> servlet1: HTTP request
+ activate servlet1
+alt simple request
+ servlet1 -> writer: write()
+ client <-- servlet1: response from s1
+else else
+ servlet1 -> servlet1: getRequestDispatcher("/servlet2")
+ activate servlet1
+ deactivate servlet1
+ alt forward
+  servlet1 -> dispatch: forward(req, res)
+  activate dispatch
+  dispatch -> servlet2
+  activate servlet2
+  servlet2 -> writer: write()
+  dispatch <-- servlet2
+  deactivate servlet2
+  servlet1 <-- dispatch
+  deactivate dispatch
+  client <-- servlet1: response from s2
+ else include
+  servlet1 -> writer: write()
+  servlet1 -> dispatch: include(req, resp)
+  activate dispatch
+  dispatch -> servlet2
+  activate servlet2
+  servlet2 -> writer: write()
+  dispatch <-- servlet2
+  deactivate servlet2
+  servlet1 <-- dispatch
+  deactivate dispatch
+  servlet1 -> writer: write()
+  client <-- servlet1: response from s1 + s2 + s1
+ end
+end
+deactivate servlet1
+deactivate client
+hide footbox
+////
+
+== Java Server Pages
+
+* Ecrire du HTML via le `PrintWriter` est laborieux
+* Prévisualisation impossible pour les web designers
+
+=== Composant JSP
+
+* Format texte
+* Au premier appel, le container :
+** Translate la JSP en servlet
+** Compile le servlet
+
+=== Exemple de JSP
+
+[source]
+----
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello world</title>
+<body>
+  <% Object n = request.getAttribute("name"); %>
+  Hello <% out.println(n); %>
+</body>
+----
+
+=== Un autre exemple
+
+[source]
+----
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello world</title>
+<body>
+  Hello <%= request.getAttribute("name") %>
+</body>
+----
+
+=== Un dernier exemple
+
+[source]
+----
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello world</title>
+<body>
+  Hello <c:out value="requestScope.name" />
+</body>
+----
+
+=== Scriptlet
+
+* N'importe quel code Java
+* Balisé par `<%` et `%>`
+
+=== Expression
+
+* Equivalent à `out.println()`
+* Balisé par `<%=` et `%>`
+
+=== Directives
+
+[options="header"]
+|===
+
+| Type | Exemple 
+
+| Import | `<%@page import="java.util.List" %>`
+| Inclusion | `<%@include file="response.jsp" %>`
+| Taglib | `<%@taglib uri="http://java.sun.com/jstl/core" prefix="c" %>`
+
+|===
+
+=== Taglibs standard - JSTL
+
+* Core - `c`
+* XML - `xml`
+* Internationalisation - `fmt`
+* (SQL - `sql`)
+
+=== Commentaires
+
+* Ignoré dans le processus de compilation
+* Ne sera pas disponible dans le HTML généré
+* Balisé par `<%--` et `--%>`
+
+=== Déclarations
+
+* Déclaration de méthodes et d'attributs
+* Pour information (très peu utilisé)
+* Balisé par `<%!` et `%>`
+
+=== Objets implicites
+
+[options="header"]
+|===
+
+| Variable | Type
+
+| `out` | `JspWriter`
+| `request` | `HttpServletRequest`
+| `response` | `HttpServletResponse`
+| `config` | `ServletConfig`
+
+|===
+
+=== !
+
+[options="header"]
+|===
+
+| Variable | Type
+
+| `application` | `ServletContext`
+| `session` | `HttpSession`
+| `pageContext` | `PageContext`
+| `page` | `Object`
+| `exception` | `Throwable`
+
+|===
+
+== Modèle Vue Contrôleur
+
+Principe de séparation des responsabilités
+
+=== !
+
+[cols="1,2,4",options="header"]
+|===
+
+| Rôle | Composant | Fonctionnalité
+
+| Contrôleur | Servlet | Gère le flux de contrôle
+| Vue | JSP | Affiche la page
+| Modèle a| * JavaBean
+            * EJB
+            * etc. | Gère les données
+
+|===
+
+=== !
+
+[.stretch]
+image::mvc.svg[]
+
+////
+actor "<u>c:Client</u>" as client
+control "<u>c:Servlet</u>" as controller <<Controller>>
+participant "<u>v:JSP</u>" as jsp <<View>>
+participant "<u>m:Bean</u>" as model <<Model>>
+activate client
+client -> controller: request
+activate controller
+create model
+controller -> model: new()
+controller -> jsp: forward
+activate jsp
+jsp -> model: get data
+activate model
+jsp <-- model
+deactivate model
+controller <-- jsp
+deactivate jsp
+client <-- controller: response
+deactivate controller
+hide footbox
+////
+
+== Attributs de requête
+
+* Comment transférer des données au travers du pipeline de traitement d'une requête ?
+* Par exemple, du contrôleur (servlet) à la vue (JSP)
+
+=== Exemple de formulaire d'enregistrement
+
+* Servlet dédié au traitement des données (validation, enregistrement, etc.)
+* JSP dédiée à l'affichage du HTML
+** "Bravo _M. Dupont_, vous avez bien été enregistré"
+* Il faut transférer les données (titre et nom) du servlet à la JSP
+
+=== Utilisation des attributs
+
+* A chaque `HttpServletRequest` est associée une `Map<String, Object>`.
+. Le servlet stocke l'objet comme attribut de requête sous la clé `key`
+. Le servlet _forward_ à la JSP
+. La JSP récupère l'attribut de requête sous la clé `key`
+. Le transtype dans le type correct
+
+=== Périmètre des attributs
+
+[options="header"]
+|===
+
+| Nom | Objet | Objet implicite JSP
+
+| Application | `ServletContext` | `application`
+| Session | `HttpSession` | `session`
+| Requête | `HttpServletRequest` | `request`
+| Page | `PageContext` | `page`
+
+|===
+
+== Session
+
+* HTTP est un protocole déconnecté
+** Impossible de savoir si 2 requêtes proviennent de la même session navigateur
+** Utilisation d'un cookie `JSESSIONID`
+* Cookie géré automatiquement par le serveur d'applications
+
+=== Http Session
+
+* Ensemble d'attributs spécifiques à une session navigateur
+* Stockés en mémoire
+* Attention :
+** Aux collections sans limite de taille
+** Aux objets de taille trop importante
+
+=== !
+
+image::session.svg[]
+
+////
+interface HttpServletRequest {
+ {abstract} + getHttpSession(): HttpSession
+ {abstract} + getHttpSession(create: boolean): HttpSession
+}
+interface HttpSession {
+ {abstract} + getAttribute(name: String): Object
+ {abstract} + getAttributeNames()
+ {abstract} + setAttribute(name: String, value: Object)
+ {abstract} + removeAttribute(name: String)
+ ....
+ {abstract} + getServletContext(): ServletContext
+ {abstract} + invalidate()
+ {abstract} + isNew(): boolean
+ ....
+ {abstract} + getId(): String
+ {abstract} + getCreationTime(): long
+ {abstract} + getLastAccessedTime(): long
+ {abstract} + getMaxInactiveInterval(): int
+ {abstract} + setMaxInactiveInterval(interval: int)
+}
+HttpServletRequest .right.> HttpSession
+hide empty attributes
+////
+
+=== !
+
+[source,java]
+----
+HttpSession session = req.getSession();
+session.setAttribute("person", new Person("John", "Doe"));
+
+// in another component (servlet, jsp, filter)
+Object object = session.getAttribute("person");
+Person person = (Person) object;
+----
