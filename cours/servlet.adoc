@@ -770,3 +770,161 @@ session.setAttribute("person", new Person("John", "Doe"));
 Object object = session.getAttribute("person");
 Person person = (Person) object;
 ----
+
+== Filtres de servlet
+
+[quote, Oracle Tech Network, http://www.oracle.com/technetwork/java/filters-137243.html]
+____
+First, they provide the ability to encapsulate recurring tasks in reusable units. [...]
+Second, filters can be used to transform the response from a servlet or a JSP page.
+____
+
+=== Fonctionnalités communes
+
+* Authentification
+* Logging
+* Conversion d’image
+* Compression de données
+* Cryptage
+* etc. 
+
+=== Composant Filtre
+
+* Corrélé à une URL
+* Intercepte :
+** Soit la requête
+** Soit la réponse
+** Soit les 2
+
+=== !
+
+[.stretch]
+image::tfessh-pic-1.gif[]
+
+// http://www.onjava.com/pub/a/onjava/2003/11/19/filters.html
+
+=== Mapping d'URL
+
+Comme pour un servlet
+
+=== Via le descripteur
+
+[source, xml]
+----
+<web...>
+  <filter>
+    <filter-name>Authenticate</filter-name>
+    <filter-class>ch.frankel.AuthenticateFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Authenticate</filter-name>
+    <url-pattern>/secure/*</url-pattern>
+  </filter-mapping>
+</web>
+----
+
+=== Via les annotations
+
+[source, java]
+----
+package ch.frankel;
+
+@WebFilter("/secure/*")
+public class AuthenticateFilter implements Filter { ... }
+----
+
+=== !
+
+image::filter.svg[]
+
+=== Implémentation de filtre
+
+. Créer une classe enfant de `Filter`
+. Dans `doFilter()` :
+* Appeler `chain.doFilter()` pour passer à la prochaine étape
+* Sinon, le flux s'arrête là
+
+=== Exemple d'implémentation
+
+[source,java]
+----
+@Override
+public void doFilter(ServletRequest req,
+                     ServletResponse res,
+                     FilterChain chain)
+                   throws IOException, ServletException {
+  HttpServletRequest httpReq = (HttpServletRequest) req;
+  HttpSession session = httpReq.getSession();
+  if (authenticated(session)) {
+    chain.doFilter(req, res);
+  } else {
+    HttpServletResponse httpRes = (HttpServletResponse) res;
+    httpRes.sendError(401, "Not authentified");            
+  }
+}
+----
+
+== Points d'entrée dans le cycle de vie
+
+|===
+
+h| Servlet a| * `ServletContextListener`
+              * `ServletContextAttributeListener`
+
+h| Requête a| * `ServletRequestListener`
+              * `ServletRequest	AttributeListener`
+
+|===
+
+=== !
+
+|===
+
+h| Session a| * `HttpSessionListener`
+              * `HttpSessionAttributeListener`
+              * `HttpSessionBindingListener`
+              * `HttpSessionActivationListener`
+
+|===
+
+=== !
+
+image::servlet-listener.svg[]
+
+=== Via le descripteur
+
+[source, xml]
+----
+<web...>
+  <listener>
+    <listener-class>
+      ch.frankel.MySessionListener
+    </listener-class>
+  </listener>
+</web>
+----
+
+=== Via les annotations
+
+[source, java]
+----
+@WebListener
+public class MySessionListener implements HttpSessionListener { ... }
+----
+
+=== Exemple d'implémentation
+
+[source, java]
+----
+@WebListener
+public class DatabaseInitializationListener implements ServletContextListener {
+    
+  @Override
+  public void contextInitialized(ServletContextEvent event) {
+    // Create sample data in database        
+  }
+
+  @Override
+  public void contextDestroyed(ServletContextEvent event) {}
+}
+----
