@@ -291,3 +291,132 @@ Corriger la link:#_implémentation_du_modèle_mvc[solution précédente] pour qu
 === Exemple complet
 
 Reprendre l'link:#_utilisation_des_paramètres[exercice d'affichage des paramètres] et l'implémenter avec le modèle MVC.
+
+== Manipulation de filtres
+
+=== Filtre de _post-processing_
+
+NOTE: L'objectif est d'implémenter un filtre qui formate une classe de modèle.
+
+Soit les classes suivantes :
+
+[source, java]
+.Person.java
+----
+public class Person {
+
+    public final String firstName;
+    public final String lastName;
+
+    public Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+}
+----
+
+[source, java]
+.PersonServlet.java
+----
+@WebServlet("/person/*")
+public class PersonServlet extends HttpServlet {
+
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse res) {
+        String firstName = req.getParameter("firstName"); 
+        String lastName = req.getParameter("lastName"); 
+        Person person = new Person(firstName, lastName);
+        req.setAttribute("person", person);
+    }
+}
+----
+
+Le modèle doit être formaté en fonction du type demandé.
+Celui-ci est passé dans le chemin d'URL _p.e._ `/person/xml`.
+Les données sont passées en paramètre de requête.
+Voici un échantillon de requêtes et les réponses attendues :
+
+[cols="5,3", options="header"]
+|===
+
+| Requête | Réponse
+| <http://localhost:8080/person/xml?firstName=John&lastName=Doe>
+a| 
+[source, xml]
+----
+<person>
+  <firstName>John</firstName>
+  <lastName>Doe</lastName>
+</person>
+----
+
+| <http://localhost:8080/person/json?firstName=John&lastName=Doe>
+a|
+[source, json]
+----
+{
+  "person": {
+    "firstName": John,
+    "lastName": Doe
+  }
+}
+----
+
+| <http://localhost:8080/person/html?firstName=John&lastName=Doe>
+a|
+++++
+<h1>Person</h1>
+<b>First Name:</b> John<br>
+<b>Last Name:</b> Doe<br>
+++++
+
+|===
+
+. A l'aide d'une combinaison des classes fournies, de filtres et de JSP, implémenter la logique ci-dessus.
+. Il existe un grand nombre de combinatoires possibles.
+Déterminer la meilleure architecture.
+. Justifier le choix.
+
+WARNING: Les classes fournies ne doivent pas être modifiées.
+
+=== Filtre d'authentification
+
+NOTE: L'objectif est d'implémenter un filtre qui permet de vérifier si l'utilisateur est authentifié.
+
+Le diagramme suivant indique le flux à implémenter:
+
+image::authenticate-filter.svg[]
+
+Les composants sont :
+
+[cols="2,1,5", options="header"]
+|===
+
+| Composant | Type | Responsabilité
+
+| `AuthenticationFilter`  | Filtre  | Vérifie si la session utilisateur comporte l'attribut d'authentification
+| `MainPage`              | JSP     | Affiche la page de bienvenue dans l'application
+| `AuthenticationPage`    | JSP     | Affiche la page d'accès refusé, qui comprend un formulaire d'authentification
+| `AuthenticationServlet` | Servlet | Stocke l'attribut d'authentification dans la session utilisateur
+
+|===
+
+== Manipulation d'abonnés au cycle de vie
+
+NOTE: L'objectif est d'implémenter un abonné qui écrit dans la sortie système lorsqu'un objet est stocké dans une session utilisateur.
+
+. Ecrire le nom de l'attribut et sa valeur
+. Si l'objet est multi-valué (tableau ou liste), écrire chacun des éléments qui le compose
+. Créer un composant de test qui permet de stocker 1 à n objets dans la session sous une clé générique
+. Tester le bon fonctionnement du composant avec les valeurs suivantes :
++
+[cols="1,6", options="header"]
+|===
+
+| Clé | Valeur
+| `"objet"` | `new Object()`
+| `"date"`  | `new java.util.Date()`
+| `"array"` | `{ new Object(), new Object(), new java.util.Date() }`
+| `"list"`  | `Arrays.asList(new Object(), new Object(), new java.util.Date())`
+
+|===
