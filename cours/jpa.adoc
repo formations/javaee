@@ -1,0 +1,317 @@
+= Java Persistence API
+
+:imagesdir: ./images/jpa
+
+== JPA
+
+[quote, Java EE Tutorial, https://docs.oracle.com/javaee/7/tutorial/persistence-intro.htm]
+____
+JPA provides developers with an ORM facility for managing relational data. JPA consists of 4 areas:
+
+* The Java Persistence API
+* The query language
+* The Criteria API
+* ORM metadata
+____
+
+=== Avertissement
+
+* Le périmètre du standard JPA est très vaste.
+* Ce cours est uniquement une introduction à une partie de ce standard.
+
+== JDBC
+
+* Java DataBase Connectivity
+* API d'accès aux bases de données SQL
+* Code indépendant du type de la base de données
+* Nécessite l'écriture de code SQL
+
+=== Rappels JDBC
+
+1. Enregistrement du driver
+2. Connection à la base de données
+3. Exécution du code SQL
+
+=== !
+
+image::java-jdbc.png[]
+
+// https://avaldes.com/connecting-to-mongodb-using-jdbc/
+
+=== Exemple de code
+
+[source,java]
+----
+Class.forName("com.mysql.jdbc.Driver");
+Connection conn = DriverManager.getConnection(
+    "jdbc:mysql://localhost/test", "user", "password");
+PreparedStatement stmt = connection.prepareStatement(
+    "SELECT * FROM PERSON WHERE ID = ?");
+stmt.setString(1, 1234L);
+ResultSet rs = stmt.executeQuery();
+if (rs.next()) {
+    String name = rs.getString("NAME");
+    Date birthDate = rs.getDate("BIRTH_DATE");
+    Person person = new Person(name, birthDate);
+}
+if (conn != null) {
+    conn.close();
+}
+----
+
+=== Problèmes de JDBC
+
+* Bas niveau
+* Nécessite beaucoup de code répétitif
+* Gestion des exceptions
+* Libération des ressources
+* Gestion manuelle des verrous
+
+== Obtention de connection
+
+Point à point:: Gestionnaire de pilotes
+Ressource commune:: Source de données
+
+=== !
+
+image::driver-manager-flow.svg[]
+
+=== Problèmes du P2P
+
+* Inadapté pour un nombre élevé de connections
+* Dépassement du nombre de connections côté DB
+** Refus de nouvelles connections après une certaine limite
+* Temps d'ouverture d'une nouvelle connection
+
+=== Source de données
+
+* Pour un nombre élevé de connections utilisées pour une courte durée
+* _Pool_ de connections initialisées au démarrage du serveur d'applications
+
+=== Processus
+
+. Récupérer une connection de la source de données
+. Utiliser la connection pour exécuter du code SQL
+. Remettre la connection à disposition du _pool_
+** Appel de la méthode `close()`
+
+=== Configurer une source de données
+
+* Paramètres : URL de la base, nombre initial de connections, nombre maximal, etc.
+* Dépendant du serveur d'applications
+* Mis à disposition dans l'arbre de ressources JNDI
+
+=== Utilisation de la source de données
+
+. Code explicite pour récupérer la ressource JNDI
+. Injection via `@Resource`
+. Configuration pour JPA
+
+=== !
+
+[source,java]
+----
+public class SomeRepository {
+    
+    @Resource(name="java:comp/env.jdbc/mydb")
+    private DataSource dataSource;
+
+    ...
+}
+----
+
+=== !
+
+image::datasource.svg[]
+
+== Entité
+
+[quote, Oracle Docs, https://docs.oracle.com/javaee/7/tutorial/persistence-intro001.htm#BNBQA]
+An entity is a lightweight persistence domain object.
+An entity class represents a table in a relational database, and each entity instance corresponds to a row in that table.
+
+=== Contraintes sur la classe Entité
+
+. Etre annotée avec `javax.persistence.Entity`
+. Respecter le contrat d'un JavaBean
+** Constructeur `public` sans argument
+** Champs privés
+** Accesseurs publics
+
+=== Champs persistés
+
+* Tous les champs sont persistés
+* Sauf ceux annotés avec `javax.persistence.Transient`
+
+=== Types autorisés pour les champs persistés
+
+* Types primitifs
+* Chaînes de caractères
+* Types `Serializable`
+* Enumérations
+* Entités
+* Collections des types ci-dessus
+
+=== Champ identité
+
+Un champ spécifique annoté `@Id` référence la clé primaire de l'entité
+
+=== Exemple d'entité JPA
+
+[source,java]
+----
+@Entity
+public class Book {
+
+    @Id private String isbn;
+    private String title;
+    private String description;
+    private Date publicationDate;
+    private Author author;
+    
+    // Getters and setters
+}
+----
+
+== Gestionnaire d'entités
+
+[quote, Oracle Docs, https://docs.oracle.com/javaee/7/tutorial/persistence-intro003.htm#JEETT01161]
+The EntityManager API creates and removes persistent entity instances, finds entities by the entity's primary key, and allows queries to be run on entities.
+
+=== Fonctionnalités du gestionnaire d'entités
+
+* Gestion du cycle de vie 
+* Recherche d'une entité par sa clé primaire
+* Synchronisation avec la base de données
+* Exécution de requêtes avec l'API Criteria
+* Exécution de requêtes JPQL (& SQL)
+* etc.
+
+=== Cycle de vie des entités
+
+image::entity-lifecycle.svg[]
+
+=== Configuration du gestionnaire d'entités
+
+* Initialisé par le serveur d'apps
+* Fichier `persistence.xml`
+* Situé dans `WEB-INF/classes/META-INF`
+
+=== Exemple de persistence.xml
+
+[source,xml]
+----
+<persistence>
+  <persistence-unit name="PeopleManagement">
+    <non-jta-data-source>jdbc/people</jta-data-source>
+    <!--
+    <jta-data-source>jdbc/people</jta-data-source>
+    -->
+    <class>ch.frankel.Person</class>
+    <class>ch.frankel.Teacher</class>
+    <class>ch.frankel.Student</class>
+  </persistence-unit>
+</persistence>
+----
+
+== JPQL
+
+[quote, Oracle Docs, https://docs.oracle.com/javaee/7/tutorial/persistence-querylanguage.htm#BNBTG]
+The query language allows you to write portable queries that work regardless of the underlying data store. It uses the abstract persistence schemas of entities, including their relationships, for its data model and defines operators and expressions based on this data model. 
+
+=== Rappel JDBC
+
+[source, java]
+----
+PreparedStatement stmt = conn.prepareStatement(
+    "SELECT * FROM PERSON " +
+    "WHERE FIRST_NAME LIKE ? AND LAST_NAME LIKE ?");
+stmt.setString(1, firstName);
+stmt.setString(2, lastName);
+ResultSet rs = stmt.executeQuery();
+----
+
+=== Exemple JPQL
+
+[source, java]
+----
+List persons =
+    em.createQuery(
+      "SELECT p FROM Person p " +
+      "WHERE p.firstName LIKE :firstName "
+      "AND p.lastName LIKE :lastName")
+      .setParameter("firstName", firstName)
+      .setParameter("lastName", lastName)
+      .getResultList();
+----
+
+=== Problèmes du JPQL
+
+* Typage faible
+* Paramètres optionnels :
+** Concaténation de chaînes 
+
+== API Criteria
+
+[quote, Oracle Docs, https://docs.oracle.com/javaee/7/tutorial/persistence-criteria.htm#GJITV]
+The Criteria API is used to define queries for entities and their persistent state by creating query-defining objects. Criteria queries are written using Java programming language APIs, are typesafe, and are portable
+
+=== !
+
+image::criteria-api.svg[]
+
+=== !
+
+[source,java]
+----
+Person person = em.find(Person.class, 1234L);
+----
+
+=== !
+
+[source,java]
+----
+CriteriaBuilder cb = em.getCriteriaBuilder();
+CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+Root<Person> person = cq.from(Person.class);
+cq.select(person);
+TypedQuery<Person> q = em.createQuery(cq);
+List<Person> allPersons = q.getResultList();
+----
+
+=== Clause WHERE
+
+[source,java]
+----
+CriteriaBuilder cb = em.getCriteriaBuilder();
+CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+Root<Person> person = cq.from(Person.class);
+cq.where(cb.like(person.get("firstName"), firstName));
+cq.where(cb.like(person.get("lastName"), lastName));
+TypedQuery<Person> q = em.createQuery(cq);
+List<Person> persons = q.getResultList();
+----
+
+== Méta-modèle
+
+[quote, Oracle Docs, https://docs.oracle.com/javaee/7/tutorial/persistence-criteria002.htm#sthref2133]
+For each entity class in a particular package, a metamodel class is created with a trailing underscore and with attributes that correspond to the persistent fields or properties of the entity class.
+
+=== Génération du méta-modèle
+
+* Ne fait pas partie de la spécification
+* Génération :
+** Manuelle
+** Via l'implémentation spécifique
+
+=== Typesafe WHERE
+
+[source,java]
+----
+CriteriaBuilder cb = em.getCriteriaBuilder();
+CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+cq.where(cb.like(Person_.firstName, firstName));
+cq.where(cb.like(Person_.lastName, lastName));
+TypedQuery<Person> q = em.createQuery(cq);
+List<Person> persons = q.getResultList();
+----

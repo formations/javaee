@@ -15,4 +15,5 @@ include::license.adoc[]
 * <<cours/servlet.adoc#,Cours>>
 * <<tp/servlet.adoc#,Travaux Pratiques>>
 . Accès aux données
+* <<cours/jpa.adoc#,Cours>>
 . Injection de dépendances
