@@ -10,3 +10,19 @@
 .reveal pre {
   box-shadow: none;
 }
+
+blockquote:before {
+  content: '❝ ';
+}
+
+blockquote:after {
+  content: ' ❞';
+}
+
+.dlist dt {
+  text-decoration: underline;
+}
+
+.dlist dt::after {
+  content: ' :';
+}
