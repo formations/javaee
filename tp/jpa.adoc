@@ -1,0 +1,217 @@
+= Travaux pratiques - Java Persistence API
+Nicolas Frankel
+:doctype: article
+:encoding: utf-8
+:lang: fr
+:toc:
+:toc-title: Table des matières
+:toc-placement!:
+:sectanchors:
+:numbered:
+:experimental:
+:icons: font
+:imagesdir: ./images/jpa
+:toc:
+
+include::../license.adoc[]
+
+toc::[]
+
+== Références
+
+En français : ::
+* <<../cours/jpa.adoc#,Slides>>
+* https://www.jmdoudoux.fr/java/dej/chap-jpa.htm[JPA (Java Persistence API)^]
+* http://blog.paumard.org/cours/jpa/[Java Persistence API^]
++
+En anglais : ::
+* https://docs.oracle.com/javaee/7/tutorial/partpersist.htm[The Java EE Tutorial - Persistence^]
+* http://www.vogella.com/tutorials/JavaPersistenceAPI/article.html[Java persistence API - Tutorial^]
+
+== Mise en place
+
+=== Création du projet
+
+Suivre la <<servlet.adoc#_création_de_projet,procédure précédente>> pour la création d'un projet Web Application.
+
+Cocher également la case Java EE persistence.
+Indiquer les valeurs suivantes :
+
+* persistence.xml : 2.1
+* OpenJPA (il s'agit du moteur de persistence fourni par TomEE)
+
+image::new-project-jpa.png[New Project - JPA,756,667,role="text-center"]
+
+Dans la section _Library_, cliquer sur btn:[Create]. Dans la popup, sélectionner le JAR `openjpa-2.4.x.jar`.
+
+NOTE: Ce JAR est situé dans le répertoire `lib` du répertoire d'installation de TomEE.
+
+Le projet créé doit avoir une structure similaire à la suivante :
+
+image::created-jpa-project.png[Project has been created,314,232,role="text-center"]
+
+=== Base de données
+
+La base de données utilisée est http://hsqldb.org/[HyperSQL^] (ou HSQLDB).
+Il s'agit d'une base de données très légère disponible au format JAR, qui contient le moteur d'exécution, le pilote JDBC ainsi qu'une console d'administration très simple.
+Il est disponible dans le répertoire TomEE.
+
+NOTE: L'avantage d'HSQLDB est d'être indépendant de toute installation externe.
+
+==== Configuration de la source de données
+
+Dans le cadre d'un projet réel, il est nécessaire de créer une source de données explicite.
+
+Dans le cadre du TP et pour des raisons de simplification, nous allons utiliser la source de données HSQLDB par défaut de TomEE.
+Son emplacement est dépendant de plusieurs critères.
+Par exemple, sous OSX, elle est située dans _$HOME/Library/Caches/IntelliJIdea2017.2/tomcat/Unnamed_jpa/data/hsqldb/hsqldb_
+
+==== Création automatisée du schéma
+
+De même, dans le cadre d'un projet réel, il serait pertinent de créer le schéma de base de données _a priori_ via les scripts DDL appropriés.
+
+Dans le cadre du TP, il est suffisant de déléguer cette opération à OpenJPA.
+Dans le fichier `persistence.xml`, ajouter une propriété supplémentaire :
+
+[source,xml]
+.persistence.xml
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence">
+    <persistence-unit ...>
+        ...
+        <properties>
+            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
+        </properties>
+    </persistence-unit>
+</persistence>
+----
+
+==== Logging
+
+Afin de pouvoir d'analyser les problèmes qui risquent d'apparaître dans l'utilisation d'OpenJPA, il est possible (et souhaitable) d'activer les logs.
+Pour ce faire, il faut juste ajouter une propriété supplémentaire dans le fichier `persistence.xml` :
+
+[source,xml]
+.persistence.xml
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence">
+    <persistence-unit ...>
+        ...
+        <properties>
+            <property name="openjpa.Log" value="DefaultLevel=TRACE, Tool=INFO" />
+        </properties>
+    </persistence-unit>
+</persistence>
+----
+
+==== Visualisation des données
+
+Pour vérifier l'état de la base, il est possible d'utiliser l'application contenue dans le JAR d'HSQLDB.
+Pour ce faire, double-cliquer sur le JAR.
+
+image::hsqldb-connect.png[Connection à HSQLDB,792,307,role="text-center"]
+
+Remplir les champs ainsi :
+
+[cols="2,5", options="header"]
+|===
+
+| Champ | Valeur
+
+| Type | HSQL Database Engine In-Memory
+| Driver | org.hsqldb.jdbc.JDBCDriver
+| URL | jdbc:hsqldb:file:<path/to/hsqldb>
+| User | SA
+| Password |
+
+|===
+
+Puis, cliquer sur btn:[Ok].
+
+* Le volet de gauche affiche les tables et les propriétés.
+* Le volet du haut permet d'écrire des requêtes SQL.
+* Le volet du bas affiche les résultats.
+
+image::hsqldb-console.png[Console HSQLDB,512,345,role="text-center"]
+
+[WARNING]
+====
+Le fichier HSQLDB ne peut être utilisé que par un seul processus à la fois avec le protocole `jdbc:hsqldb:file`.
+Cela implique que si TomEE est démarré, il n'est pas possible d'utiliser la console (et _vice-versa_).
+====
+
+== Manipulation de l'API JPA
+
+NOTE: L'objectif de cette section est de lire et d'écrire un entité depuis un servlet depuis & vers la base de données.
+
+=== Implémentation du modèle
+
+Créer une entité `Book` qui comprend les propriétés suivantes :
+
+[options="header"]
+|===
+
+| Propriété | Type
+
+| `id` | `long`
+| `title` | `String`
+| `isbn` | `String`
+| `author` | `String`
+| `publicationDate` | `Date`
+
+|===
+
+. Créer une classe `Book` avec les champs adéquats
+. La modifier pour en faire une entité JPA
+. Choisir l'identifiant de manière adaptée
+
+=== Contraintes sur la conception
+
+Un certain nombre de raccourcis ont été pris dans le cadre du cours afin de rester dans la limite du volume horaire fixé.
+En particulier, la notion de transaction n'a pas été abordée.
+Un contexte transactionnel est en général nécessaire pour utiliser JPA.
+Contrairement aux servlets, les EJB sont des composants qui proposent un tel contexte par défaut.
+
+Il est donc nécessaire d'adopter la conception suivante :
+
+image::servlet-ejb-em.svg[Diagramme de classe Servlet-EJB-EntityManager,848,112,role="text-center"]
+
+Cela se traduit dans le code ainsi :
+
+[source,java]
+----
+@Stateless
+public class MyService {
+
+    // Reference the entity manager
+}
+
+public class MyServlet extends HttpServlet {
+
+    /** Reference the EJB. */
+    @EJB
+    private MyEjb myEjb;
+}
+----
+
+=== Implémentation du _back-end_
+
+Dans la classe de service, implémenter les deux méthodes suivantes :
+
+. `public void save(Book book)`
+. `public List<Book> readAll()`
+
+=== Implémentation du _front-end_
+
+Le processus général à implémenter est le suivant :
+
+image::jsp-servlet-ejb.svg[Flux JSP-Servlet-EJB,596,537,role="text-center"]
+
+[NOTE]
+.Alternatives
+====
+. Ne pas implémenter `display.jsp` et écrire directement dans le flux de réponse via le servlet
+. Ne pas implémenter `form.jsp` et appeler le servlet via un logiciel spécifique _p.e._ Postman
+====
