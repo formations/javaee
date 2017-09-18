@@ -5,9 +5,7 @@
 == Définition
 
 [quote, Wikipedia, https://en.wikipedia.org/wiki/Java_servlet]
-____
 Java component that extends the capabilities of a server.
-____
 
 Partie intégrante d'une application web
 
@@ -79,35 +77,6 @@ image::web-module.gif[]
 
 image::servlet-sequence.svg[]
 
-////
-actor "<u>b:Browser</u>" as browser
-boundary "<u>c:Container</u>" as container
-participant "<u>req:HttpServletRequest</u>" as req
-participant "<u>resp:HttpServletResponse</u>" as resp
-control "<u>s:MyServlet</u>" as servlet
-activate browser
-browser -> container: HTTP request
-activate container
-create req
-container -> req: new()
-create resp
-container -> resp: new()
-create servlet
-alt If necessary
-container -> servlet: new()
-end alt
-container -> servlet: service(req, resp)
-activate servlet
-servlet -> servlet: doXXX(req, resp)
-activate servlet
-deactivate servlet
-deactivate servlet
-browser <- container : HTTP response
-deactivate container
-deactivate browser
-hide footbox
-////
-
 === Mapping d'URL
 
 * Double lien :
@@ -152,44 +121,7 @@ public class HelloServlet extends HttpServlet { ... }
 
 === !
 
-[.stretch]
 image::servlet.svg[]
-
-////
-package "javax.servlet" {
- interface Servlet {
-  {abstract} + init(ServletConfig config)
-  {abstract} + service(req: ServletRequest, res: ServletResponse)
-  {abstract} + destroy()
- }
- interface ServletConfig {
-  {abstract} + getServletName(): String
-  {abstract} + getServletContext(): ServletContext
-  {abstract} + getInitParameter(name: String): String
-  {abstract} + getInitParameterNames(): Enumeration<String>
- }
- abstract class GenericServlet {
-
- }
- GenericServlet -up-|> Servlet
- GenericServlet -up-|> ServletConfig
-}
-package "javax.servlet.http" {
- abstract class HttpServlet {
-  # doDelete(req: HttpServletRequest, res: HttpServletResponse)
-  # doGet(req: HttpServletRequest, res: HttpServletResponse)
-  # doHead(req: HttpServletRequest, res: HttpServletResponse)
-  # doOptions(req: HttpServletRequest, res: HttpServletResponse)
-  # doPost(req: HttpServletRequest, res: HttpServletResponse)
-  # doPut(req: HttpServletRequest, res: HttpServletResponse)
-  # doTrace(req: HttpServletRequest, res: HttpServletResponse)
-  # service(req: HttpServletRequest, res: HttpServletResponse)
-  }
-}
-HttpServlet -up-|> GenericServlet
-hide empty attributes
-hide empty methods
-////
 
 === Implémentation de servlet
 
@@ -215,45 +147,6 @@ Représentation Java d'une réponse HTTP :
 
 image::servlet-response.svg[]
 
-////
-package javax.servlet {
- abstract class ServletOutputStream {
-  {abstract} + print(value: primitive)
-  {abstract} + print(value: String)
-  {abstract} + println(value: primitive)
-  {abstract} + println(value: String)
- }
- interface ServletResponse {
-  {abstract} + getOutputStream(): ServletOutputStream
-  {abstract} + getWriter(): PrintWriter
-  {abstract} + setContentType(type: String)
- }
- package http {
-  interface HttpServletResponse {
-   {abstract} + addCookie(cookie: Cookie)
-   {abstract} + addHeader(name: String, value: String)
-   {abstract} + sendError(sc: int)
-   {abstract} + sendRedirect(location: String)
-   {abstract} + setHeader(name: String, value: String)
-  }
- }
-}
-package java.io {
- class PrintWriter {
-  {abstract} + print(value: primitive)
-  {abstract} + print(value: String)
-  {abstract} + println(value: primitive)
-  {abstract} + println(value: String)
- }
-}
-HttpServletResponse -up-|> ServletResponse
-ServletResponse .left.> ServletOutputStream
-HttpServletResponse .right.> PrintWriter
-hide empty attributes
-hide empty methods
-////
-
-
 === Envoi de code d'erreur
 
 [source,java]
@@ -278,22 +171,6 @@ public class SendErrorServlet {
 
 [.stretch]
 image::redirect.svg[]
-
-////
-actor "Client" as client
-participant "HTTP Server" as server
-activate client
-client -> server: 1. GET request
-activate server
-client <- server: 2. 302 response code
-deactivate server
-client -> server: 3. Request for redirected page
-activate server
-client <- server: 4. 200 response code
-deactivate server
-deactivate client
-hide footbox
-////
 
 === Types de redirection
 
@@ -383,53 +260,7 @@ User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)
 
 === !
 
-[.stretch]
 image::servlet-request.svg[]
-
-////
-package javax.servlet {
- interface ServletRequest {
-  {abstract} + getAttribute(name: String): Object
-  {abstract} + setAttribute(name: String, value: Object)
-  {abstract} + removeAttribute(name: String)
-  ....
-  {abstract} + getParameter(name: String): String
-  {abstract} + getParameterValues(name: String): String[]
-  {abstract} + getParameterMap(): Map<String, String[]>
-  {abstract} + getParameterNames(): Enumeration<String>
-  ....
-  {abstract} + getRequestDispatcher(path : String): RequestDispatcher
-
- }
- interface RequestDispatcher {
-  {abstract} + include(req: ServletRequest, resp: ServletResponse)
-  {abstract} + forward(req: ServletRequest, resp: ServletResponse)
- }
- package http {
-  interface HttpServletRequest {
-   {abstract} + getHeader(name: String)
-   {abstract} + getHeaderNames(): Enumeration<String>
-   {abstract} + getHeaderNames(name: String): Enumeration<String>
-   {abstract} + getIntHeader(name: String): int
-   {abstract} + getDateHeader(name: String): long
-   ....
-   {abstract} + getSession(): HttpSession
-   {abstract} + getSession(create: boolean): HttpSession
-   ....
-   {abstract} + getContextPath(): String
-   {abstract} + getQueryString(): String
-   {abstract} + getPathInfo(): String
-   {abstract} + getPathTranslated(): String
-   {abstract} + getRequestURI(): String
-   {abstract} + getServletPath(): String
-  }
- }
-}
-HttpServletRequest -up-|> ServletRequest
-ServletRequest .right.> RequestDispatcher
-hide empty attributes
-hide empty methods
-////
 
 === URL
 
@@ -461,54 +292,8 @@ public class ForwardServlet extends HttpServlet {
 
 === !
 
+[.stretch]
 image::rd-forward-include.svg[]
-
-////
-actor "<u>c:Client</u>" as client
-participant "<u>s1:Servlet</u>" as servlet1
-participant "<u>d:RequestDispatcher</u>" as dispatch
-participant "<u>s2:Servlet</u>" as servlet2
-participant "<u>w:PrintWriter</u>" as writer
-activate client
- client -> servlet1: HTTP request
- activate servlet1
-alt simple request
- servlet1 -> writer: write()
- client <-- servlet1: response from s1
-else else
- servlet1 -> servlet1: getRequestDispatcher("/servlet2")
- activate servlet1
- deactivate servlet1
- alt forward
-  servlet1 -> dispatch: forward(req, res)
-  activate dispatch
-  dispatch -> servlet2
-  activate servlet2
-  servlet2 -> writer: write()
-  dispatch <-- servlet2
-  deactivate servlet2
-  servlet1 <-- dispatch
-  deactivate dispatch
-  client <-- servlet1: response from s2
- else include
-  servlet1 -> writer: write()
-  servlet1 -> dispatch: include(req, resp)
-  activate dispatch
-  dispatch -> servlet2
-  activate servlet2
-  servlet2 -> writer: write()
-  dispatch <-- servlet2
-  deactivate servlet2
-  servlet1 <-- dispatch
-  deactivate dispatch
-  servlet1 -> writer: write()
-  client <-- servlet1: response from s1 + s2 + s1
- end
-end
-deactivate servlet1
-deactivate client
-hide footbox
-////
 
 == Java Server Pages
 
@@ -658,29 +443,6 @@ Principe de séparation des responsabilités
 [.stretch]
 image::mvc.svg[]
 
-////
-actor "<u>c:Client</u>" as client
-control "<u>c:Servlet</u>" as controller <<Controller>>
-participant "<u>v:JSP</u>" as jsp <<View>>
-participant "<u>m:Bean</u>" as model <<Model>>
-activate client
-client -> controller: request
-activate controller
-create model
-controller -> model: new()
-controller -> jsp: forward
-activate jsp
-jsp -> model: get data
-activate model
-jsp <-- model
-deactivate model
-controller <-- jsp
-deactivate jsp
-client <-- controller: response
-deactivate controller
-hide footbox
-////
-
 == Attributs de requête
 
 * Comment transférer des données au travers du pipeline de traitement d'une requête ?
@@ -734,31 +496,6 @@ hide footbox
 
 image::session.svg[]
 
-////
-interface HttpServletRequest {
- {abstract} + getHttpSession(): HttpSession
- {abstract} + getHttpSession(create: boolean): HttpSession
-}
-interface HttpSession {
- {abstract} + getAttribute(name: String): Object
- {abstract} + getAttributeNames()
- {abstract} + setAttribute(name: String, value: Object)
- {abstract} + removeAttribute(name: String)
- ....
- {abstract} + getServletContext(): ServletContext
- {abstract} + invalidate()
- {abstract} + isNew(): boolean
- ....
- {abstract} + getId(): String
- {abstract} + getCreationTime(): long
- {abstract} + getLastAccessedTime(): long
- {abstract} + getMaxInactiveInterval(): int
- {abstract} + setMaxInactiveInterval(interval: int)
-}
-HttpServletRequest .right.> HttpSession
-hide empty attributes
-////
-
 === !
 
 [source,java]
@@ -774,10 +511,7 @@ Person person = (Person) object;
 == Filtres de servlet
 
 [quote, Oracle Tech Network, http://www.oracle.com/technetwork/java/filters-137243.html]
-____
-First, they provide the ability to encapsulate recurring tasks in reusable units. [...]
-Second, filters can be used to transform the response from a servlet or a JSP page.
-____
+First, they provide the ability to encapsulate recurring tasks in reusable units. [...] Second, filters can be used to transform the response from a servlet or a JSP page.
 
 === Fonctionnalités communes
 
