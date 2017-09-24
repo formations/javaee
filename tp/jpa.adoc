@@ -30,9 +30,56 @@ En anglais : ::
 
 == Mise en place
 
-=== Création du projet
+=== Instructions pour Eclipse
 
 Suivre la <<servlet.adoc#_création_de_projet,procédure précédente>> pour la création d'un projet Web Application.
+
+Dans la section "Configuration", cliquer sur btn:[Modify].
+Dans la popup qui s'ouvre, sélectionner JPA - la version dépend de la version de TomEE.
+
+image::eclipse-project-facets.png[Dynamic Web Project - Project Facets,698,398,role="text-center"]
+
+Puis cliquer sur OK et continuer la création comme précédemment.
+
+Une nouvelle étape de configuration apparaît dans le flux de l'assistant, _JPA Facet_.
+Cette étape permet de référencer le JAR qui contient l'API JPA à la compilation.
+Remplir les champs ainsi :
+
+[cols="2*", options="header"]
+|===
+
+| Champ | Valeur
+
+| Platform | Generic 2.x
+| JPA implementation type | User library
+| Persistent class management | Annotated classes must be listed in persistence.xml
+
+|===
+
+Dans la section _JPA implementation_, cliquer sur le bouton de bibliothèque.
+Dans la fenêtre _pop-up_ :
+
+. Cliquer sur btn:[New...] pour créer une nouvelle bibliothèque utilisateur.
+L'appeler JPA.
+. Cliquer sur le btn:[Add External JARs...] pour référencer le JAR qui contient l'API JPA.
+Il s'agit du JAR `javaee-api-x.y.z.jar` situé dans le répertoire `lib` de TomEE.
++
+image::eclipse-jpa-library.png[Configuration de la bibliothèque JPA,684,413,,role="text-center"]
++
+. Finalement, cliquer sur btn:[Apply and Close].
+
+Dans la fenêtre, sélectionner la librairie nouvellement créée.
+
+image::eclipse-jpa-facet.png[Dynamic Web Project - JPA Facet,527,693,role="text-center"]
+
+Cliquer sur btn:[Next] et terminer la configuration.
+Le projet doit être similaire à la structure suivante :
+
+image::eclipse-created-project.png[Projet créé,285,288,role="text-center"]
+
+=== Instructions pour IntelliJ IDEA
+
+Suivre la <<servlet.adoc#_création_de_projet_2,procédure précédente>> pour la création d'un projet Web Application.
 
 Cocher également la case Java EE persistence.
 Indiquer les valeurs suivantes :
@@ -40,7 +87,7 @@ Indiquer les valeurs suivantes :
 * persistence.xml : 2.1
 * OpenJPA (il s'agit du moteur de persistence fourni par TomEE)
 
-image::new-project-jpa.png[New Project - JPA,756,667,role="text-center"]
+image::idea-new-project-jpa.png[New Project - JPA,756,667,role="text-center"]
 
 Dans la section _Library_, cliquer sur btn:[Create]. Dans la popup, sélectionner le JAR `openjpa-2.4.x.jar`.
 
@@ -48,7 +95,7 @@ NOTE: Ce JAR est situé dans le répertoire `lib` du répertoire d'installation 
 
 Le projet créé doit avoir une structure similaire à la suivante :
 
-image::created-jpa-project.png[Project has been created,314,232,role="text-center"]
+image::idea-created-jpa-project.png[Project has been created,314,232,role="text-center"]
 
 === Base de données
 
@@ -63,8 +110,9 @@ NOTE: L'avantage d'HSQLDB est d'être indépendant de toute installation externe
 Dans le cadre d'un projet réel, il est nécessaire de créer une source de données explicite.
 
 Dans le cadre du TP et pour des raisons de simplification, nous allons utiliser la source de données HSQLDB par défaut de TomEE.
-Son emplacement est dépendant de plusieurs critères.
-Par exemple, sous OSX, elle est située dans _$HOME/Library/Caches/IntelliJIdea2017.2/tomcat/Unnamed_jpa/data/hsqldb/hsqldb_
+Son emplacement dépend de plusieurs critères, notamment de l'IDE, du système d'exploitation, etc.
+
+Par exemple, avec IntelliJ IDE sous OSX, elle est située dans _$HOME/Library/Caches/IntelliJIdea2017.2/tomcat/Unnamed_jpa/data/hsqldb/hsqldb_
 
 ==== Création automatisée du schéma
 

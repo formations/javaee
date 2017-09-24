@@ -47,32 +47,106 @@ TIP: La license Ultimate est gratuite pour les https://www.jetbrains.com/student
 +
 * Soit [line-through]#NetBeans IDE#
 
-****
-Dans la suite du document, les consignes seront données pour IntelliJ IDEA
-****
+=== Instructions pour Eclipse IDE
 
-=== Configuration du serveur d'applications
+==== Choix de l'espace de travail
 
-. Dans IntelliJ IDEA, cliquer sur le menu menu:Run[Edit Configuration] :
-+
-image::run-debug-config.png[Run/Debug Configurations,737,505,role="text-center"]
-+
-. Tout en haut à gauche, cliquer sur btn:[+], puis menu:Defaults[x items more... > TomEE Server > Local].
-.. Dans la popup, cliquer sur btn:[Configure] au niveau du champ Application server.
-.. Indiquer l'emplacement du répertoire d'installation de TomEE :
-+
-image::tomee-webprofile-config.png[TomEE Server,508,166,role="text-center"]
-+
-.. Cliquer sur btn:[Finish].
-. Dans le champ Name, indiquer TomEE.
-+
-image::run-debug-tomee.png[Run/Debug Configurations,890,708,role="text-center"]
-+
-. Cliquer sur btn:[OK].
+Au lancement de l'IDE, il est nécessaire de choisir un emplacement pour l'espace de travail.
+Cet emplacement sert de racine pour la création de futurs projets.
 
-=== Création de projet
+image::eclipse-workspace.png[Choix de l'emplacement de l'espace de travail,594,246,role="text-center"]
+
+==== Création de projet
 
 TIP: Cette étape sera répétée de nombreuses fois par la suite. Il est conseillé de se familiariser avec.
+
+. Cliquer sur le menu menu:File[New > Dynamic Web Project...].
+. Dans la fenêtre _pop-up_ qui s'ouvre
+* Remplir les champs de la manière suivante :
++
+[cols="1,1,3", options="header"]
+|===
+
+| Champ | Valeur | Commentaire
+
+| Project name | servlet |
+| Target runtime | <None> | Le _runtime_ sera configuré plus tard
+| Dynamic Web Module version | 3.0 |
+| Configuration | Default configuration | La configuration par défaut comprend Java 8 et l'API Servlet 3.0
+
+|===
++
+image::eclipse-dynamic-web-project.png[Dynamic Web Project,593,563,role="text-center"]
++
+* Cliquer sur btn:[Next].
+. L'écran suivant permet de configurer la structure du projet.
+Conserver les valeurs par défaut et cliquer sur btn:[Next].
++
+image::eclipse-java.png[Dynamic Web Project - project structure,593,363,role="text-center"]
++
+. Dans l'écran suivant :
+* Conserver les valeurs par défaut pour les champs texte.
+* Sélectionner "Generate web.xml deployment descriptor".
+* Cliquer btn:[Next].
++
+image::eclipse-web-module.png[Dynamic Web Project - web module,593,291,role="text-center"]
++
+. Cliquer btn:[Finish].
+. L'espace de travail doit afficher une structure similaire :
++
+image::eclipse-created-project.png[Projet créé,291,408,role="text-center"]
+
+==== Configuration du serveur d’applications
+
+. Localiser l'onglet "Servers" - par défaut situé en bas.
+Le sélectionner.
+. Cliquer sur le lien "No servers are available. Click this link to create a new server...".
+Dans le fenêtre qui s'ouvre :
+* Sélectionner l'adapteur Tomcat v 7.0
+* Dans le champ _Server name_, indiquer "TomEE v1.7 Server at localhost"
++
+image::eclipse-new-server.png[New Server,527,420,role="text-center"]
++
+* Cliquer btn:[Next].
+. Dans l'écran de configuration de Tomcat :
+* Remplir les champs ainsi :
++
+[cols="2,2,3", options="header"]
+|===
+
+| Champ | Valeur | Commentaire
+
+| Name | TomEE v1.7 Server at localhost |
+| Tomcat installation directory |  | Pointer vers le répertoire d'installation de TomEE à l'aide du bouton btn:[Browse]
+| JRE | Java SE 8 | Sélectionner un JDK 8 dans la liste déroulante
+
+|===
++
+image::eclipse-tomcat-server.png[New Server - Tomcat Server,527,377,role="text-center"]
++
+* Puis cliquer btn:[Next].
+. Ajouter le projet précédemment créé en sélectionnant celui-ci puis en cliquant sur le btn:[Add].
++
+image::eclipse-add-project.png[New Server - Add and remove,527,307,role="text-center"]
++
+Puis cliquer sur btn:[Finish].
+
+==== Lancement de l'application
+
+Initialement, le serveur affiche le status _[Stopped, Republish]_.
+
+Publication::
+La publication consiste à synchroniser les fichiers de configuration et les classes compilées.
+Cliquer droit et sélectionner btn:[Publish].
+
+Lancement::
+Pour lancer le serveur d'applications, cliquer droit et sélectionner btn:[Debug].
+
+L'application est maintenant disponible sous http://localhost:8080/servlet/.
+
+=== Instructions pour IntelliJ IDEA
+
+==== Création de projet
 
 . Cliquer sur le menu menu:File[New > Project...].
 . Dans la fenêtre _pop-up_ qui s'ouvre:
@@ -91,30 +165,49 @@ TIP: Cette étape sera répétée de nombreuses fois par la suite. Il est consei
 
 |===
 +
-image::new-project-type.png[New Project - step 1,756,534,role="text-center"]
+image::idea-new-project-type.png[New Project - step 1,756,534,role="text-center"]
 +
 * Cliquer sur btn:[Next].
 . Dans la fenêtre suivante :
 * Taper _servlet_ dans le champ Project name
 * Sélectionner un emplacement adéquat pour le champ Project location
 +
-image::new-project-location.png[New Project - step 2,756,169,role="text-center"]
+image::idea-new-project-location.png[New Project - step 2,756,169,role="text-center"]
 +
 * Cliquer sur btn:[Finish].
 . L'espace de travail doit afficher une structure similaire suivante :
 +
-image::created-project.png[Project has been created,679,296,role="text-center"]
+image::idea-created-project.png[Project has been created,679,296,role="text-center"]
 
-=== Déploiement de l'application
+==== Configuration du serveur d'applications
 
-L'étape de création du projet a normalement permis de déployer virtuellement l'application au serveur d'applications.
+. Dans IntelliJ IDEA, cliquer sur le menu menu:Run[Edit Configuration] :
++
+image::idea-run-debug-config.png[Run/Debug Configurations,737,505,role="text-center"]
++
+. Tout en haut à gauche, cliquer sur btn:[+], puis menu:Defaults[x items more... > TomEE Server > Local].
+.. Dans la popup, cliquer sur btn:[Configure] au niveau du champ Application server.
+.. Indiquer l'emplacement du répertoire d'installation de TomEE :
++
+image::idea-tomee-webprofile-config.png[TomEE Server,508,166,role="text-center"]
++
+.. Cliquer sur btn:[Finish].
+. Dans le champ Name, indiquer TomEE.
++
+image::idea-run-debug-tomee.png[Run/Debug Configurations,890,708,role="text-center"]
++
+. Cliquer sur btn:[OK].
+
+==== Déploiement de l'application
+
+L'étape de création du projet a normalement permis de déployer virtuellement l'application dans le serveur d'applications.
 De fait, le lancement du serveur déploiera l'application.
 
-=== Lancement de l'application
+==== Lancement de l'application
 
 . Pour construire le projet, cliquer sur menu:Build[Build Project].
 . Puis, pour lancer l'application, cliquer sur menu:Run[Debug TomEE 7.0.68].
-. Un navigateur se lance et affiche la page <http://localhost:8080/>:
+. Un navigateur se lance et affiche la page http://localhost:8080/ :
 +
 image::browser-default-page.png[Browser displaying default page,488,274,role="text-center"]
 +
