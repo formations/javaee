@@ -43,7 +43,7 @@ Avant de commencer la réalisation de ces travaux pratiques, il est indispensabl
 * Soit https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/oxygenr[Eclipse IDE for Java EE Developers^]
 * Soit https://www.jetbrains.com/idea/download/[IntelliJ IDEA Ultimate^]
 +
-TIP: La license Ultimate est gratuite pour les https://www.jetbrains.com/student/[étudiants^])
+TIP: La license Ultimate est gratuite pour les https://www.jetbrains.com/student/[étudiants^]
 +
 * Soit [line-through]#NetBeans IDE#
 
@@ -326,7 +326,7 @@ NOTE: L'objectif est de créer un servlet qui _forward_ vers une autre ressource
 
 NOTE: L'objectif est de créer un servlet qui inclut une autre ressource.
 
-. Créer deux servlets, `InitialServlet2` et `ForwardServlet`.
+. Créer deux servlets, `InitialServlet2` et `IncludeServlet`.
 . Les configurer pour être respectivement accessibles via `/initial2` et `/include`.
 . Dans le premier servlet, implémenter :
 * une écriture dans le flux de réponse

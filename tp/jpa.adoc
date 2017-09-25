@@ -244,14 +244,14 @@ public class MyServlet extends HttpServlet {
 }
 ----
 
-=== Implémentation du _back-end_
+=== Implémentation du service
 
 Dans la classe de service, implémenter les deux méthodes suivantes :
 
 . `public void save(Book book)`
 . `public List<Book> readAll()`
 
-=== Implémentation du _front-end_
+=== Implémentation du contrôleur
 
 Le processus général à implémenter est le suivant :
 

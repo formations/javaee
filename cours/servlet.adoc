@@ -151,7 +151,7 @@ image::servlet-response.svg[]
 
 [source,java]
 ----
-public class SendErrorServlet {
+public class SendErrorServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest req,
@@ -188,7 +188,7 @@ image::redirect.svg[]
 
 [source,java]
 ----
-public class RedirectServlet {
+public class RedirectServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest req,
@@ -208,7 +208,7 @@ public class RedirectServlet {
 
 [source,java]
 ----
-public class PrintServlet {
+public class PrintServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest req,
@@ -281,7 +281,7 @@ public class ForwardServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req,
-                         HttpServletResponse res)
+                         HttpServletResponse resp)
                    throws ServletException, IOException {
 
         req.getRequestDispatcher("/resource")
