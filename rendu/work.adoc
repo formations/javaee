@@ -1,0 +1,158 @@
+= Travail à rendre
+Nicolas Frankel
+:doctype: article
+:encoding: utf-8
+:lang: fr
+:toc:
+:toc-title: Table des matières
+:toc-placement!:
+:sectanchors:
+:numbered:
+:experimental:
+:icons: font
+:toc:
+:imagesdir: ./images
+
+include::../license.adoc[]
+
+toc::[]
+
+== Généralités
+
+L’application aide à la gestion d’une (petite) bibliothèque.
+
+TIP: Afin de conserver une charge de travail adaptée, toutes les fonctionnalités attendues d’une telle application ne sont pas à implémenter.
+
+== Composant partagé : barre de menu
+
+=== Composants
+
+[options="header"]
+|===
+
+| Composant | Type | Commentaire
+
+| Titre de l’application | Libellé | Aligné à gauche
+| Livres | Lien |
+| Connexion | Bouton | Aligné à droite
+| Déconnexion |Bouton | Aligné à droite
+
+|===
+
+=== Comportement
+
+* Lorsque le lien Livres est cliqué, l’link:#_ecran_de_liste_des_livres[écran Liste des Livres] est affiché
+* Lorsque le bouton btn:[Connexion] est cliqué, l’link:#_ecran_de_connexion[écran Connexion] est affiché
+* Sur l’link:#_ecran_de_connexion[écran Connexion], le bouton btn:[Connexion] est masqué
+
+== Ecran d'accueil
+
+[.text-center]
+image::welcome.svg[]
+
+=== Composants
+
+[options="header"]
+|===
+
+| Composant | Type
+| Barre de menu | _cf._ link:#_composant_partagé_barre_de_menu[Composant partagé : barre de menu]
+| Description | Libellé multi-lignes
+| Photo | Image
+
+|===
+
+== Ecran de connexion
+
+[.text-center]
+image::connection.svg[]
+
+=== Composants
+
+[options="header"]
+|===
+
+| Composant | Type
+| Identifiant | Champ de texte
+| Mot de passe | Champ de mot de passe
+| Se connecter | Bouton
+
+|===
+
+=== Comportement
+
+Lorsque le bouton btn:[Se connecter] est cliqué :
+
+* Si le couple identifiant / mot de passe est correct :
+** L’application passe dans l’état _Authentifié_
+** L’link:#_ecran_d_accueil[écran d’Accueil] est affiché
+* Sinon, un message d’erreur "Identifiant / mot de passe erroné" est affiché
+
+== Ecran de liste des livres
+
+[.text-center]
+image::books.svg[]
+
+=== Composants
+
+[options="header"]
+|===
+
+| Composant | Type
+| Barre de menu | _cf._ link:#_composant_partagé_barre_de_menu[Composant partagé : barre de menu]
+| Liste des livres | Tableau
+| Nouveau | Bouton
+
+|===
+
+[options="header"]
+|===
+
+| Colonne | Type
+| Titre | Libellé / Champ de texte
+| Auteur | Libellé / Champ de texte
+| Editeur | Libellé / Champ de texte
+| Année | Libellé / Champ de texte
+| Supprimer | Bouton
+
+|===
+
+=== Comportement
+
+* Lors de l’affichage initial, l’intégralité des livres en base est affichée
+* Lorsque l’application est dans l’état _Authentifié_ :
+** Le tableau affiche des champs de texte ; sinon, le tableau affiche des libellés
+** La colonne de boutons btn:[Supprimer] est affichée ; sinon, elle est masquée
+** Le bouton btn:[Nouveau] est affiché ; sinon, il est masqué
+* Lorsque le bouton btn:[Supprimer] est cliqué :
+** Le livre correspondant est supprimé du tableau et de la base
+** La liste des livres est actualisée
+* Lorsque le bouton btn:[Nouveau] est cliqué, l’link:#_ecran_de_nouveau_livre[écran Nouveau Livre] est affiché
+
+== Ecran de nouveau livre
+
+[.text-center]
+image::book.svg[]
+
+=== Composants
+
+[options="header"]
+|===
+
+| Composant | Type
+| Barre de menu | _cf._ link:#_composant_partagé_barre_de_menu[Composant partagé : barre de menu]
+|Titre | Champ de texte
+| Auteur | Champ de texte
+| Editeur | Champ de texte
+| Année | Champ de texte
+| Créer | Bouton
+
+|===
+
+=== Comportement
+
+* Le champ Année accepte un numérique sur 4 caractères
+* Lorsque le bouton btn:[Créer] est cliqué :
+** Le livre est créé en base
+** L’link:#_ecran_de_liste_des_livres[écran Liste des Livres] est affiché
+** Une notification est affichée à l’utilisateur pour l’informer
