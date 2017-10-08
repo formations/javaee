@@ -598,6 +598,138 @@ public void doFilter(ServletRequest req,
 }
 ----
 
+== Généralités sur la sécurité
+
+* Authentification
+* Autorisations
+* Intégrité des données
+* Confidentialité des données
+* Non-répudiation
+* Audit
+
+=== Restrictions d'accès
+
+* Le modèle de sécurité en Java EE 7 est plutôt réduit
+** Authentification et autorisations d'accès à une URL
+* La majeure partie de la configuration est propriétaire côté serveur d'applications
+
+=== Callback
+
+* Si une URL est protégée
+* Et le client n'est pas authentifié
+* Alors, déclenchement de la procédure d'authentification
+
+=== Configuration du serveur d'applications
+
+* Utilisateurs
+* Groupes
+* Rôles
+
+=== Déclaration des rôles
+
+`<security-role>` dans le descripteur de déploiement
+
+=== !
+
+[source,xml]
+----
+<security-role>
+    <role-name>ADMIN</role-name>
+</security-role>
+----
+
+=== Configuration standard
+
+`<security-constraint>` dans le descripteur de déploiement
+
+[options="header"]
+|===
+
+| Type | Balise
+| Ressource web | `<web-resource-collection>`
+| Contrainte d'autorisation | `<auth-constraint>`
+
+|===
+
+=== !
+
+[source,xml]
+----
+<security-constraint>
+  <web-resource-collection>
+    <web-resource-name>Partie sécurisée</web-resource-name>
+    <url-pattern>/secure/*</url-pattern>
+  </web-resource-collection>
+  <auth-constraint>
+    <role-name>ADMIN</role-name>
+  </auth-constraint>
+</security-constraint>
+----
+
+=== Modes d'authentification
+
+[options="header"]
+|===
+
+| Mode | Configuration
+
+| Popup native | `BASIC`
+| Formulaire | `FORM`
+| Certificat SSL | `CLIENT-CERT`
+
+|===
+
+=== Configuration native
+
+[source,xml]
+----
+<login-config>
+    <auth-method>BASIC</auth-method>
+</login-config>
+----
+
+=== Configuration du formulaire
+
+[source,xml]
+----
+<login-config>
+  <auth-method>FORM</auth-method>
+  <form-login-config>
+    <form-login-page>/login.jsp</form-login-page>
+    <form-error-page>/error.jsp</form-error-page>
+  </form-login-config>
+</login-config>
+----
+
+=== Contraintes sur le formulaire
+
+[options="header"]
+|===
+
+| Composant | Contrainte
+
+| Formulaire | `action="j_security_check"`
+| Champ de login | `name= "j_username"`
+| Champ de mot de passe | `name= "j_password"`
+
+|===
+
+=== !
+
+[source, html]
+----
+<form method=post action="j_security_check" >
+  <input type="text"  name= "j_username" >
+  <input type="password"  name= "j_password" >
+</form>
+----
+
+=== API
+
+* `HttpServletRequest.isUserInRole(String role)`
+* `HttpServletRequest.getUserPrincipal()`
+* `HttpServletRequest.getRemoteUser()`
+
 == Points d'entrée dans le cycle de vie
 
 |===

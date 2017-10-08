@@ -494,12 +494,20 @@ Les composants sont :
 
 |===
 
+== Sécurité
+
+Remplacer l'implémentation précédente par le mécanisme de sécurisation des URL vu en cours.
+
 == Manipulation d'abonnés au cycle de vie
 
-NOTE: L'objectif est d'implémenter un abonné qui écrit dans la sortie système lorsqu'un objet est stocké dans une session utilisateur.
+=== Abonnement au cycle de vie des objets de session
 
-. Ecrire le nom de l'attribut et sa valeur
-. Si l'objet est multi-valué (tableau ou liste), écrire chacun des éléments qui le compose
+NOTE: L'objectif est d'écrire dans la sortie système lorsqu'un objet est stocké dans une session utilisateur.
+
+. Créer un abonné du type pertinent
+. Enregistrer l'abonné
+. Quand un objet est stocké, l'abonné doit écrire le nom de l'attribut et l'objet dans la sortie système.
+Si l'objet est multi-valué (tableau ou liste), écrire chacun des éléments qui le compose.
 . Créer un composant de test qui permet de stocker 1 à n objets dans la session sous une clé générique
 . Tester le bon fonctionnement du composant avec les valeurs suivantes :
 +
@@ -513,3 +521,17 @@ NOTE: L'objectif est d'implémenter un abonné qui écrit dans la sortie systèm
 | `"list"`  | `Arrays.asList(new Object(), new Object(), new java.util.Date())`
 
 |===
+
+=== Abonnement au cycle de vie des sessions
+
+NOTE: L'objectif est d'offrir un service qui donne retourne le nombre de sessions utilisateur existantes à un instant _t_.
+
+. Créer un abonné du type pertinent
+. Enregistrer l'abonné
+. Choisir le bon contexte pour stocker le nombre de sessions
+. Lorsqu'une session est créée, incrémenter le compteur de sessions.
+Lorsqu'elle est détruite, décrémenter le compteur
+. Créer un composant pour afficher le compteur à l'utilisateur
+
+TIP: Une session est créée lorsque la méthode `HttpServletRequest.getSession()` est appelée.
+Cette méthode est appelée implicitement lors d'un `forward`/`include` de JSP.
