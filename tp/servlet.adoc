@@ -494,7 +494,7 @@ Les composants sont :
 
 |===
 
-== Sécurité
+== Gestion de la sécurité
 
 Remplacer l'implémentation précédente par le mécanisme de sécurisation des URL vu en cours.
 
@@ -504,7 +504,7 @@ Remplacer l'implémentation précédente par le mécanisme de sécurisation des 
 
 NOTE: L'objectif est d'écrire dans la sortie système lorsqu'un objet est stocké dans une session utilisateur.
 
-. Créer un abonné du type pertinent
+. Créer un abonné du type adéquat
 . Enregistrer l'abonné
 . Quand un objet est stocké, l'abonné doit écrire le nom de l'attribut et l'objet dans la sortie système.
 Si l'objet est multi-valué (tableau ou liste), écrire chacun des éléments qui le compose.
@@ -526,7 +526,7 @@ Si l'objet est multi-valué (tableau ou liste), écrire chacun des éléments qu
 
 NOTE: L'objectif est d'offrir un service qui donne retourne le nombre de sessions utilisateur existantes à un instant _t_.
 
-. Créer un abonné du type pertinent
+. Créer un abonné du type adéquat
 . Enregistrer l'abonné
 . Choisir le bon contexte pour stocker le nombre de sessions
 . Lorsqu'une session est créée, incrémenter le compteur de sessions.

@@ -541,6 +541,8 @@ image::tfessh-pic-1.gif[]
 
 Comme pour un servlet
 
+image::filter-servlet-mapping.jpg[]
+
 === Via le descripteur
 
 [source, xml]
@@ -624,6 +626,10 @@ public void doFilter(ServletRequest req,
 * Utilisateurs
 * Groupes
 * Rôles
+
+=== !
+
+image::user-group-role.svg[]
 
 === Déclaration des rôles
 
@@ -718,9 +724,10 @@ public void doFilter(ServletRequest req,
 
 [source, html]
 ----
-<form method=post action="j_security_check" >
-  <input type="text"  name= "j_username" >
-  <input type="password"  name= "j_password" >
+<form method=post action="j_security_check">
+  <input type="text" name= "j_username" />
+  <input type="password" name= "j_password" />
+  <input type="submit" value="Login" />
 </form>
 ----
 
@@ -729,27 +736,114 @@ public void doFilter(ServletRequest req,
 * `HttpServletRequest.isUserInRole(String role)`
 * `HttpServletRequest.getUserPrincipal()`
 * `HttpServletRequest.getRemoteUser()`
+* (`HttpSession.invalidate()`)
 
-== Points d'entrée dans le cycle de vie
+== Evènements Java EE
+
+* Java EE implémente la Programmation Orientée Evènements
+* Divers évènements liés au cycle de vie :
+** Démarrage/arrêt de l'application
+** Gestion des attributs dans les différents contextes
+** etc.
+* Possibilité de s'abonner à ces évènements
+
+=== Evènements d'application
+
+[options="header"]
+|===
+
+| Classe associée | Evènement
+
+.2+| `ServletContextListener` | Démarrage de l'application 
+| Arrêt de l'application
 
 |===
 
-h| Servlet a| * `ServletContextListener`
-              * `ServletContextAttributeListener`
+=== Evènements de contexte de servlet
 
-h| Requête a| * `ServletRequestListener`
-              * `ServletRequest	AttributeListener`
+[options="header"]
+|===
+
+| Classe associée | Evènement
+
+.3+| `ServletContextAttributeListener` | Ajout d'attribut
+| Suppression d'attribut
+| Remplacement d'attribut
 
 |===
 
-=== !
+=== Evènements de requête
+
+[options="header"]
+|===
+
+| Classe associée | Evènement
+
+.2+| `ServletRequestListener` | Initialisation de la requête
+| Destruction de la requête
 
 |===
 
-h| Session a| * `HttpSessionListener`
-              * `HttpSessionAttributeListener`
-              * `HttpSessionBindingListener`
-              * `HttpSessionActivationListener`
+=== Evènements de contexte de requête
+
+[options="header"]
+|===
+
+| Classe associée | Evènement
+
+.3+| `ServletRequestAttributeListener` | Ajout d'attribut
+| Suppression d'attribut
+| Remplacement d'attribut 
+
+|===
+
+=== Evènements de session
+
+[options="header"]
+|===
+
+| Classe associée | Evènement
+
+.2+| `HttpSessionListener` | Création de la session
+| Destruction de la session
+
+|===
+
+=== Evènements de contexte de session
+
+[options="header"]
+|===
+
+| Classe associée | Evènement
+
+.3+| `HttpSessionAttributeListener` | Ajout d'attribut
+| Suppression d'attribut
+| Remplacement d'attribut 
+
+|===
+
+
+=== Evènements de stockage dans la session
+
+[options="header"]
+|===
+
+| Classe associée | Evènement
+
+.2+| `HttpSessionBindingListener` | Objet stocké en session
+| Objet supprimé de la session
+
+|===
+
+=== Evènements d'activation de session
+
+[options="header"]
+|===
+
+| Classe associée | Evènement
+
+.2+| `HttpSessionActivationListener` | Activation de la session
+| Déactivation de la session
 
 |===
 
@@ -764,7 +858,7 @@ image::servlet-listener.svg[]
 <web...>
   <listener>
     <listener-class>
-      ch.frankel.MySessionListener
+      ch.frankel.ASessionListener
     </listener-class>
   </listener>
 </web>
@@ -775,7 +869,8 @@ image::servlet-listener.svg[]
 [source, java]
 ----
 @WebListener
-public class MySessionListener implements HttpSessionListener { ... }
+public class SessionListener implements HttpSessionListener {
+}
 ----
 
 === Exemple d'implémentation
