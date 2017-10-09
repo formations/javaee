@@ -535,3 +535,51 @@ Lorsqu'elle est détruite, décrémenter le compteur
 
 TIP: Une session est créée lorsque la méthode `HttpServletRequest.getSession()` est appelée.
 Cette méthode est appelée implicitement lors d'un `forward`/`include` de JSP.
+
+== Internationalisation de JSP
+
+=== Externalisation des libellés
+
+NOTE: L'objectif est de migrer l'intégralité des libellés d'une page JSP dans un fichier spécifique.
+
+Soit la JSP suivante :
+
+[source,html]
+.person.jsp
+----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Création de Personne</title>
+</head>
+<body>
+<h1>Création de Personne</h1>
+<form>
+    <label for="firstName">Prénom :</label>
+    <input type="text" id="firstName" name="firstName"/>
+    <label for="lastName">Nom :</label>
+    <input type="text" id="lastName" name="lastName">
+    <input type="submit" value="Enregistrer">
+</form>
+</body>
+</html>
+----
+
+A l'aide des techniques d'internationalisation vues en cours, externaliser l'intégralité des libellés de la JSP dans un fichier de _properties_.
+
+=== Internationalisation d'application
+
+NOTE: L'objectif est d'afficher la page JSP précédente en fonction de la locale du navigateur.
+
+. En plus du fichier racine précédent, créer au moins deux fichiers de properties pour des locales différentes (mais sans relation de parenté entre elles).
+. Créer un servlet qui va lire la locale du navigateur
++
+[TIP]
+====
+Il est possible de changer la locale de Chrome en allant dans link:chrome://settings/languages[chrome://settings/languages].
+Pour les autres navigateurs, se référer à leur documentation respective.
+====
++
+. Passer la locale à la JSP
+. Afficher la JSP avec les libellés qui correspondent à la locale
