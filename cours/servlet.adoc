@@ -890,6 +890,57 @@ public class DatabaseInitializationListener implements ServletContextListener {
 }
 ----
 
+== Gestion des erreurs
+
+* Gérer les exceptions qui ne sont pas traitées par le servlet
+* De manière transversale
+
+=== !
+
+image::500.png[Le serveur a rencontré une erreur qui l'a empêché de servir la requête,777,523]
+
+=== Pages d'erreur
+
+* A chaque type d'exception
+* Ou à chaque type d'erreur HTTP
+** Correspond une page d'erreur
+* Ou une page d'erreur _catch all_
+
+=== Configuration
+
+[source,xml]
+----
+<error-page>
+    <exception-type>java.lang.NullPointerException</exception-type>
+    <location>/WEB-INF/npe.jsp</location>
+</error-page>
+----
+
+=== !
+
+[source,xml]
+----
+<error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/404.jsp</location>
+</error-page>
+----
+
+=== !
+
+[source,xml]
+----
+<error-page>
+    <location>/WEB-INF/errors.jsp</location>
+</error-page>
+----
+
+=== Tips & tricks
+
+* Garder les pages d'erreur simples
+* Dans la JSP, il est possible d'accéder à l'exception via la variable `exception`
+** Nécessite la directive `<%@ page isErrorPage="true" %>`
+
 == Internationalisation
 
 * i18n fait partie de Java SE

@@ -536,6 +536,20 @@ Lorsqu'elle est détruite, décrémenter le compteur
 TIP: Une session est créée lorsque la méthode `HttpServletRequest.getSession()` est appelée.
 Cette méthode est appelée implicitement lors d'un `forward`/`include` de JSP.
 
+== Gestion des erreurs
+
+=== Page Not Found
+
+. Créer une page d'erreur dédiée de type _Page Not Found_
+. Configurer l'application pour que les erreurs 404 soient redirigées vers cette page
+. Tester
+
+=== Erreurs serveur
+
+. Créer une page d'erreur dédiée de type _Internal Server Error_
+. Configurer l'application pour que les exceptions non interceptées soient redirigées vers cette page
+. Tester (avec un servlet qui lance une exception)
+
 == Internationalisation de JSP
 
 === Externalisation des libellés
