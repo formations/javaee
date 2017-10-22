@@ -13,7 +13,7 @@ Nicolas Frankel
 :toc:
 :imagesdir: ./images
 
-include::../license.adoc[]
+include::../common/license.adoc[]
 
 toc::[]
 
