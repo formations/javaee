@@ -132,16 +132,16 @@ An entity class represents a table in a relational database, and each entity ins
 
 === Contraintes sur la classe Entité
 
-. Etre annotée avec `javax.persistence.Entity`
+. Etre annotée avec `@javax.persistence.Entity`
 . Respecter le contrat d'un JavaBean
 ** Constructeur `public` sans argument
-** Champs privés
 ** Accesseurs publics
+. Avoir un attribut/getter d'id
 
 === Champs persistés
 
 * Tous les champs sont persistés
-* Sauf ceux annotés avec `javax.persistence.Transient`
+* Sauf ceux annotés avec `@javax.persistence.Transient`
 
 === Types autorisés pour les champs persistés
 
@@ -156,6 +156,22 @@ An entity class represents a table in a relational database, and each entity ins
 
 Un champ spécifique annoté `@Id` référence la clé primaire de l'entité
 
+=== Génération de la clé
+
+* Annotation `@javax.persistence.GeneratedValue`
+* Attribut 
+
+=== Stratégies de génération
+
+Auto-incrémentation::
+`GenerationType.IDENTITY`
+Séquence::
+* `GenerationType.SEQUENCE`
+* `@SequenceGenerator`
+Table::
+* `GenerationType.TABLE`
+* `@TableGenerator`
+
 === Exemple d'entité JPA
 
 [source,java]
@@ -163,7 +179,8 @@ Un champ spécifique annoté `@Id` référence la clé primaire de l'entité
 @Entity
 public class Book {
 
-    @Id private String isbn;
+    @Id @GeneratedValue(strategy=IDENTITY)
+    private String isbn;
     private String title;
     private String description;
     private Date publicationDate;
@@ -274,7 +291,6 @@ Person person = em.find(Person.class, 1234L);
 CriteriaBuilder cb = em.getCriteriaBuilder();
 CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 Root<Person> person = cq.from(Person.class);
-cq.select(person);
 TypedQuery<Person> q = em.createQuery(cq);
 List<Person> allPersons = q.getResultList();
 ----
@@ -303,6 +319,16 @@ For each entity class in a particular package, a metamodel class is created with
 * Génération :
 ** Manuelle
 ** Via l'implémentation spécifique
+
+=== Exemple avec TomEE
+
+[source,bash]
+----
+javac -classpath $TOMEE_HOME/lib/openjpa-2.4.0.jar:\
+                 $TOMEE_HOME/lib/javaee-api-6.0-6.jar \
+      -Aopenjpa.metamodel=true \
+      -Aopenjpa.source=8 ch/frankel/javaee/Person.java
+----
 
 === Typesafe WHERE
 
