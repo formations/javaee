@@ -154,12 +154,11 @@ An entity class represents a table in a relational database, and each entity ins
 
 === Champ identité
 
-Un champ spécifique annoté `@Id` référence la clé primaire de l'entité
+Un attribut spécifique annoté `@Id` référence la clé primaire de l'entité
 
 === Génération de la clé
 
-* Annotation `@javax.persistence.GeneratedValue`
-* Attribut 
+Annotation `@javax.persistence.GeneratedValue` sur l'attribut d'`@Id`
 
 === Stratégies de génération
 
@@ -220,8 +219,7 @@ image::entity-lifecycle.svg[]
 ----
 <persistence>
   <persistence-unit name="PeopleManagement">
-    <non-jta-data-source>jdbc/people</jta-data-source>
-    <!--
+    <!-- Non-default data source
     <jta-data-source>jdbc/people</jta-data-source>
     -->
     <class>ch.frankel.Person</class>
@@ -230,6 +228,114 @@ image::entity-lifecycle.svg[]
   </persistence-unit>
 </persistence>
 ----
+
+=== Utilisation du gestionnaire d'entités
+
+[source,java]
+----
+@Stateless
+public class Service {
+
+    @PersistenceContext
+    private EntityManager em;
+}
+----
+
+=== Contrainte sur l'injection
+
+Uniquement pour des objets dont le cycle de vie est gérée par le serveur d'applications
+
+== Transaction
+
+[quote, Wikipedia, https://en.wikipedia.org/wiki/Database_transaction]
+A transaction symbolizes a unit of work performed within a DBMS against a database, and treated in a coherent and reliable way independent of other transactions.
+
+=== Contrainte
+
+Transaction nécessaire pour les opérations d'écriture
+
+=== Gestion des transactions par l'API
+
+[source,java]
+----
+transaction.begin();
+em.persist(new Person());
+transaction.commit();
+----
+
+=== Utilisation de l'objet de transaction
+
+[source,java]
+----
+@Stateless
+public class Service {
+
+    @Resource
+    private UserTransaction userTransaction;
+}
+----
+
+=== Utilisation implicite
+
+[source,java]
+----
+@Stateless
+public class Service {
+
+    @Transactional
+    public void doInTransaction() {
+        // Everything here will run in a transaction
+    }
+}
+----
+
+=== Règles
+
+* _Commit_ à la fin de la méthode pour une exécution normale
+* En cas d'exception `runtime`, _rollback_
+* `@Transactional(rollbackFor=MyException.class)`
+
+=== Note sur Java Transaction API
+
+* Permet les transactions distribuées
+** 2-Phases Commit
+* Nécessite un pilote JDBC XA
+
+=== Enterprise Java Bean
+
+[quote, Oracle doc, https://javaee.github.io/tutorial/overview008.html#BNACL]
+An EJB component is a body of code that has fields and methods to implement modules of business logic.
+
+=== !
+
+[source,java]
+----
+@Stateless
+public class Service {
+
+    // Business logic
+}
+----
+
+=== !
+
+[source,java]
+----
+@Stateless
+public class AccountService {
+
+    @Transactional
+    public void transfer(Account source, Account target, Money amount) {
+        // Business logic
+    }
+}
+----
+
+=== Note on Java Transaction API
+
+* Permet les transactions distribuées
+** 2-Phases Commit
+* Nécessite un pilote JDBC XA
 
 == JPQL
 
@@ -262,16 +368,16 @@ List persons =
       .getResultList();
 ----
 
+== API Criteria
+
+[quote, Oracle Docs, https://docs.oracle.com/javaee/7/tutorial/persistence-criteria.htm#GJITV]
+The Criteria API is used to define queries for entities and their persistent state by creating query-defining objects. Criteria queries are written using Java programming language APIs, are typesafe, and are portable
+
 === Problèmes du JPQL
 
 * Typage faible
 * Paramètres optionnels :
 ** Concaténation de chaînes 
-
-== API Criteria
-
-[quote, Oracle Docs, https://docs.oracle.com/javaee/7/tutorial/persistence-criteria.htm#GJITV]
-The Criteria API is used to define queries for entities and their persistent state by creating query-defining objects. Criteria queries are written using Java programming language APIs, are typesafe, and are portable
 
 === !
 
