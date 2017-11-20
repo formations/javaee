@@ -1,5 +1,7 @@
 = Java Persistence API
 
+// bundle exec asciidoctor-revealjs -a revealjs_history=true -a revealjs_theme=white -a revealjs_slideNumber=true -a linkcss -a customcss=../style.css -a revealjsdir=https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0 cours/*.adoc
+
 :imagesdir: ./images/jpa
 
 == JPA
@@ -13,6 +15,14 @@ JPA provides developers with an ORM facility for managing relational data. JPA c
 * The Criteria API
 * ORM metadata
 ____
+
+=== JPA
+
+* JPA est une spécification d'ORM
+* Implémentations disponibles :
+** Hibernate
+** EclipseLink
+** OpenJPA
 
 === Avertissement
 
@@ -158,7 +168,7 @@ Un attribut spécifique annoté `@Id` référence la clé primaire de l'entité
 
 === Génération de la clé
 
-Annotation `@javax.persistence.GeneratedValue` sur l'attribut d'`@Id`
+Annotation `@javax.persistence.GeneratedValue` sur l'attribut annoté par `@Id`
 
 === Stratégies de génération
 
@@ -179,9 +189,55 @@ Table::
 public class Book {
 
     @Id @GeneratedValue(strategy=IDENTITY)
+    private long id;
     private String isbn;
     private String title;
     private String description;
+    private Date publicationDate;
+    private Author author;
+    
+    // Getters and setters
+}
+----
+
+=== Emplacement des annotations
+
+* De manière consistante
+** Soit sur les attributs
+** Soit sur les getters
+
+=== Mapping table-entité
+
+* Par défaut :
+Nom de l'entité:: nom de la table
+Nom de l'attribut:: nom de la colonne
+
+=== Personnalisation du nom
+
+* `@javax.persistence.Table(name = "PERSON")`
+* `@javax.persistence.Column(name = "FIRST_NAME")`
+
+=== Autres personnalisations
+
+Les annotations précédentes permettent également :
+
+* Spécification d'un schéma
+* Définition des contraintes (DDL)
+
+=== Exemple d'entité personnalisée
+
+[source,java]
+----
+@Entity
+@Table(name="T_BOOK")
+public class Book {
+
+    @Id @GeneratedValue(strategy=IDENTITY)
+    private long id;
+    private String isbn;
+    private String title;
+    private String description;
+    @Column(name="PUBLICATION_DATE")
     private Date publicationDate;
     private Author author;
     
@@ -339,7 +395,7 @@ public class AccountService {
 
 == JPQL
 
-[quote, Oracle Docs, https://docs.oracle.com/javaee/7/tutorial/persistence-querylanguage.htm#BNBTG]
+[quote, Oracle Docs, http://bit.ly/2jbjNft]
 The query language allows you to write portable queries that work regardless of the underlying data store. It uses the abstract persistence schemas of entities, including their relationships, for its data model and defines operators and expressions based on this data model. 
 
 === Rappel JDBC
@@ -421,10 +477,11 @@ For each entity class in a particular package, a metamodel class is created with
 
 === Génération du méta-modèle
 
-* Ne fait pas partie de la spécification
-* Génération :
+* Soit :
 ** Manuelle
 ** Via l'implémentation spécifique
+* Devrait être synchronisée avec chaque changement de code
+** Via un outil de _build_ (Maven)
 
 === Exemple avec TomEE
 

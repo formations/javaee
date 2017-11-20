@@ -114,6 +114,25 @@ Son emplacement dépend de plusieurs critères, notamment de l'IDE, du système 
 
 Par exemple, avec IntelliJ IDE sous OSX, elle est située dans _$HOME/Library/Caches/IntelliJIdea2017.2/tomcat/Unnamed_jpa/data/hsqldb/hsqldb_
 
+[TIP]
+.Trouver l'emplacement de la base de données sur le système de fichiers
+====
+. Créer un nouveau servlet
+. Injecter la source de données par défaut
++
+[source,java]
+@Resource
+private DataSource dataSource
++
+. Implémenter la méthode `doGet`
+. Mettre un point d'arrêt dans la méthode (ou dans la signature)
+. Appeler le servlet
+. Evaluer l'expression `dataSource`
+. L'URL est visible dans la feuille d'une des branches de la hiérarchie des objets (`dataSource.delegate.pool.poolProperties.h.delegate.url`)
++
+image::datasource-default-url.png[Data source object hierarchy value,968,248,align="center"]
+====
+
 ==== Création automatisée du schéma
 
 De même, dans le cadre d'un projet réel, il serait pertinent de créer le schéma de base de données _a priori_ via les scripts DDL appropriés.
