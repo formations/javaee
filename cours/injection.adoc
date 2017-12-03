@@ -1,0 +1,425 @@
+= Injection
+
+// bundle exec asciidoctor-revealjs -a revealjs_history=true -a revealjs_theme=white -a revealjs_slideNumber=true -a linkcss -a customcss=../style.css -a revealjsdir=https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0 cours/*.adoc
+
+:imagesdir: ./images/injection
+
+== Test unitaire
+
+[quote,Wikipedia,https://en.wikipedia.org/wiki/Unit_testing]
+Unit testing is a software testing method by which individual units of source code [...] are tested to determine whether they are fit for use.
+
+=== Protocole de test
+
+image::test-protocol.png[Protocole de test,483,266]
+
+=== Unit ?
+
+[quote,Wikipedia,https://en.wikipedia.org/wiki/Unit_testing]
+One can view a unit as the smallest testable part of an application. In OOP, a unit is often an entire interface, such as a class, but could be an individual method.
+
+=== Problème
+
+[source,java]
+----
+public class Car {
+
+    public CarStatus start() {
+        Engine engine = new CarEngine();
+        if (engine.start()) {
+            return CarStatus.STARTED;
+        } else {
+            return CarStatus.NOT_STARTED;
+        }
+    }
+}
+----
+
+=== !
+
+[.stretch]
+image::model-problem.svg[]
+
+=== new
+
+`new` introduit un couplage fort entre l'appelant et l'appelé
+
+=== La solution ?
+
+[.stretch]
+image::model-solution.svg[]
+
+=== !
+
+[source,java]
+----
+public class Car {
+
+    private final Engine engine;
+    
+    public Car(Engine engine) {
+         this.engine = engine;
+    }
+    
+    public CarStatus start() {
+        if (engine.start()) {
+            return CarStatus.STARTED;
+        } else {
+            return CarStatus.NOT_STARTED;
+        }
+    }
+}
+----
+
+=== Création de Car
+
+[source,java]
+----
+Car car = new Car(
+     new CarEngine()
+);
+----
+
+=== Contexte de test
+
+[source,java]
+----
+public class DummyEngine() {
+    @Override
+    public boolean start() { return true; }
+}
+
+public class Test {
+    public void shouldStart() {
+        Car car = new Car(
+            new DummyEngine()
+        );
+        CarStatus status = car.start();
+        // Check status
+    }
+----
+
+== Inversion of Control - IoC
+
+[quote,Wikipedia,https://en.wikipedia.org/wiki/Inversion_of_control]
+IoC is a design principle in which custom-written portions of a computer program receive the flow of control from a generic framework.
+
+=== IoC en Java/Java EE
+
+* Design pattern
+** Factory
+** Service Locator
+* Dependency Injection
+
+=== Dependency Injection - DI
+
+[quote,Wikipedia,https://en.wikipedia.org/wiki/Dependency_injection]
+Dependency injection is a technique whereby one object supplies the dependencies of another object.
+
+===  DI en Java/Java EE
+
+[options="header,autowidth"]
+|===
+
+| JSR | Nom | Fonctionnalités
+
+| 250
+| Common Annotations for the Java Platform
+| `@Resource`
+
+| 330
+| Dependency Injection for Java
+| `@Inject`
+
+| 299
+| Java Contexts and Dependency Injection
+| Décorateurs, intercepteurs, etc.
+
+|===
+
+== @Resource
+
+* Injection de ressources du serveur d'apps
+** Permet de préciser l'emplacement de la ressource
+* Injection sur le champ
+
+=== Exemple
+
+[source,code]
+----
+@Stateless
+public class MyComponent {
+
+    @Resource(lookup = "java:comp/env/jdbc/myDataSource")
+    private DataSource dataSource;
+}
+----
+
+=== @Inject
+
+* Injection de n'importe quel _bean_ (ou EJB)
+** Injection *par type*
+* Injection via le champ _ou_ le constructeur
+
+=== Bean
+
+[quote,CDI User guide,http://docs.jboss.org/cdi/learn/userguide/CDI-user-guide.html#_what_is_a_bean]
+Almost every concrete Java class that has a constructor with no parameters (or a constructor designated with the annotation @Inject) is a bean.
+
+=== Classes "standards"
+
+* Activation via fichier `META-INF/beans.xml`
+* Crée un _bean_ pour chaque classe sur le _classpath_
+
+=== _Scope_ par défaut
+
+* Lié au cycle de vie du _bean_ injecté
+* `@Dependent`
+
+=== _Scopes_ explicites
+
+[options="header,autowidth"]
+|===
+
+| Scope | Annotation
+
+| Requête
+| `@RequestScoped`
+
+| Session
+| `@SessionScoped`
+
+| Application
+| `@ApplicationScoped`
+
+|===
+
+=== Injection via le champ
+
+[source,code]
+----
+public class Dependency {}
+
+@WebServlet
+public class MyServlet extends HttpServlet {
+
+    @Inject
+    private Dependency dependency;
+}
+----
+
+NOTE: Aucune possibilité de test unitaire
+
+=== Injection via le constructeur
+
+[source,code]
+----
+public class Dependency {}
+
+@WebServlet
+public class MyServlet extends HttpServlet {
+
+    @Inject
+    public MyServlet(Dependency dependency) {
+        // Do stuff
+    }
+}
+----
+
+=== Test de l'injection via le constructeur 
+
+[source,code]
+----
+public class TestDependency extends Dependency {}
+
+public class Test {
+
+    public void testServlet() {
+        Dependency dep = new Dependency();
+        MyServlet servlet = new MyServlet(dep);
+        // Test the servlet
+    }
+}
+----
+
+== Choix du _bean_ injecté
+
+// https://seekingalpha.com/article/4062113-kinder-morgan-vs-enbridge-can-one
+
+image::there-can-be-only-one.jpg[]
+
+=== Exemple d'injection ambigüe
+
+[source,code]
+----
+public interface Dependency {}
+public class DependencyA implements Dependency {}
+public class DependencyB implements Dependency {}
+
+@WebServlet
+public class MyServlet extends HttpServlet {
+
+    @Inject
+    public MyServlet(Dependency dependency) { }
+}
+----
+
+=== !
+
+----
+javax.enterprise.inject.AmbiguousResolutionException:
+There is more than one Bean with type Dependency
+----
+
+=== Désambiguïsation
+
+* Injection par nom
+* Annotation `@Named`
+
+=== !
+
+[source,code]
+----
+public interface Dependency {}
+
+@Named("A")
+public class DependencyA implements Dependency {}
+public class DependencyB implements Dependency {}
+
+@WebServlet
+public class MyServlet extends HttpServlet {
+
+    @Inject
+    public MyServlet(@Named("A") Dependency dep) { }
+}
+----
+
+=== Faiblesse
+
+* Manque de typage
+* Basé sur une chaîne de caractères
+** Possibilité de créer une annotation
+** Mais toujours une injection par nom
+
+=== @Qualifier
+
+* Permet de restreindre les candidats à l'injection
+* Via la création d'annotations
+
+=== !
+
+[source,code]
+----
+@Qualifier @Retention(RUNTIME) @Target({TYPE, PARAMETER})
+public @interface ThisOne {}
+
+public interface Dependency {}
+
+@ThisOne
+public class DependencyA implements Dependency {}
+public class DependencyB implements Dependency {}
+
+@WebServlet
+public class MyServlet extends HttpServlet {
+
+    @Inject
+    public MyServlet(@ThisOne Dependency dep) { }
+}
+----
+
+=== Méthodes @Produces
+
+* Exposer une classe externe (JDK ou librairie) en _bean_
+* Exposer un _bean_ dont l'implémentation dépend du contexte
+* Exposer plusieurs _beans_ avec la même implémentation
+
+=== Exemple
+
+[source,code]
+----
+public interface TaxStrategy {}
+public class SwissTaxStrategy {}
+public class FrenchTaxStrategy {}
+
+public class TaxStrategyFactory {
+
+    @Produces
+    public TaxStrategy getTaxStrategy() {
+        if ("ch".equals(Locale.getDefault().getCountry()) {
+            return new SwissTaxStrategy();
+        }
+        return new FrenchTaxStrategy();
+    }
+}
+
+public class TaxComputationServlet {
+    @Inject private TaxStrategy taxStrategy;
+}
+----
+
+== Concepts avancés
+
+=== @Alternative
+
+* Gérer de la logique métier déterminée à l'exécution
+* Spécifier des _beans_ pour un scénario de déploiement
+* Créer des _beans_ utilisés uniquement pour les tests
+
+=== Principe
+
+* Un _bean_ principal (pas annoté)
+* D'autres _beans_ annotés avec `@Alternative`
+
+=== Configuration du beans.xml
+
+[options="header"]
+|===
+
+| Bean injecté | Exemple
+
+2+| _Bean_ principal
+
+| _Bean_ configuré
+a|
+[source,code]
+----
+<beans...>
+ <alternatives>
+  <class>
+   c.f.OtherBean
+  </class>
+ </alternatives>
+</bean>
+----
+
+|===
+
+=== Initialisation / nettoyage
+
+Possibilité d'exécuter du code :
+
+* Juste après l'instanciation
+* Juste avant la recollection par le ramasse-miettes
+
+=== Annotations
+
+Sur une méthode :
+
+* `@PostConstruct`
+* `@PreDestroy`
+
+=== Contraintes
+
+* Une méthode par annotation
+* Pas d'arguments
+* Pas d'exception _checked_
+* Type de retour `void`
+* Méthode d'instance
+* Peut être `final`
+* Aucune contrainte sur la visibilité
+
+=== Décorateurs
+
+=== Intercepteurs
+
+=== Programmation évènementielle avec CDI
