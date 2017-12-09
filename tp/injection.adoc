@@ -1,0 +1,159 @@
+= Travaux pratiques - Context and Dependency Injection
+Nicolas Frankel
+:doctype: article
+:encoding: utf-8
+:lang: fr
+:toc:
+:toc-title: Table des matières
+:toc-placement!:
+:sectanchors:
+:numbered:
+:experimental:
+:icons: font
+:imagesdir: ./images/injection
+:toc:
+
+include::../license.adoc[]
+
+toc::[]
+
+== Références
+
+En français : ::
+* <<../cours/injection.adoc#,Slides>>
+* http://rmannibucau.developpez.com/tutoriels/cdi/introduction-cdi/[Tutoriel sur une introduction à CDI]
++
+En anglais : ::
+* https://docs.oracle.com/javaee/7/tutorial/cdi-basic.htm[Introduction to Contexts and Dependency Injection for Java EE^]
+* http://cdi-spec.org/[CDI specifications^]
+* https://openwebbeans.apache.org/documentation.html[OpenWebBeans (CDI implementation used by TomEE)^]
+
+== Premiers pas avec l'injection
+
+=== Injection dans un servlet
+
+. Créer un servlet
+. Dans celui-ci, injecter :
++
+* Une source de données `DataSource`
+* Un gestionnaire d'entités `EntityManager`
+* Un objet d'un type quelconque _e.g._ `Person`
++
+. S'assurer que les objets ne sont pas `null` à l'exécution.
+
+=== Injection dans un EJB
+
+. Créer un EJB
+. Dans celui-ci, injecter :
++
+* Une source de données `DataSource`
+* Un gestionnaire d'entités `EntityManager`
+* Un objet d'un type quelconque _e.g._ `Person`
++
+. S'assurer que les objets ne sont pas `null` à l'exécution.
+
+=== Injection dans un objet quelconque
+
+. Créer un type quelconque _e.g._ `Person`
+. Dans celui-ci, injecter :
++
+* Une source de données `DataSource`
+* Un gestionnaire d'entités `EntityManager`
+* Un objet d'un autre type quelconque _e.g._ `Adress`
++
+. S'assurer que les objets ne sont pas `null` à l'exécution.
+
+[TIP]
+.Rappel
+====
+Seuls les objets dont le cycle de vie est géré par le serveur d'applications sont la cible potentielle de l'injection.
+====
+
+== Travail sur les _scopes_
+
+=== Singleton applicatif
+
+* Dans l'exemple précédent, combien d'instances de `Person` sont créées ?
+* Comment faire pour qu'une unique instance soit créée (et qu'elle soit chacune injectée dans le servlet et l'EJB) ?
+
+=== _Scope_ de requête
+
+. Créer un bean qui a pour _scope_ la requête
+. Vérifier qu'un nouvel objet est créé à chaque requête
+. Vérifier que le même objet est injecté tout au long de la chaîne de requête
+
+=== Gestion de la session
+
+Soit le code suivant :
+
+[source,java]
+----
+@WebServlet("/preferences")
+public class PreferencesServlet extends HttpServlet {
+
+    private static final String PREFS_KEY = "ch.frankel.preferences";
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Enumeration<String> parameterNames = req.getParameterNames();
+        HttpSession session = req.getSession();
+        Object o = session.getAttribute(PREFS_KEY);
+        Map<String, String> preferences;
+        if (o == null) {
+            preferences = new HashMap<>();
+        } else {
+            preferences = (Map) o;
+        }
+        while (parameterNames.hasMoreElements()) {
+            String parameterName = parameterNames.nextElement();
+            if (parameterName.startsWith("preferences")) {
+                String value = req.getParameter(parameterName);
+                preferences.put(parameterName, value);
+            }
+        }
+        session.setAttribute(PREFS_KEY, preferences);
+        resp.sendRedirect("/preferences");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Object o = session.getAttribute(PREFS_KEY);
+        if (o == null) {
+            o = new HashMap<String, String>();
+        }
+        req.setAttribute(PREFS_KEY, o);
+        req.getRequestDispatcher("/WEB-INF/preferences.jsp").forward(req, resp);
+    }
+}
+----
+
+. Analyser le code précédent
+. Ré-écrire celui-ci en utilisant un _bean_ injecté lié à la session
+
+== Aller plus loin
+
+TIP: Il est plus aisé de vérifier l'injection dans un servlet
+
+=== _Producer_ simple
+
+* Dans un objet quelconque, injecter le temps système
++
+NOTE: Utiliser la méthode `System.currentTimeMillis()`
++
+* Vérifier
+
+=== _Producer_ complexe
+
+* Dans un object quelconque, injecter un objet de type `Random`
+** Si la propriété système `secure` vaut `true`, le type concret de l'objet doit être `SecureRandom`
++
+NOTE: Utiliser la méthode `System.getProperty()`
++
+** Sinon, le type concret doit être simplement `Random`
+* Vérifier
+
+=== Désambiguïsation
+
+* Dans un object quelconque, injecter d'une part le jour de la semaine (p.e. `"LUNDI"`), d'autre part, le mois (p.e. `"JANVIER"`).
+* Vérifier
