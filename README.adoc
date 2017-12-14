@@ -20,4 +20,4 @@ include::license.adoc[]
 . Injection de dépendances
 * <<cours/injection.adoc#,Cours>>
 * <<tp/injection.adoc#,Travaux Pratiques>>
-. <<rendu/work.adoc#,Rendu>>
+. <<work.adoc#,Rendu>>

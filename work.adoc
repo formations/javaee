@@ -1,0 +1,29 @@
+= Travail à rendre
+Nicolas Frankel
+:doctype: article
+:encoding: utf-8
+:lang: fr
+:toc:
+:toc-title: Table des matières
+:toc-placement!:
+:sectanchors:
+:numbered:
+:experimental:
+:icons: font
+:toc:
+
+include::common/license.adoc[]
+
+toc::[]
+
+== Livrables
+
+Les livrables attendus sont :
+
+* Le WAR de l'application
+* Les sources Java associées
+* La documentation d'installation et de configuration
+
+L'infrastructure cible est https://tomee.apache.org/download-ng.html[TomEE WebProfile^] v7.0.x.
+
+include::assignments/library/work.adoc[]

@@ -5,7 +5,7 @@ cache:
     - .bundle
 
 before_install:
-  - mkdir -p output/cours output/tp
+  - mkdir -p output/cours output/tp output/images
   - bundle config --local github.https true
   - bundle --path=.bundle/gems --binstubs=.bundle/.bin
   - cp common/course.css output/cours/style.css
@@ -14,15 +14,15 @@ before_install:
 script:
   - bundle exec asciidoctor-revealjs -D output/cours -a revealjs_history=true -a revealjs_theme=white -a revealjs_slideNumber=true -a linkcss -a customcss=style.css -a revealjsdir=https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.5.0 cours/*.adoc
   - bundle exec asciidoctor -D output README.adoc -a linkcss -a stylesheet=asciidoctor.css
+  - bundle exec asciidoctor -D output work.adoc -a linkcss -a stylesheet=asciidoctor.css
   - bundle exec asciidoctor -D output/tp tp/*.adoc -a linkcss -a stylesheet=../asciidoctor.css
-  - bundle exec asciidoctor -D output/rendu rendu/*.adoc -a linkcss -a stylesheet=../asciidoctor.css
 
 after_success:      
   - cd output ;
   - mv README.html index.html
   - cp -R ../cours/images cours
   - cp -R ../tp/images tp
-  - cp -R ../rendu/images rendu
+  - cp -R ../assignments/library/images .
   - git init
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"

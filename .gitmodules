@@ -2,3 +2,6 @@
 	path = common
 	url = https://github.com/formations/common.git
 	branch = master
+[submodule "assignments"]
+	path = assignments
+	url = https://github.com/formations/assignments.git

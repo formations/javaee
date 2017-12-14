@@ -2,4 +2,3 @@ output
 .bundle
 *.html
 asciidoctor.css
-common
