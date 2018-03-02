@@ -342,7 +342,7 @@ NOTE: L'objectif est de créer un servlet qui inclut une autre ressource.
 
 NOTE: L'objectif est d'afficher une page HTML.
 
-. Créer une JSP `hello.html` dans le répertoire racine de l'application web.
+. Créer un fichier HTML `hello.html` dans le répertoire racine de l'application web.
 . Accéder à <http://localhost:8080/hello.html>.
 . Vérifier que le navigateur affiche le contenu.
 
@@ -350,7 +350,7 @@ NOTE: L'objectif est d'afficher une page HTML.
 
 NOTE: L'objectif est d'afficher le contenu statique d'une JSP.
 
-. Créer une JSP `hello.jsp` avec un contenu statique dans le répertoire racine de l'application web.
+. Créer une page JSP `hello.jsp` avec un contenu statique dans le répertoire racine de l'application web.
 . Accéder à <http://localhost:8080/hello.jsp>.
 . Vérifier que le navigateur affiche le contenu statique.
 
