@@ -202,7 +202,6 @@ public class RedirectServlet extends HttpServlet {
 
 * Permet d'écrire du texte dans le flux de réponse
 * Nécessite de spécifier le type MIME
-* Nécessite de fermer le flux après utilisation
 
 === Print Writer
 
@@ -218,7 +217,6 @@ public class PrintServlet extends HttpServlet {
         out.println("<html><body>");
         out.println("Hello world!");
         out.println("</body></html>");
-        out.close();
     }
 }
 ----
@@ -227,7 +225,6 @@ public class PrintServlet extends HttpServlet {
 
 * Permet d'écrire des octets dans le flux de réponse
 * Nécessite de spécifier le type MIME
-* Nécessite de fermer le flux après utilisation
 * Génération dynamique :
 ** d'images
 ** de tableaux Excel
