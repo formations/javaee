@@ -26,4 +26,4 @@ Les livrables attendus sont :
 
 L'infrastructure cible est https://tomee.apache.org/download-ng.html[TomEE WebProfile^] v7.0.x.
 
-include::assignments/library/work.adoc[]
+include::assignments/eshop/work.adoc[]

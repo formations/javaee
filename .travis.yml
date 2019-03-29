@@ -22,7 +22,7 @@ after_success:
   - mv README.html index.html
   - cp -R ../cours/images cours
   - cp -R ../tp/images tp
-  - cp -R ../assignments/library/images .
+  - cp -R ../assignments/eshop/images .
   - git init
   - git config user.name "${GH_USER_NAME}"
   - git config user.email "{GH_USER_EMAIL}"
