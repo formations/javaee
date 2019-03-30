@@ -243,7 +243,17 @@ Contrairement aux servlets, les EJB sont des composants qui proposent un tel con
 
 Il est donc nécessaire d'adopter la conception suivante :
 
-image::servlet-ejb-em.svg[Diagramme de classe Servlet-EJB-EntityManager,848,112,role="text-center"]
+[.text-center]
+[plantuml, servlet-ejb-em, svg, width=848, height=112]
+....
+class BookServlet<<Servlet>>
+class BookService<<EJB>>
+interface EntityManager
+BookServlet -right-> BookService
+BookService -right-> EntityManager
+hide empty attributes
+hide empty methods
+....
 
 Cela se traduit dans le code ainsi :
 
@@ -274,7 +284,42 @@ Dans la classe de service, implémenter les deux méthodes suivantes :
 
 Le processus général à implémenter est le suivant :
 
-image::jsp-servlet-ejb.svg[Flux JSP-Servlet-EJB,596,537,role="text-center"]
+[plantuml, jsp-servlet-ejb, svg, width=596, height=537, role="text-center"]
+....
+actor User as user
+participant "<u>f:form.jsp</u>" as form
+control "<u>s:BookServlet</u>" as servlet
+participant "<u>d:display.jsp</u>" as display
+participant "<u>e:BookService</u>" as service
+activate user
+== Ecriture ==
+user -> form
+activate form
+form ->> servlet: doPost()
+deactivate form
+activate servlet
+servlet -> service: save()
+activate service
+servlet <-- service
+deactivate service
+user <-- servlet: return HTTP code
+deactivate servlet
+== Lecture ==
+user -> servlet: doGet()
+activate servlet
+servlet -> service: readAll()
+activate service
+servlet <-- service: List<Book>
+deactivate service
+servlet -> servlet: request.setAttribute(books)
+activate servlet
+deactivate servlet
+servlet -> display: forward()
+user <- servlet: return HTML
+deactivate servlet
+deactivate user
+hide footbox
+....
 
 [NOTE]
 .Alternatives

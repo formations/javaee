@@ -478,7 +478,47 @@ NOTE: L'objectif est d'implémenter un filtre qui permet de vérifier si l'utili
 
 Le diagramme suivant indique le flux à implémenter:
 
-image::authenticate-filter.svg[]
+[plantuml, authenticate-filter, svg, role="center"]
+....
+actor "<u>c:Client</u>" as client
+boundary "<u>f:AuthenticationFilter</u>" as filter
+participant "<u>m:MainPage</u>" as main
+participant "<u>a:AuthenticationPage</u>" as notauth
+control "<u>a:AuthenticationServlet</u>" as auth
+participant "<u>s:HttpSession</u>" as session
+activate client
+client -> filter
+activate filter
+filter -> session: getAttribute("auth")
+filter -> filter: check attribute
+activate filter
+deactivate filter
+alt attribute exists and is valid
+ filter -> main
+ activate main
+ filter <-- main: return main page
+ deactivate main
+else
+ filter -> notauth
+ activate notauth
+ filter <-- notauth: return authentication page
+ deactivate notauth
+end
+client <-- filter
+deactivate filter
+...
+client -> notauth
+activate notauth
+notauth -> auth: authenticate
+activate auth
+auth -> session: setAttribute("auth")
+notauth <-- auth
+deactivate auth
+client <-- notauth
+deactivate notauth
+deactivate client
+hide footbox
+....
 
 Les composants sont :
 
