@@ -2,6 +2,9 @@ language: ruby
 
 rvm: jruby
 
+env:
+  - JAVA_OPTS="$(echo --add-opens java.base/sun.nio.ch=org.jruby.dist)" 
+
 cache:
   paths:
     - .bundle
