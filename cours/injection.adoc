@@ -418,8 +418,193 @@ Sur une méthode :
 * Peut être `final`
 * Aucune contrainte sur la visibilité
 
-=== Décorateurs
+== Intercepteurs
 
-=== Intercepteurs
+[quote,Oracle documentation,http://bit.ly/javaee-interceptor]
+An interceptor is a class used to interpose in method invocations or lifecycle events that occur in an associated target class.
+The interceptor performs tasks, such as logging or auditing, that are separate from the business logic of the application and are repeated often within an application.
 
-=== Programmation évènementielle avec CDI
+=== Cas d'utilisation d'intercepteur
+
+* Tracer l'exécution d'une méthode
+* Tracer le temps d'exécution d'une méthode
+* etc.
+
+=== !
+
+[.stretch]
+image::interceptor.svg[]
+
+=== Création de l'annotation
+
+[source,java]
+----
+@InterceptorBinding
+@Target({ TYPE, METHOD })
+@Retention(RUNTIME)
+public @interface Logged { }
+----
+
+=== Création de l'implémentation
+
+[source,java]
+.ch.frankel.LoggingInterceptor
+----
+@Interceptor
+@Logged
+public class LoggingInterceptor {
+
+  @AroundInvoke
+  public Object log(InvocationContext ctx) throws Exception {
+    long start = System.currentTimeMillis();
+    Object value = ctx.proceed();
+    System.out.println(
+        "[" + ctx.getMethod().getName() + "]: " +
+        (System.currentTimeMillis() - start) + " ms");
+    return value;
+  }
+}
+----
+
+=== Activation
+
+[source,xml]
+.META-INF/beans.xml
+----
+<beans>
+  <interceptors>
+    <class>
+      ch.frankel.LoggingInterceptor
+    </class>
+  </interceptors>
+</beans>
+----
+
+=== Utilisation
+
+[source,java]
+----
+@Logged
+@Stateless
+public class FooService {
+    public void bar() {
+    
+    }
+}
+----
+
+== Décorateurs
+
+[quote,Oracle documentation,http://bit.ly/javaee-decorator]
+Decorators are outwardly similar to interceptors.
+However, they actually perform tasks complementary to those performed by interceptors.
+ [...]
+Decorators, on the other hand, do perform business logic by intercepting business methods of beans.
+
+=== Exemple de décorateur
+
+Appliquer un taux de TVA
+
+=== Principes
+
+* Le décorateur doit implémenter la même interface que le _bean_ décoré
+* Si plusieurs décorateurs s'appliquent, ils sont invoqués dans l'ordre du `beans.xml`
+
+=== !
+
+[source,java]
+----
+interface HasPrice {
+    double getPrice();
+}
+----
+
+=== !
+
+[source,java]
+----
+public class Product implements HasPrice {
+
+  private final String name;
+  private final double price;
+
+  public Product(String name, double price) {
+    this.name = name;
+    this.price = price; 
+  }
+
+  @Override public double getPrice() {
+    return price;
+  }
+}
+----
+
+=== !
+
+[source,java]
+----
+@Decorator
+public class ProductWithVat implements HasPrice {
+
+  private final Product product;
+
+  @Inject
+  public ProductWithVat(@Delegate Product product) {
+    this.product = product;
+  }
+
+  @Override public double getPrice() {
+    return product.getPrice() * 1.077;
+  }  
+}
+----
+
+== Programmation évènementielle avec CDI
+
+CDI implémente le _pattern_ Observer
+
+=== Principes
+
+* Injection du générateur d'évènements via CDI
+** Basé sur le type `Event<T>`
+* Aucune restriction sur le type de l'_Observer_
+** Méthode configurée via `@Observe`
+* Aucune restriction sur le type d'évènement
+
+=== Exemple de code
+
+[source,java]
+----
+public class Subject {
+
+  private Event<String> event;
+  
+  @Inject
+  public Subject(Event<String> event) {
+    this.event = event;
+  }
+
+  public sendTimestampEvent(String message) {
+    event.fire("[" + System.currentTimeMillis() + "]: "
+      + message);
+  }
+}
+----
+
+=== !
+
+[source,java]
+----
+public class Observer {
+
+  public receiveEvent(@Observe String message) {
+    System.out.println("Received " + message);
+  }
+}
+----
+
+=== Tips & tricks
+
+* Il est possible, mais déconseillé, de créer des messages à partir de types simples
+* Il est possible, mais déconseillé, de créer des annotations pour discriminer les évènements auxquels on veut s'abonner
+* Il est conseillé de plutôt créer des types dédiés
