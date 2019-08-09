@@ -27,6 +27,7 @@ En anglais : ::
 * https://docs.oracle.com/javaee/7/tutorial/cdi-basic.htm[Introduction to Contexts and Dependency Injection for Java EE^]
 * http://cdi-spec.org/[CDI specifications^]
 * https://openwebbeans.apache.org/documentation.html[OpenWebBeans (CDI implementation used by TomEE)^]
+* https://www.pavel.cool/javaee/cdi-events/[CDI Events overview^]
 
 == Premiers pas avec l'injection
 
@@ -131,7 +132,7 @@ public class PreferencesServlet extends HttpServlet {
 . Analyser le code précédent
 . Ré-écrire celui-ci en utilisant un _bean_ injecté lié à la session
 
-== Aller plus loin
+== _Producers_
 
 TIP: Il est plus aisé de vérifier l'injection dans un servlet
 
@@ -157,3 +158,19 @@ NOTE: Utiliser la méthode `System.getProperty()`
 
 * Dans un object quelconque, injecter d'une part le jour de la semaine (p.e. `"LUNDI"`), d'autre part, le mois (p.e. `"JANVIER"`).
 * Vérifier
+
+== Intercepteurs et décorateurs
+
+* Créer un intercepteur qui écrit dans la sortie standard les paramètres d'entrée et la valeur de retour des méthodes interceptées.
+* Vérifier son bon fonctionnement
+
+== Programmation évènementielle
+
+Soit l'architecture exposée précédemment (<<servlet.adoc#_filtre_de_post_processing,§ 5.1>>).
+
+Remplacer le mécanisme des filtres par une configuration générale du format.
+
+* Créer un servlet qui permet de configurer le format désiré
+* Lorsque l'URL du servlet est appelée, ce dernier envoie un évènement de type `FormatChanged`
+* Un composant singleton souscrit à cet évènement et conserve l'information
+* Ce composant est injecté dans le servlet qui affiche la page
