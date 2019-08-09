@@ -20,4 +20,7 @@ include::license.adoc[]
 . Injection de dépendances
 * <<cours/injection.adoc#,Cours>>
 * <<tp/injection.adoc#,Travaux Pratiques>>
+. Java Management eXtensions
+* <<cours/management.adoc#,Cours>>
+* <<tp/management.adoc#,Travaux Pratiques>>
 . <<work.adoc#,Rendu>>

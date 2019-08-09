@@ -1,0 +1,181 @@
+= Java Management eXtensions
+
+:imagesdir: ./images/management
+
+== JMX
+
+[quote,Oracle Documentation,https://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html]
+____
+The JMX technology provides the tools for building distributed, Web-based, modular and dynamic solutions *for managing and monitoring* devices, applications, and service-driven networks.
+____
+
+=== Demo with jConsole
+
+image::jconsole.png[]
+
+// Créer une webapp avec un servlet
+// Ajouter un mapping pour ce servlet
+// Exécuter une requête sur ce mapping
+// Supprimer le mapping
+// Ré-exécuter la même requête
+
+=== Architecture
+
+Instrumentation::
+* Instrumente une ressource à l'aide du langage
+* Crée un MBean et l'enregistre par l'agent
+Agent JMX::
+Basé sur un *MBean server* 
+Gestion distante::
+* Détermine comment accéder au *MBean server* 
+* Dépendant de l'implémentation
+
+== MBean
+
+=== Types de MBean
+
+[options="header,autowidth"]
+|===
+
+| Type | Description
+
+| Standard
+| JavaBean implémentant une interface définie au moment du dévelopement
+
+| Dynamic
+| Implémente l'interface DynamicMBean
+
+|===
+
+=== Types de MBean
+
+[options="header,autowidth"]
+|===
+
+| Type | Description
+
+| Open
+| Dynamic MBean qui respecte certaines conventions
+
+| Model
+| MBean dynamiques générique entièrement configurable
+
+|===
+
+=== Dévelopement d'un MBean standard
+
+* Interface dont le nom finit par `MBean`
+* Seules les propriétés et les attributs définis seront exposés
+* Classe d'implémentation nommée comme l'interface sans le suffixe `MBean`
+
+=== Conception
+
+[.stretch]
+image::foombean.svg[]
+
+=== Exemple : interface MBean
+
+[source,java]
+----
+public interface FooMBean {
+
+    String getName();
+    String getValue();
+    void setValue(String value);
+    void printNameAndValue();
+}
+----
+
+=== Classe d'implémentation
+
+[source,java]
+----
+public class Foo implements FooMBean {
+
+  private final String name;
+  private String value;
+
+  @Inject
+  public Foo(NamingService service) {
+    this.name = service.generateUniqueNameFor(this);
+  }
+
+  @Override
+  public String getName() { return name; }
+
+  @Override
+  public String getValue() { return value; }
+
+  @Override
+  public void setValue(String value) { this.value = value; }
+
+  @Override
+  public void printNameAndValue() {
+    System.out.println(name + ":" + value);
+  }
+}
+----
+
+== Enregistrement d'un MBean
+
+[.stretch]
+image::register-mbean.svg[]
+
+=== ObjectName
+
+* Identifie le MBean de manière unique
+* Composé :
+** D'un nom de domaine
+** Un ensemble de paires nom-valeur
+* p.e. `ch.frankel.jmx:type=MyBean,foo=bar`
+
+=== Exemple d'enregistrement
+
+[source,java]
+----
+var foo = new Foo(new NamingService());
+var mBeanServer =
+  ManagementFactory.getPlatformMBeanServer();
+try {
+  var name = ObjectName.getInstance(
+                     "ch.frankel.hesge:type=MBean,name=foo");
+  mBeanServer.registerMBean(foo, name);
+} catch (MalformedObjectNameException |
+         NotCompliantMBeanException |
+         InstanceAlreadyExistsException |
+         MBeanRegistrationException e) {
+  e.printStackTrace();
+}
+----
+
+== Utilisation programmatique de MBean
+
+[.stretch]
+image::programmatic-mbean.svg[]
+
+=== Exemple de code
+
+[source,java]
+----
+var mBeanServer = ManagementFactory.getPlatformMBeanServer();
+try {
+  var name = ObjectName.getInstance(
+                     "ch.frankel.hesge:type=MBean,name=foo");
+  mBeanServer.registerMBean(foo, name);
+  var attribute = new Attribute("value", "newValue");
+  mBeanServer.setAttribute(oName, attribute);
+} catch (OperationsException |
+         MBeanException |
+         ReflectionException e) {
+  e.printStackTrace();
+}
+----
+
+== Le cas d'usage de JMX
+
+* Le monitoring
+* Les MXBeans sont des MBeans dédiés au monitoring
+
+=== !
+
+image::mxbean.svg[]
