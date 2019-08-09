@@ -8,19 +8,36 @@ ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 
 include::license.adoc[]
 
-. <<cours/me.adoc#,Votre enseignant>>
-. Vue générale de Java EE
-* <<cours/javaee.adoc#,Cours>>
-. API Servlet
-* <<cours/servlet.adoc#,Cours>>
-* <<tp/servlet.adoc#,Travaux Pratiques>>
-. Accès aux données
-* <<cours/jpa.adoc#,Cours>>
-* <<tp/jpa.adoc#,Travaux Pratiques>>
-. Injection de dépendances
-* <<cours/injection.adoc#,Cours>>
-* <<tp/injection.adoc#,Travaux Pratiques>>
-. Java Management eXtensions
-* <<cours/management.adoc#,Cours>>
-* <<tp/management.adoc#,Travaux Pratiques>>
-. <<work.adoc#,Rendu>>
+[options="autowidth",width=100%,stripes=odd]
+|===
+
+|1 3+^| <<cours/me.adoc#,Votre enseignant>>
+
+| 2
+| Vue générale de Java EE
+2+^| <<cours/javaee.adoc#,Cours>>
+
+| 3 
+| API Servlet
+^| <<cours/servlet.adoc#,Cours>>
+^| <<tp/servlet.adoc#,Travaux Pratiques>>
+
+| 4
+| Accès aux données
+^| <<cours/jpa.adoc#,Cours>>
+^| <<tp/jpa.adoc#,Travaux Pratiques>>
+
+| 5
+| Injection de dépendances
+^| <<cours/injection.adoc#,Cours>>
+^| <<tp/injection.adoc#,Travaux Pratiques>>
+
+| 6
+| Java Management eXtensions
+^| <<cours/management.adoc#,Cours>>
+^| <<tp/management.adoc#,Travaux Pratiques>>
+
+| 7
+3+^| <<work.adoc#,Rendu>>
+
+|===
