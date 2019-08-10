@@ -4,19 +4,18 @@
 
 == Nicolas Fränkel
 
-* Travaille chez SAP
-* Comme consultant
-** Développeur Java
-** Architecte logiciel
-** Architecte de solutions
+* Travaille chez https://hazelcast.com/[Hazelcast^]
+* Auparavant :
+** Exoscale
+** SAP
+** etc.
 
-== Clients
+== Postes occupés
 
-** BNP Paribas
-** Nespresso
-** Ville de Lausanne
-** Etat de Genève
-** (Groupama, Orange, etc.)
+* Développeur Java
+* Architecte logiciel
+* Architecte de solutions
+* Developer advocate
 
 == Publications
 
