@@ -1,0 +1,48 @@
+= Travaux pratiques - Java Management eXtensions
+Nicolas Frankel
+:doctype: article
+:encoding: utf-8
+:lang: fr
+:toc:
+:toc-title: Table des matières
+:toc-placement!:
+:sectanchors:
+:numbered:
+:experimental:
+:icons: font
+:imagesdir: ./images/management
+:toc:
+
+include::../license.adoc[]
+
+toc::[]
+
+== Références
+
+En français : ::
+* <<../cours/management.adoc#,Slides>>
+* https://www.jmdoudoux.fr/java/dej/chap-jmx.htm[JMX (Java Management Extensions)^]
+* https://blog.jetoile.fr/2010/10/jmx-pour-les-nuls-introduction.html[JMX Pour Les Nuls...^]
++
+En anglais : ::
+* https://docs.oracle.com/javase/tutorial/jmx/overview/index.html[Lesson: Overview of the JMX Technology^]
+* https://docs.oracle.com/javase/tutorial/jmx/index.html[Trail: Java Management Extensions (JMX)^]
+* https://www.baeldung.com/java-management-extensions[Basic Introduction to JMX^]
+
+== Servlet de monitoring
+
+A l'aide de JMX, développer un servlet qui affiche les informations relatives à la mémoire au moment de la requête :
+
+* Capacité maximum de la mémoire _heap_, et non-_heap_
+* Utilisation actuelle de la mémoire _heap_, et non-_heap_
+
+== Monitoring de ressources
+
+Soit un cache modélisé par une simple `Map<String, Object>`.
+
+. Créer un MBean qui permet :
+* De consulter la taille du cache
+* De retourner la collection des clés du cache
+* De vider le cache
+. Développer un servlet pour peupler le cache
+. Utiliser jconsole pour interagir avec le MBean
