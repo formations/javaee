@@ -944,45 +944,6 @@ image::500.png[Le serveur a rencontré une erreur qui l'a empêché de servir la
 * Mais utilisé dans Java EE
 ** Via la librairie JSTL `fmt`
 
-=== Locale
-
-[quote, JavaDoc, https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html]
-A Locale object represents a specific geographical, political, or cultural region.
-
-=== !
-
-[.stretch]
-image::locale.svg[]
-
-=== Resource Bundle
-
-[quote, JavaDoc, https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html]
-Resource bundles contain locale-specific objects.
-
-=== !
-
-image::resource-bundle.svg[]
-
-=== Exemple de structure de properties
-
-image::message-properties.png[Ensemble de properties dans l'IntelliJ IDEA,630,498]
-
-=== Utilisation côté serveur
-
-[source,java]
-ResourceBundle bundle =
-    ResourceBundle.getBundle("ch.hesge.messages", Locale.US);
-String label = bundle.getString("input.login.label");
-
-=== Processus de recherche
-
-* Rechercher la clé dans la locale courante
-* Si la clé est trouvée, retourner sa valeur
-* Si la locale est la racine, retourner `null`
-* Sinon :
-** Diminuer la précision de la locale d'un cran
-** Et reprendre depuis le début
-
 === JSTL fmt
 
 [options="header"]
@@ -1015,5 +976,3 @@ String label = bundle.getString("input.login.label");
  </body>
 </html>
 ----
-
-
