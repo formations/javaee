@@ -37,8 +37,9 @@ En anglais : ::
 
 Avant de commencer la réalisation de ces travaux pratiques, il est indispensable de disposer des logiciels suivants :
 
-. http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[Java Developer Kit, version 8^]
+. http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[Java Developer Kit, version 8+^]
 . https://openejb.apache.org/downloads.html[TomEE, WebProfile 7^]
+. https://maven.apache.org/download.cgi[Maven^]
 . Un Atelier de Génie Logiciel *professionnel*
 * Soit https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/oxygenr[Eclipse IDE for Java EE Developers^]
 * Soit https://www.jetbrains.com/idea/download/[IntelliJ IDEA Ultimate^]
@@ -46,6 +47,108 @@ Avant de commencer la réalisation de ces travaux pratiques, il est indispensabl
 TIP: La license Ultimate est gratuite pour les https://www.jetbrains.com/student/[étudiants^]
 +
 * Soit [line-through]#NetBeans IDE#
+
+=== Instructions pour Maven
+
+Créer un projet Maven avec un POM comportant les caractéristiques suivantes :
+
+* Un `packaging` de type `war`
+* Une dépendance envers `javax:javaee-api:7.0` de type `provided`
+* Les `properties` suivantes :
++
+[options="header,autowidth",width=100%]
+|===
+
+| Nom | Valeur
+
+| `maven.compiler.source`
+| `1.8`
+
+| `maven.compiler.target`
+| `1.8`
+
+| `failOnMissingWebXml`
+| `false`
+
+|===
+
+Une fois le projet Maven créé, l'importer dans l'IDE de votre choix.
+
+=== Instructions pour IntelliJ IDEA
+
+==== Création de projet
+
+. Cliquer sur le menu menu:File[New > Project from Existing Sources...].
+. Dans la fenêtre _pop-up_ qui s'ouvre, sélectionner Import project from external model
++
+image::idea-import-project-from-external-model.png[Import project from existing sources - step 1,710,215,role="text-center"]
++
+* Cliquer sur btn:[Next].
+Dans la fenêtre suivante, conserver les réglages par défaut :
++
+image::idea-import-project.png[Import Project - step 2,800,655,role="text-center"]
++
+* Cliquer sur btn:[Next].
+Dans la fenêtre suivante, le projet Maven doit être pré-sélectionné :
++
+image::idea-import-project-maven.png[Import Project - step 3,800,219,role="text-center"]
++
+* Cliquer sur btn:[Next].
+Dans la fenêtre suivante, sélectionner le JDK désiré.
+Choisir une version 8 (ou plus récente) :
++
+image::idea-import-project-jdk.png[Import Project - step 4,800,665,role="text-center"]
++
+* Cliquer sur btn:[Next].
+Dans la fenêtre qui s'affiche, sélectionner l'emplacement du projet.
+Conserver l'emplacement par défaut, qui doit être le même emplacement que celui du projet importé.
++
+image::idea-import-project-location.png[Import Project - step 5,800,175,role="text-center"]
++
+* Cliquer sur btn:[Finish].
+. L'espace de travail doit afficher une structure similaire à la suivante :
++
+image::idea-created-project.png[Project has been created,327,390,role="text-center"]
+
+==== Configuration du serveur d'applications
+
+. Dans IntelliJ IDEA, cliquer sur le menu menu:Run[Edit Configuration] :
++
+image::idea-run-debug-config.png[Run/Debug Configurations,737,505,role="text-center"]
++
+. Tout en haut à gauche, cliquer sur btn:[+], puis menu:Defaults[x items more... > TomEE Server > Local].
+.. Dans la popup, cliquer sur btn:[Configure] au niveau du champ Application server.
+.. Indiquer l'emplacement du répertoire d'installation de TomEE :
++
+image::idea-tomee-webprofile-config.png[TomEE Server,508,166,role="text-center"]
++
+.. Cliquer sur btn:[Finish].
+. Dans le champ Name, indiquer TomEE.
++
+image::idea-run-debug-tomee.png[Run/Debug Configurations,890,708,role="text-center"]
++
+. Cliquer sur btn:[OK].
+
+==== Déploiement de l'application
+
+L'étape de création du projet a normalement permis de déployer virtuellement l'application dans le serveur d'applications.
+De fait, le lancement du serveur déploiera l'application.
+
+==== Lancement de l'application
+
+. Pour construire le projet, cliquer sur menu:Build[Build Project].
+. Puis, pour lancer l'application, cliquer sur menu:Run[Debug TomEE 7.x].
+. Un navigateur se lance et affiche la page http://localhost:8080/ :
++
+image::browser-default-page.png[Browser displaying default page,488,274,role="text-center"]
++
+[IMPORTANT] 
+.Diagnostic
+====
+Si le navigateur affiche une page de type 404 Not Found, appeler l'enseignant/l'assistant.
+====
++
+. Avec les connaissances vues en cours, tenter d'expliquer pourquoi cette page est affichée.
 
 === Instructions pour Eclipse IDE
 
@@ -143,81 +246,6 @@ Lancement::
 Pour lancer le serveur d'applications, cliquer droit et sélectionner btn:[Debug].
 
 L'application est maintenant disponible sous http://localhost:8080/servlet/.
-
-=== Instructions pour IntelliJ IDEA
-
-==== Création de projet
-
-. Cliquer sur le menu menu:File[New > Project...].
-. Dans la fenêtre _pop-up_ qui s'ouvre:
-* Dans le volet gauche, sélectionner "Web Application"
-* Remplir les champs de la manière suivante :
-+
-[cols="1,1,3", options="header"]
-|===
-
-| Champ | Valeur | Commentaire
-
-| Project SDK | 1.8 | Utiliser le bouton btn:[New] pour pointer vers l'installation locale du JDK
-| Java EE Version | Java EE 7 |
-| Application Server | TomEE 7.0.68 | Le libellé exact dépend de la version installée dans l'étape précédente
-| Additional Libraries and Frameworks | JavaEE Application | Laisser les valeurs par défaut dans le volet du bas
-
-|===
-+
-image::idea-new-project-type.png[New Project - step 1,756,534,role="text-center"]
-+
-* Cliquer sur btn:[Next].
-. Dans la fenêtre suivante :
-* Taper _servlet_ dans le champ Project name
-* Sélectionner un emplacement adéquat pour le champ Project location
-+
-image::idea-new-project-location.png[New Project - step 2,756,169,role="text-center"]
-+
-* Cliquer sur btn:[Finish].
-. L'espace de travail doit afficher une structure similaire suivante :
-+
-image::idea-created-project.png[Project has been created,679,296,role="text-center"]
-
-==== Configuration du serveur d'applications
-
-. Dans IntelliJ IDEA, cliquer sur le menu menu:Run[Edit Configuration] :
-+
-image::idea-run-debug-config.png[Run/Debug Configurations,737,505,role="text-center"]
-+
-. Tout en haut à gauche, cliquer sur btn:[+], puis menu:Defaults[x items more... > TomEE Server > Local].
-.. Dans la popup, cliquer sur btn:[Configure] au niveau du champ Application server.
-.. Indiquer l'emplacement du répertoire d'installation de TomEE :
-+
-image::idea-tomee-webprofile-config.png[TomEE Server,508,166,role="text-center"]
-+
-.. Cliquer sur btn:[Finish].
-. Dans le champ Name, indiquer TomEE.
-+
-image::idea-run-debug-tomee.png[Run/Debug Configurations,890,708,role="text-center"]
-+
-. Cliquer sur btn:[OK].
-
-==== Déploiement de l'application
-
-L'étape de création du projet a normalement permis de déployer virtuellement l'application dans le serveur d'applications.
-De fait, le lancement du serveur déploiera l'application.
-
-==== Lancement de l'application
-
-. Pour construire le projet, cliquer sur menu:Build[Build Project].
-. Puis, pour lancer l'application, cliquer sur menu:Run[Debug TomEE 7.0.68].
-. Un navigateur se lance et affiche la page http://localhost:8080/ :
-+
-image::browser-default-page.png[Browser displaying default page,488,274,role="text-center"]
-+
-[IMPORTANT] 
-.Diagnostic
-====
-Si le navigateur affiche une page de type 404 Not Found, appeler l'enseignant/l'assistant.
-====
-+
-. Avec les connaissances vues en cours, tenter d'expliquer pourquoi cette page est affichée.
 
 == Manipulation de servlets
 
