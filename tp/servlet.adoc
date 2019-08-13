@@ -590,11 +590,7 @@ Cette méthode est appelée implicitement lors d'un `forward`/`include` de JSP.
 . Configurer l'application pour que les exceptions non interceptées soient redirigées vers cette page
 . Tester (avec un servlet qui lance une exception)
 
-== Internationalisation de JSP
-
-=== Externalisation des libellés
-
-NOTE: L'objectif est de migrer l'intégralité des libellés d'une page JSP dans un fichier spécifique.
+== JSTL
 
 Soit la JSP suivante :
 
@@ -605,20 +601,50 @@ Soit la JSP suivante :
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Création de Personne</title>
+    <title>Personnes</title>
 </head>
 <body>
-<h1>Création de Personne</h1>
-<form>
+<h1>Personnes</h1>
+<form method="POST" action="<%= context.getPath %>/person">
     <label for="firstName">Prénom :</label>
     <input type="text" id="firstName" name="firstName"/>
     <label for="lastName">Nom :</label>
     <input type="text" id="lastName" name="lastName">
     <input type="submit" value="Enregistrer">
 </form>
+<% List persons = (List) request.getAttribute("persons"); %>
+<% if (persons != null) { %>
+<table>
+  <thead>
+    <tr>
+      <th>Prénom :</th>
+      <th>Nom :</th>
+    </tr>
+  </thead>
+  <tbody>
+<% for (Person person: persons) { %>
+    <tr>
+      <td><%= person.getFirstName() %></td>
+      <td><%= person.getName() %></td>
+<% } %>
+  </tbody>
+</table>
+<% } %>
 </body>
 </html>
 ----
+
+Créer la classe `Person` et le servlet `PersonServlet` mappé à `person` pour que le formulaire crée et affiche les personnes.
+
+L'affichage se fait via un `GET` au mapping `person`.
+
+=== Utilisation des librairies JSTL
+
+Remplacer l'intégralité des scriptlets de la JSP par leur équivalent de la JSTL `core`.
+
+=== Externalisation des libellés
+
+NOTE: L'objectif est de migrer l'intégralité des libellés d'une page JSP dans un fichier spécifique.
 
 A l'aide des techniques d'internationalisation vues en cours, externaliser l'intégralité des libellés de la JSP dans un fichier de _properties_.
 
