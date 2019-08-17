@@ -464,8 +464,8 @@ List<Person> allPersons = q.getResultList();
 CriteriaBuilder cb = em.getCriteriaBuilder();
 CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 Root<Person> person = cq.from(Person.class);
-cq.where(cb.like(person.get("firstName"), firstName));
-cq.where(cb.like(person.get("lastName"), lastName));
+cq.where(cb.like(person.get("firstName"), firstName),
+         cb.like(person.get("lastName"), lastName));
 TypedQuery<Person> q = em.createQuery(cq);
 List<Person> persons = q.getResultList();
 ----
@@ -499,8 +499,8 @@ javac -classpath $TOMEE_HOME/lib/openjpa-2.4.0.jar:\
 ----
 CriteriaBuilder cb = em.getCriteriaBuilder();
 CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-cq.where(cb.like(Person_.firstName, firstName));
-cq.where(cb.like(Person_.lastName, lastName));
+cq.where(cb.like(Person_.firstName, firstName),
+         cb.like(Person_.lastName, lastName));
 TypedQuery<Person> q = em.createQuery(cq);
 List<Person> persons = q.getResultList();
 ----
