@@ -633,7 +633,7 @@ Soit la JSP suivante :
 </head>
 <body>
 <h1>Personnes</h1>
-<form method="POST" action="<%= context.getPath %>/person">
+<form method="POST" action="<%= request.getContextPath() %>/person">
     <label for="firstName">Prénom :</label>
     <input type="text" id="firstName" name="firstName"/>
     <label for="lastName">Nom :</label>
