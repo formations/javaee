@@ -84,7 +84,7 @@ Car car = new Car(
 
 [source,java]
 ----
-public class DummyEngine() {
+public class DummyEngine() extends Engine{
     @Override
     public boolean start() { return true; }
 }
