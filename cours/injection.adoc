@@ -338,8 +338,8 @@ public class MyServlet extends HttpServlet {
 [source,code]
 ----
 public interface TaxStrategy {}
-public class SwissTaxStrategy {}
-public class FrenchTaxStrategy {}
+public class SwissTaxStrategy implements TaxStrategy {}
+public class FrenchTaxStrategy implements TaxStrategy {}
 
 public class TaxStrategyFactory {
 
