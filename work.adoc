@@ -24,6 +24,49 @@ Les livrables attendus sont :
 * Les sources Java associées
 * La documentation d'installation et de configuration
 
-L'infrastructure cible est https://tomee.apache.org/download-ng.html[TomEE WebProfile^] v7.0.x.
+L'infrastructure cible est https://tomee.apache.org/download-ng.html[TomEE WebProfile^] v7.1.x.
+
+== Critères de notation
+
+La notation se décompose ainsi :
+
+[options="autowidth,header"]
+|===
+
+| Points | Catégories | Description
+
+| 1
+2.+| Note minimale
+
+| 3
+| Base
+a|
+* Respect des spécifications fonctionnelles
+* Déploiement sans accroc sur un TomEE
+
+NOTE: Ces points sont accordés "en lot".
+Si le déploiement échoue ou qu'un lien n'est pas fonctionnel, aucun point n'est accordé (0)
+
+| 2
+| Qualité du code
+a| * Respect des normes de nommage du langage Java, par exemple :
+    ** le nom des classes commence par une majuscule
+    ** le casse est de type _camelcase_
+    ** etc.
+* Respect des principes de Programmation Orientée Objet
+* Respect des principes SOLID, par exemple :
+    ** le principe de responsabilité unique (_Single Responsibility Principle_)
+    ** etc.
+* Respect des bonnes pratiques exposées en cours, par exemple :
+    ** préférer les _taglibs_ aux _scriptlets_
+    ** préférer l'utilisation du descripteur de déploiement aux annotations quand cela est possible
+    ** etc.
+
+|===
+
+Des gratifications "bonus" peuvent être accordées pour des réalisations particulières, par exemple, un thème graphique particulièrement recherché.
+
+WARNING: Aucune gratification ne sera accordée si les 3 points de base ne l'ont pas été :
+une application qui ne fonctionne pas, belle ou pas, reste une application qui ne fonctionne pas.
 
 include::assignments/eshop/work.adoc[]
