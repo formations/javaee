@@ -4,7 +4,7 @@
 
 == Nicolas Fränkel
 
-* Travaille chez https://hazelcast.com/[Hazelcast^]
+* Travaille pour https://hazelcast.com/[Hazelcast^]
 * Auparavant :
 ** Exoscale
 ** SAP
@@ -12,10 +12,10 @@
 
 == Postes occupés
 
-* Développeur Java
-* Architecte logiciel
-* Architecte de solutions
-* Developer advocate
+. _Developer Advocate_
+. Architecte de solutions
+. Architecte logiciel
+. Développeur Java
 
 == Publications
 
@@ -24,16 +24,10 @@ image:integration_testing.jpg[Integration Testing from the Trenches,384,499,role
 
 == Interventions en conférence
 
-* Java One
-* Devoxx
+* Java One/Oracle Code One
+* Devoxx BE/UA/FR
 * JEE Conf
-* etc.
-
-https://blog.frankel.ch/speaking/[Liste exhaustive^]
-
-=== !
-
-video::E4UuxVWYCVQ[youtube]
+* https://blog.frankel.ch/speaking/[Liste exhaustive^]
 
 == Médias sociaux
 
