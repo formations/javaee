@@ -122,7 +122,7 @@ image::driver-manager-flow.svg[]
 [source,java]
 ----
 public class SomeRepository {
-    
+
     @Resource(name="java:comp/env.jdbc/mydb")
     private DataSource dataSource;
 
@@ -195,7 +195,7 @@ public class Book {
     private String description;
     private Date publicationDate;
     private Author author;
-    
+
     // Getters and setters
 }
 ----
@@ -240,7 +240,7 @@ public class Book {
     @Column(name="PUBLICATION_DATE")
     private Date publicationDate;
     private Author author;
-    
+
     // Getters and setters
 }
 ----
@@ -252,7 +252,7 @@ The EntityManager API creates and removes persistent entity instances, finds ent
 
 === Fonctionnalités du gestionnaire d'entités
 
-* Gestion du cycle de vie 
+* Gestion du cycle de vie
 * Recherche d'une entité par sa clé primaire
 * Synchronisation avec la base de données
 * Exécution de requêtes avec l'API Criteria
@@ -396,7 +396,7 @@ public class AccountService {
 == JPQL
 
 [quote, Oracle Docs, http://bit.ly/2jbjNft]
-The query language allows you to write portable queries that work regardless of the underlying data store. It uses the abstract persistence schemas of entities, including their relationships, for its data model and defines operators and expressions based on this data model. 
+The query language allows you to write portable queries that work regardless of the underlying data store. It uses the abstract persistence schemas of entities, including their relationships, for its data model and defines operators and expressions based on this data model.
 
 === Rappel JDBC
 
@@ -433,7 +433,7 @@ The Criteria API is used to define queries for entities and their persistent sta
 
 * Typage faible
 * Paramètres optionnels :
-** Concaténation de chaînes 
+** Concaténation de chaînes
 
 === !
 
@@ -452,7 +452,7 @@ Person person = em.find(Person.class, 1234L);
 ----
 CriteriaBuilder cb = em.getCriteriaBuilder();
 CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-Root<Person> person = cq.from(Person.class);
+cq.from(Person.class);
 TypedQuery<Person> q = em.createQuery(cq);
 List<Person> allPersons = q.getResultList();
 ----
@@ -487,10 +487,10 @@ For each entity class in a particular package, a metamodel class is created with
 
 [source,bash]
 ----
-javac -classpath $TOMEE_HOME/lib/openjpa-2.4.0.jar:\
-                 $TOMEE_HOME/lib/javaee-api-6.0-6.jar \
+javac -classpath $TOMEE_HOME/lib/openjpa-3.1.0.jar:\
+                 $TOMEE_HOME/lib/javaee-api-8.0-3.jar \
       -Aopenjpa.metamodel=true \
-      -Aopenjpa.source=8 ch/frankel/javaee/Person.java
+      -Aopenjpa.source=8 ch/hesge/javaee/Book.java
 ----
 
 === Typesafe WHERE
@@ -499,8 +499,9 @@ javac -classpath $TOMEE_HOME/lib/openjpa-2.4.0.jar:\
 ----
 CriteriaBuilder cb = em.getCriteriaBuilder();
 CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-cq.where(cb.like(Person_.firstName, firstName),
-         cb.like(Person_.lastName, lastName));
+Root<Person> person = cq.from(Person.class);
+cq.where(cb.like(person.get(Person_.firstName), firstName),
+         cb.like(person.get(Person_.lastName), lastName));
 TypedQuery<Person> q = em.createQuery(cq);
 List<Person> persons = q.getResultList();
 ----
