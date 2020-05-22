@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="author" content="Nicolas Frankel">
+<title>Travaux pratiques - L&#8217;API Servlet</title>
+<link rel="stylesheet" href="./../asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Travaux pratiques - L&#8217;API Servlet</h1>
+<div class="details">
+<span id="author" class="author">Nicolas Frankel</span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image left"><a class="image" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Licence Creative Commons"></a></span></p>
+</div>
+<div class="paragraph">
+<p>Ce document est mis à disposition selon les termes de la <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International</a>.</p>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle" class="title">Table des matières</div>
+<ul class="sectlevel1">
+<li><a href="#_références">1. Références</a></li>
+<li><a href="#_mise_en_place">2. Mise en place</a>
+<ul class="sectlevel2">
+<li><a href="#_prérequis">2.1. Prérequis</a></li>
+<li><a href="#_instructions_pour_maven">2.2. Instructions pour Maven</a></li>
+<li><a href="#_instructions_pour_intellij_idea">2.3. Instructions pour IntelliJ IDEA</a></li>
+<li><a href="#_instructions_pour_eclipse_ide">2.4. Instructions pour Eclipse IDE</a></li>
+</ul>
+</li>
+<li><a href="#_manipulation_de_servlets">3. Manipulation de servlets</a>
+<ul class="sectlevel2">
+<li><a href="#_premiers_pas">3.1. Premiers pas</a></li>
+<li><a href="#_configuration_par_annotations">3.2. Configuration par annotations</a></li>
+<li><a href="#_redirection">3.3. Redirection</a></li>
+<li><a href="#_ecriture_dans_la_réponse">3.4. Ecriture dans la réponse</a></li>
+<li><a href="#_utilisation_des_paramètres">3.5. Utilisation des paramètres</a></li>
+<li><a href="#_forward">3.6. Forward</a></li>
+<li><a href="#_inclusion">3.7. Inclusion</a></li>
+</ul>
+</li>
+<li><a href="#_manipulation_de_jsp">4. Manipulation de JSP</a>
+<ul class="sectlevel2">
+<li><a href="#_premiers_pas_2">4.1. Premiers pas</a></li>
+<li><a href="#_contenu_statique">4.2. Contenu statique</a></li>
+<li><a href="#_contenu_dynamique">4.3. Contenu dynamique</a></li>
+<li><a href="#_implémentation_du_modèle_mvc">4.4. Implémentation du modèle MVC</a></li>
+<li><a href="#_protection_de_jsp">4.5. Protection de JSP</a></li>
+<li><a href="#_exemple_complet">4.6. Exemple complet</a></li>
+</ul>
+</li>
+<li><a href="#_manipulation_de_filtres">5. Manipulation de filtres</a>
+<ul class="sectlevel2">
+<li><a href="#_filtre_de_post_processing">5.1. Filtre de <em>post-processing</em></a></li>
+<li><a href="#_filtre_dauthentification">5.2. Filtre d&#8217;authentification</a></li>
+</ul>
+</li>
+<li><a href="#_gestion_de_la_sécurité">6. Gestion de la sécurité</a></li>
+<li><a href="#_manipulation_dabonnés_au_cycle_de_vie">7. Manipulation d&#8217;abonnés au cycle de vie</a>
+<ul class="sectlevel2">
+<li><a href="#_abonnement_au_cycle_de_vie_des_objets_de_session">7.1. Abonnement au cycle de vie des objets de session</a></li>
+<li><a href="#_abonnement_au_cycle_de_vie_des_sessions">7.2. Abonnement au cycle de vie des sessions</a></li>
+</ul>
+</li>
+<li><a href="#_gestion_des_erreurs">8. Gestion des erreurs</a>
+<ul class="sectlevel2">
+<li><a href="#_page_not_found">8.1. Page Not Found</a></li>
+<li><a href="#_erreurs_serveur">8.2. Erreurs serveur</a></li>
+</ul>
+</li>
+<li><a href="#_jstl">9. JSTL</a>
+<ul class="sectlevel2">
+<li><a href="#_utilisation_des_librairies_jstl">9.1. Utilisation des librairies JSTL</a></li>
+<li><a href="#_externalisation_des_libellés">9.2. Externalisation des libellés</a></li>
+<li><a href="#_internationalisation_dapplication">9.3. Internationalisation d&#8217;application</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_références"><a class="anchor" href="#_références"></a>1. Références</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">En français : </dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../cours/servlet.html">Slides</a></p>
+</li>
+<li>
+<p><a href="http://www.jmdoudoux.fr/java/dej/chap-servlets.htm" target="_blank" rel="noopener">Les Servlets</a></p>
+</li>
+<li>
+<p><a href="http://www.jmdoudoux.fr/java/dej/chap-jsp.htm" target="_blank" rel="noopener">Les JSP</a></p>
+</li>
+<li>
+<p><a href="http://www.jmdoudoux.fr/java/dej/chap-jstl.htm" target="_blank" rel="noopener">JSTL</a></p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">En anglais : </dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.oracle.com/javaee/7/api/" target="_blank" rel="noopener">Java EE 7 API</a></p>
+</li>
+<li>
+<p><a href="http://docs.oracle.com/javaee/7/tutorial/webapp001.htm" target="_blank" rel="noopener">Web Applications</a></p>
+</li>
+<li>
+<p><a href="http://docs.oracle.com/javaee/7/tutorial/webapp002.htm" target="_blank" rel="noopener">Web Application Lifecycle</a></p>
+</li>
+<li>
+<p><a href="http://docs.oracle.com/javaee/7/tutorial/webapp004.htm" target="_blank" rel="noopener">Web Module That Uses Java Servlet Technology</a></p>
+</li>
+<li>
+<p><a href="http://www.oracle.com/technetwork/java/filters-137243.html" target="_blank" rel="noopener">The Essentials of Filters</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mise_en_place"><a class="anchor" href="#_mise_en_place"></a>2. Mise en place</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_prérequis"><a class="anchor" href="#_prérequis"></a>2.1. Prérequis</h3>
+<div class="paragraph">
+<p>Avant de commencer la réalisation de ces travaux pratiques, il est indispensable de disposer des logiciels suivants :</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="noopener">Java Developer Kit, version 8+</a></p>
+</li>
+<li>
+<p><a href="https://openejb.apache.org/downloads.html" target="_blank" rel="noopener">TomEE, WebProfile 7</a></p>
+</li>
+<li>
+<p><a href="https://maven.apache.org/download.cgi" target="_blank" rel="noopener">Maven</a></p>
+</li>
+<li>
+<p>Un Atelier de Génie Logiciel <strong>professionnel</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Soit <a href="https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/oxygenr" target="_blank" rel="noopener">Eclipse IDE for Java EE Developers</a></p>
+</li>
+<li>
+<p>Soit <a href="https://www.jetbrains.com/idea/download/" target="_blank" rel="noopener">IntelliJ IDEA Ultimate</a></p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+La license Ultimate est gratuite pour les <a href="https://www.jetbrains.com/student/" target="_blank" rel="noopener">étudiants</a>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Soit <span class="line-through">NetBeans IDE</span></p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_instructions_pour_maven"><a class="anchor" href="#_instructions_pour_maven"></a>2.2. Instructions pour Maven</h3>
+<div class="paragraph">
+<p>Créer un projet Maven avec un POM comportant les caractéristiques suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Un <code>packaging</code> de type <code>war</code></p>
+</li>
+<li>
+<p>Une dépendance envers <code>javax:javaee-api:7.0</code> de type <code>provided</code></p>
+</li>
+<li>
+<p>Les <code>properties</code> suivantes :</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nom</th>
+<th class="tableblock halign-left valign-top">Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maven.compiler.source</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.8</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maven.compiler.target</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.8</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>failOnMissingWebXml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Une fois le projet Maven créé, l&#8217;importer dans l&#8217;IDE de votre choix.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_instructions_pour_intellij_idea"><a class="anchor" href="#_instructions_pour_intellij_idea"></a>2.3. Instructions pour IntelliJ IDEA</h3>
+<div class="sect3">
+<h4 id="_création_de_projet"><a class="anchor" href="#_création_de_projet"></a>2.3.1. Création de projet</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Cliquer sur le menu <span class="menuseq"><b class="menu">File</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">New</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Project from Existing Sources&#8230;&#8203;</b></span>.</p>
+</li>
+<li>
+<p>Dans la fenêtre <em>pop-up</em> qui s&#8217;ouvre, sélectionner Import project from external model</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-import-project-from-external-model.png" alt="Import project from existing sources - step 1" width="710" height="215">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Cliquer sur <b class="button">Next</b>.
+Dans la fenêtre suivante, conserver les réglages par défaut :</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-import-project.png" alt="Import Project - step 2" width="800" height="655">
+</div>
+</div>
+</li>
+<li>
+<p>Cliquer sur <b class="button">Next</b>.
+Dans la fenêtre suivante, le projet Maven doit être pré-sélectionné :</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-import-project-maven.png" alt="Import Project - step 3" width="800" height="219">
+</div>
+</div>
+</li>
+<li>
+<p>Cliquer sur <b class="button">Next</b>.
+Dans la fenêtre suivante, sélectionner le JDK désiré.
+Choisir une version 8 (ou plus récente) :</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-import-project-jdk.png" alt="Import Project - step 4" width="800" height="665">
+</div>
+</div>
+</li>
+<li>
+<p>Cliquer sur <b class="button">Next</b>.
+Dans la fenêtre qui s&#8217;affiche, sélectionner l&#8217;emplacement du projet.
+Conserver l&#8217;emplacement par défaut, qui doit être le même emplacement que celui du projet importé.</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-import-project-location.png" alt="Import Project - step 5" width="800" height="175">
+</div>
+</div>
+</li>
+<li>
+<p>Cliquer sur <b class="button">Finish</b>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>L&#8217;espace de travail doit afficher une structure similaire à la suivante :</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-created-project.png" alt="Project has been created" width="327" height="390">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_du_serveur_dapplications"><a class="anchor" href="#_configuration_du_serveur_dapplications"></a>2.3.2. Configuration du serveur d&#8217;applications</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Dans IntelliJ IDEA, cliquer sur le menu <span class="menuseq"><b class="menu">Run</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Edit Configuration</b></span> :</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-run-debug-config.png" alt="Run/Debug Configurations" width="737" height="505">
+</div>
+</div>
+</li>
+<li>
+<p>Tout en haut à gauche, cliquer sur <b class="button">+</b>, puis <span class="menuseq"><b class="menu">Defaults</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">x items more&#8230;&#8203;</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">TomEE Server</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Local</b></span>.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Dans la popup, cliquer sur <b class="button">Configure</b> au niveau du champ Application server.</p>
+</li>
+<li>
+<p>Indiquer l&#8217;emplacement du répertoire d&#8217;installation de TomEE :</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-tomee-webprofile-config.png" alt="TomEE Server" width="508" height="166">
+</div>
+</div>
+</li>
+<li>
+<p>Cliquer sur <b class="button">Finish</b>.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Dans le champ Name, indiquer TomEE.</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/idea-run-debug-tomee.png" alt="Run/Debug Configurations" width="890" height="708">
+</div>
+</div>
+</li>
+<li>
+<p>Cliquer sur <b class="button">OK</b>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_déploiement_de_lapplication"><a class="anchor" href="#_déploiement_de_lapplication"></a>2.3.3. Déploiement de l&#8217;application</h4>
+<div class="paragraph">
+<p>L&#8217;étape de création du projet a normalement permis de déployer virtuellement l&#8217;application dans le serveur d&#8217;applications.
+De fait, le lancement du serveur déploiera l&#8217;application.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_lancement_de_lapplication"><a class="anchor" href="#_lancement_de_lapplication"></a>2.3.4. Lancement de l&#8217;application</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Pour construire le projet, cliquer sur <span class="menuseq"><b class="menu">Build</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Build Project</b></span>.</p>
+</li>
+<li>
+<p>Puis, pour lancer l&#8217;application, cliquer sur <span class="menuseq"><b class="menu">Run</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Debug TomEE 7.x</b></span>.</p>
+</li>
+<li>
+<p>Un navigateur se lance et affiche la page <a href="http://localhost:8080/" class="bare">http://localhost:8080/</a> :</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/browser-default-page.png" alt="Browser displaying default page" width="488" height="274">
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Diagnostic</div>
+<div class="paragraph">
+<p>Si le navigateur affiche une page de type 404 Not Found, appeler l&#8217;enseignant/l&#8217;assistant.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Avec les connaissances vues en cours, tenter d&#8217;expliquer pourquoi cette page est affichée.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_instructions_pour_eclipse_ide"><a class="anchor" href="#_instructions_pour_eclipse_ide"></a>2.4. Instructions pour Eclipse IDE</h3>
+<div class="sect3">
+<h4 id="_choix_de_lespace_de_travail"><a class="anchor" href="#_choix_de_lespace_de_travail"></a>2.4.1. Choix de l&#8217;espace de travail</h4>
+<div class="paragraph">
+<p>Au lancement de l&#8217;IDE, il est nécessaire de choisir un emplacement pour l&#8217;espace de travail.
+Cet emplacement sert de racine pour la création de futurs projets.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/eclipse-workspace.png" alt="Choix de l&#8217;emplacement de l&#8217;espace de travail" width="594" height="246">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_création_de_projet_2"><a class="anchor" href="#_création_de_projet_2"></a>2.4.2. Création de projet</h4>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Cette étape sera répétée de nombreuses fois par la suite. Il est conseillé de se familiariser avec.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Cliquer sur le menu <span class="menuseq"><b class="menu">File</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">New</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Dynamic Web Project&#8230;&#8203;</b></span>.</p>
+</li>
+<li>
+<p>Dans la fenêtre <em>pop-up</em> qui s&#8217;ouvre</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Remplir les champs de la manière suivante :</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Champ</th>
+<th class="tableblock halign-left valign-top">Valeur</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Project name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">servlet</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Target runtime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;None&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Le <em>runtime</em> sera configuré plus tard</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dynamic Web Module version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La configuration par défaut comprend Java 8 et l&#8217;API Servlet 3.0</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/eclipse-dynamic-web-project.png" alt="Dynamic Web Project" width="593" height="563">
+</div>
+</div>
+</li>
+<li>
+<p>Cliquer sur <b class="button">Next</b>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>L&#8217;écran suivant permet de configurer la structure du projet.
+Conserver les valeurs par défaut et cliquer sur <b class="button">Next</b>.</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/eclipse-java.png" alt="Dynamic Web Project - project structure" width="593" height="363">
+</div>
+</div>
+</li>
+<li>
+<p>Dans l&#8217;écran suivant :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Conserver les valeurs par défaut pour les champs texte.</p>
+</li>
+<li>
+<p>Sélectionner "Generate web.xml deployment descriptor".</p>
+</li>
+<li>
+<p>Cliquer <b class="button">Next</b>.</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/eclipse-web-module.png" alt="Dynamic Web Project - web module" width="593" height="291">
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Cliquer <b class="button">Finish</b>.</p>
+</li>
+<li>
+<p>L&#8217;espace de travail doit afficher une structure similaire :</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/eclipse-created-project.png" alt="Projet créé" width="291" height="408">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_du_serveur_dapplications_2"><a class="anchor" href="#_configuration_du_serveur_dapplications_2"></a>2.4.3. Configuration du serveur d’applications</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Localiser l&#8217;onglet "Servers" - par défaut situé en bas.
+Le sélectionner.</p>
+</li>
+<li>
+<p>Cliquer sur le lien "No servers are available. Click this link to create a new server&#8230;&#8203;".
+Dans le fenêtre qui s&#8217;ouvre :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Sélectionner l&#8217;adapteur Tomcat v 7.0</p>
+</li>
+<li>
+<p>Dans le champ <em>Server name</em>, indiquer "TomEE v1.7 Server at localhost"</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/eclipse-new-server.png" alt="New Server" width="527" height="420">
+</div>
+</div>
+</li>
+<li>
+<p>Cliquer <b class="button">Next</b>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Dans l&#8217;écran de configuration de Tomcat :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Remplir les champs ainsi :</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 28.5714%;">
+<col style="width: 42.8572%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Champ</th>
+<th class="tableblock halign-left valign-top">Valeur</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TomEE v1.7 Server at localhost</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tomcat installation directory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pointer vers le répertoire d&#8217;installation de TomEE à l&#8217;aide du bouton <b class="button">Browse</b></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JRE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java SE 8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sélectionner un JDK 8 dans la liste déroulante</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/eclipse-tomcat-server.png" alt="New Server - Tomcat Server" width="527" height="377">
+</div>
+</div>
+</li>
+<li>
+<p>Puis cliquer <b class="button">Next</b>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Ajouter le projet précédemment créé en sélectionnant celui-ci puis en cliquant sur le <b class="button">Add</b>.</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/servlet/eclipse-add-project.png" alt="New Server - Add and remove" width="527" height="307">
+</div>
+</div>
+<div class="paragraph">
+<p>Puis cliquer sur <b class="button">Finish</b>.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_lancement_de_lapplication_2"><a class="anchor" href="#_lancement_de_lapplication_2"></a>2.4.4. Lancement de l&#8217;application</h4>
+<div class="paragraph">
+<p>Initialement, le serveur affiche le status <em>[Stopped, Republish]</em>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Publication</dt>
+<dd>
+<p>La publication consiste à synchroniser les fichiers de configuration et les classes compilées.
+Cliquer droit et sélectionner <b class="button">Publish</b>.</p>
+</dd>
+<dt class="hdlist1">Lancement</dt>
+<dd>
+<p>Pour lancer le serveur d&#8217;applications, cliquer droit et sélectionner <b class="button">Debug</b>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>L&#8217;application est maintenant disponible sous <a href="http://localhost:8080/servlet/" class="bare">http://localhost:8080/servlet/</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manipulation_de_servlets"><a class="anchor" href="#_manipulation_de_servlets"></a>3. Manipulation de servlets</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cette section permet de mettre en oeuvre les concepts liés aux servlets étudiés <a href="../cours/servlet.html">en cours</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_premiers_pas"><a class="anchor" href="#_premiers_pas"></a>3.1. Premiers pas</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est de créer un servlet qui écrit dans la log système lorsqu&#8217;il est accédé en <code>GET</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un nouveau package <em>p.e.</em> <code>ch.hesge.programmation</code>.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Il est fortement déconseillé de créer des classes dans le <em>package</em> racine.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Créer une nouvelle classe de servlet, <code>SysoutServlet</code> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Hériter de <code>HttpServlet</code>.</p>
+</li>
+<li>
+<p>Implémenter la méthode <code>doGet()</code> : le corps de celle-ci fait un appel à la méthode <code>System.out.println()</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Modifier le descripteur de déploiement <code>web.xml</code> pour lier ce servlet au fragment d&#8217;URL <code>/sysout</code>.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Rappel</div>
+<div class="paragraph">
+<p>Il faut créer une section <code>&lt;servlet&gt;</code> pour lier la classe à un nom logique <strong>et</strong> une section <code>&lt;servlet-mapping</code> pour lier le nom logique à un modèle d&#8217;URL.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Reconstruire l&#8217;application et re-démarrer le serveur (cf. <a href="#_lancement_de_l_application">ci-dessus</a>).</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/sysout" class="bare">http://localhost:8080/sysout</a> via <code>GET</code>.</p>
+</li>
+<li>
+<p>Vérifier la sortie de la console dans l&#8217;AGL.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_par_annotations"><a class="anchor" href="#_configuration_par_annotations"></a>3.2. Configuration par annotations</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est de créer un servlet configuré avec les annotations - et non pas dans le descripteur de déploiement.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Copier-coller la classe ci-dessus en <code>AnnotatedServlet</code>.</p>
+</li>
+<li>
+<p>Configurer le servlet via les annotations pour qu&#8217;il soit accessible en <code>GET</code> via le fragment <code>/annotate</code>.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/annotate" class="bare">http://localhost:8080/annotate</a>.</p>
+</li>
+<li>
+<p>Vérifier la sortie de la console dans l&#8217;AGL.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_redirection"><a class="anchor" href="#_redirection"></a>3.3. Redirection</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est de créer un servlet qui redirige l&#8217;utilisateur vers un site externe
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Via l&#8217;API native</dt>
+<dd>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer une nouvelle classe de servlet, <code>RedirectServlet</code>.</p>
+</li>
+<li>
+<p>Implémenter la méthode <code>doGet()</code> pour rediriger l&#8217;utilisateur vers un site externe, <em>p.e.</em> <a href="https://google.com" class="bare">https://google.com</a>.</p>
+</li>
+<li>
+<p>Configurer le servlet soit par annotations, soit dans le descripteur de déploiement pour être accessible via <code>/redirect</code>.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/redirect" class="bare">http://localhost:8080/redirect</a>.</p>
+</li>
+<li>
+<p>Vérifier que le navigateur redirige vers le site externe précédemment utilisé.</p>
+</li>
+</ol>
+</div>
+</dd>
+<dt class="hdlist1">En utilisant un autre mécanisme de bas niveau</dt>
+<dd>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Copier-coller la classe ci-dessus en <code>RedirectServlet2</code>.</p>
+</li>
+<li>
+<p>Remplacer l&#8217;implémentation de la méthode <code>doGet()</code>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Ajouter le header <code>Location</code> avec l&#8217;URL précédente</p>
+</li>
+<li>
+<p>Renvoyer un code statut HTTP de redirection</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Configurer le servlet pour être accessible via <code>/redirect2</code>.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/redirect2" class="bare">http://localhost:8080/redirect2</a>.</p>
+</li>
+<li>
+<p>Vérifier que le navigateur redirige vers le site externe précédemment utilisé.</p>
+</li>
+</ol>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ecriture_dans_la_réponse"><a class="anchor" href="#_ecriture_dans_la_réponse"></a>3.4. Ecriture dans la réponse</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est de créer un servlet qui écrit directement dans le flux de réponse.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer une nouvelle classe de servlet, <code>WriteServlet</code>.</p>
+</li>
+<li>
+<p>Implémenter la méthode <code>doGet()</code> pour écrire du contenu HTML dans le flux de réponse en utilisant <code>response.getWriter()</code>.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Ne pas oublier</div>
+<div class="ulist">
+<ul>
+<li>
+<p>De fermer le flux de sortie, sinon la page ne sera pas affichée</p>
+</li>
+<li>
+<p>D&#8217;indiquer le type MIME afin que le contenu HTML soit correctement interprété et non pas affiché comme du simple texte.
+Pour information, la plupart des navigateurs "sniffent" le type mais il s&#8217;agit d&#8217;une faille de sécurité.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Configurer le servlet pour être accessible via <code>/write</code>.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/write" class="bare">http://localhost:8080/write</a>.</p>
+</li>
+<li>
+<p>Vérifier que le navigateur affiche correctement le contenu HTML.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_utilisation_des_paramètres"><a class="anchor" href="#_utilisation_des_paramètres"></a>3.5. Utilisation des paramètres</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est de lire et d&#8217;afficher les paramètres de requête.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un servlet, <code>ParamServlet</code>.</p>
+</li>
+<li>
+<p>Configurer le servlet pour être accessible via <code>/param</code>.</p>
+</li>
+<li>
+<p>Ecrire dans le flux de réponse les paramètres sous forme de tableau HTML :</p>
+</li>
+<li>
+<p>Vérifier l&#8217;affichage des résultats avec les URL suivantes :</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://localhost:8080/param" class="bare">http://localhost:8080/param</a>.</p>
+</li>
+<li>
+<p><a href="http://localhost:8080/param?key" class="bare">http://localhost:8080/param?key</a>.</p>
+</li>
+<li>
+<p><a href="http://localhost:8080/param?key=value" class="bare">http://localhost:8080/param?key=value</a>.</p>
+</li>
+<li>
+<p><a href="http://localhost:8080/param?key1&amp;key2" class="bare">http://localhost:8080/param?key1&amp;key2</a>.</p>
+</li>
+<li>
+<p><a href="http://localhost:8080/param?key1=value1&amp;key2=value2" class="bare">http://localhost:8080/param?key1=value1&amp;key2=value2</a>.</p>
+</li>
+<li>
+<p><a href="http://localhost:8080/param?key1=value1&amp;key2=value2&amp;key3=value3" class="bare">http://localhost:8080/param?key1=value1&amp;key2=value2&amp;key3=value3</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_forward"><a class="anchor" href="#_forward"></a>3.6. Forward</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est de créer un servlet qui <em>forward</em> vers une autre ressource.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer deux servlets, <code>InitialServlet</code> et <code>ForwardServlet</code>.</p>
+</li>
+<li>
+<p>Les configurer pour être respectivement accessibles via <code>/initial</code> et <code>/forward</code>.</p>
+</li>
+<li>
+<p>Dans le premier servlet, implémenter le <em>forward</em> vers le second.</p>
+</li>
+<li>
+<p>Dans le second servlet, écrire quelque chose dans le flux de réponse.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/initial" class="bare">http://localhost:8080/initial</a>.</p>
+</li>
+<li>
+<p>Vérifier que le navigateur affiche ce qui a été écrit dans <code>ForwardServlet</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_inclusion"><a class="anchor" href="#_inclusion"></a>3.7. Inclusion</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est de créer un servlet qui inclut une autre ressource.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer deux servlets, <code>InitialServlet2</code> et <code>IncludeServlet</code>.</p>
+</li>
+<li>
+<p>Les configurer pour être respectivement accessibles via <code>/initial2</code> et <code>/include</code>.</p>
+</li>
+<li>
+<p>Dans le premier servlet, implémenter :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>une écriture dans le flux de réponse</p>
+</li>
+<li>
+<p>l'<em>include</em> vers le second servlet</p>
+</li>
+<li>
+<p>une seconde écriture dans le flux de réponse</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Dans le second servlet, écrire quelque chose dans le flux de réponse.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/initial2" class="bare">http://localhost:8080/initial2</a>.</p>
+</li>
+<li>
+<p>Vérifier que le navigateur affiche ce qui a été écrit dans le flux de réponse dans le bon ordre.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manipulation_de_jsp"><a class="anchor" href="#_manipulation_de_jsp"></a>4. Manipulation de JSP</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_premiers_pas_2"><a class="anchor" href="#_premiers_pas_2"></a>4.1. Premiers pas</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;afficher une page HTML.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un fichier HTML <code>hello.html</code> dans le répertoire racine de l&#8217;application web.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/hello.html" class="bare">http://localhost:8080/hello.html</a>.</p>
+</li>
+<li>
+<p>Vérifier que le navigateur affiche le contenu.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_contenu_statique"><a class="anchor" href="#_contenu_statique"></a>4.2. Contenu statique</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;afficher le contenu statique d&#8217;une JSP.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer une page JSP <code>hello.jsp</code> avec un contenu statique dans le répertoire racine de l&#8217;application web.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/hello.jsp" class="bare">http://localhost:8080/hello.jsp</a>.</p>
+</li>
+<li>
+<p>Vérifier que le navigateur affiche le contenu statique.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_contenu_dynamique"><a class="anchor" href="#_contenu_dynamique"></a>4.3. Contenu dynamique</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;afficher le contenu dynamique d&#8217;une JSP.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer une JSP <code>date.jsp</code> avec un contenu dynamique dans le répertoire racine de l&#8217;application web.
+Par exemple, afficher l&#8217;instant présent <code>&lt;%= new Date() %&gt;</code>.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/date.jsp" class="bare">http://localhost:8080/date.jsp</a>.</p>
+</li>
+<li>
+<p>Vérifier que le navigateur affiche le contenu dynamique en rafraichissant plusieurs fois la page.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_implémentation_du_modèle_mvc"><a class="anchor" href="#_implémentation_du_modèle_mvc"></a>4.4. Implémentation du modèle MVC</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;implémenter le modèle MVC avec un servlet frontal qui joue le rôle de contrôleur et une JSP qui joue le rôle de la vue.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un servlet <code>DateServlet</code> qui génère la date comme dans la section précédente.</p>
+</li>
+<li>
+<p>Implémenter un <em>forward</em> vers la JSP.</p>
+</li>
+<li>
+<p>Le rendre accessible via <code>/date</code>.</p>
+</li>
+<li>
+<p>Créer une JSP <code>date2.jsp</code> dans le répertoire racine de l&#8217;application web.</p>
+</li>
+<li>
+<p>Faire en sorte que la JSP récupère la date générée par le servlet et l&#8217;affiche.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/date" class="bare">http://localhost:8080/date</a>.</p>
+</li>
+<li>
+<p>Vérifier que la date est bien affichée.</p>
+</li>
+<li>
+<p>Accéder à <a href="http://localhost:8080/date2.jsp" class="bare">http://localhost:8080/date2.jsp</a>.</p>
+</li>
+<li>
+<p>Que se passe-t&#8217;il ? Pourquoi ?</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_protection_de_jsp"><a class="anchor" href="#_protection_de_jsp"></a>4.5. Protection de JSP</h3>
+<div class="paragraph">
+<p>Corriger la <a href="#_implémentation_du_modèle_mvc">solution précédente</a> pour que la JSP ne soit pas accessible directement via <a href="http://localhost:8080/date2.jsp" class="bare">http://localhost:8080/date2.jsp</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_exemple_complet"><a class="anchor" href="#_exemple_complet"></a>4.6. Exemple complet</h3>
+<div class="paragraph">
+<p>Reprendre l&#8217;<a href="#_utilisation_des_paramètres">exercice d&#8217;affichage des paramètres</a> et l&#8217;implémenter avec le modèle MVC.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manipulation_de_filtres"><a class="anchor" href="#_manipulation_de_filtres"></a>5. Manipulation de filtres</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_filtre_de_post_processing"><a class="anchor" href="#_filtre_de_post_processing"></a>5.1. Filtre de <em>post-processing</em></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;implémenter un filtre qui formate une classe de modèle.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Soit les classes suivantes :</p>
+</div>
+<div class="listingblock">
+<div class="title">Person.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class Person {
+
+    public final String firstName;
+    public final String lastName;
+
+    public Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">PersonServlet.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@WebServlet("/person/*")
+public class PersonServlet extends HttpServlet {
+
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse res) {
+        String firstName = req.getParameter("firstName");
+        String lastName = req.getParameter("lastName");
+        Person person = new Person(firstName, lastName);
+        req.setAttribute("person", person);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Le modèle doit être formaté en fonction du type demandé.
+Celui-ci est passé dans le chemin d&#8217;URL <em>p.e.</em> <code>/person/xml</code>.
+Les données sont passées en paramètre de requête.
+Voici un échantillon de requêtes et les réponses attendues :</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 62.5%;">
+<col style="width: 37.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Requête</th>
+<th class="tableblock halign-left valign-top">Réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://localhost:8080/person/xml?firstName=John&amp;lastName=Doe" class="bare">http://localhost:8080/person/xml?firstName=John&amp;lastName=Doe</a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;person&gt;
+  &lt;firstName&gt;John&lt;/firstName&gt;
+  &lt;lastName&gt;Doe&lt;/lastName&gt;
+&lt;/person&gt;</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://localhost:8080/person/json?firstName=John&amp;lastName=Doe" class="bare">http://localhost:8080/person/json?firstName=John&amp;lastName=Doe</a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "person": {
+    "firstName": John,
+    "lastName": Doe
+  }
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://localhost:8080/person/html?firstName=John&amp;lastName=Doe" class="bare">http://localhost:8080/person/html?firstName=John&amp;lastName=Doe</a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><h1>Person</h1>
+<b>First Name:</b> John<br>
+<b>Last Name:</b> Doe<br></div></td>
+</tr>
+</tbody>
+</table>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A l&#8217;aide d&#8217;une combinaison des classes fournies, de filtres et de JSP, implémenter la logique ci-dessus.</p>
+</li>
+<li>
+<p>Il existe un grand nombre de combinatoires possibles.
+Déterminer la meilleure architecture.</p>
+</li>
+<li>
+<p>Justifier le choix.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Les classes fournies ne doivent pas être modifiées.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_filtre_dauthentification"><a class="anchor" href="#_filtre_dauthentification"></a>5.2. Filtre d&#8217;authentification</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;implémenter un filtre qui permet de vérifier si l&#8217;utilisateur est authentifié.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Le diagramme suivant indique le flux à implémenter:</p>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img src="./images/servlet/authenticate-filter.svg" alt="authenticate filter" width="834" height="495">
+</div>
+</div>
+<div class="paragraph">
+<p>Les composants sont :</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Responsabilité</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AuthenticationFilter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filtre</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vérifie si la session utilisateur comporte l&#8217;attribut d&#8217;authentification</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MainPage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Affiche la page de bienvenue dans l&#8217;application</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AuthenticationPage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Affiche la page d&#8217;accès refusé, qui comprend un formulaire d&#8217;authentification</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AuthenticationServlet</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Servlet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stocke l&#8217;attribut d&#8217;authentification dans la session utilisateur</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gestion_de_la_sécurité"><a class="anchor" href="#_gestion_de_la_sécurité"></a>6. Gestion de la sécurité</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Remplacer l&#8217;implémentation précédente par le mécanisme de sécurisation des URL vu en cours.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manipulation_dabonnés_au_cycle_de_vie"><a class="anchor" href="#_manipulation_dabonnés_au_cycle_de_vie"></a>7. Manipulation d&#8217;abonnés au cycle de vie</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_abonnement_au_cycle_de_vie_des_objets_de_session"><a class="anchor" href="#_abonnement_au_cycle_de_vie_des_objets_de_session"></a>7.1. Abonnement au cycle de vie des objets de session</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;écrire dans la sortie système lorsqu&#8217;un objet est stocké dans une session utilisateur.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un abonné du type adéquat</p>
+</li>
+<li>
+<p>Enregistrer l&#8217;abonné</p>
+</li>
+<li>
+<p>Quand un objet est stocké, l&#8217;abonné doit écrire le nom de l&#8217;attribut et l&#8217;objet dans la sortie système.
+Si l&#8217;objet est multi-valué (tableau ou liste), écrire chacun des éléments qui le compose.</p>
+</li>
+<li>
+<p>Créer un composant de test qui permet de stocker 1 à n objets dans la session sous une clé générique</p>
+</li>
+<li>
+<p>Tester le bon fonctionnement du composant avec les valeurs suivantes :</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 85.7143%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Clé</th>
+<th class="tableblock halign-left valign-top">Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"objet"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>new Object()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"date"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>new java.util.Date()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"array"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{ new Object(), new Object(), new java.util.Date() }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"list"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Arrays.asList(new Object(), new Object(), new java.util.Date())</code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_abonnement_au_cycle_de_vie_des_sessions"><a class="anchor" href="#_abonnement_au_cycle_de_vie_des_sessions"></a>7.2. Abonnement au cycle de vie des sessions</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;offrir un service qui donne retourne le nombre de sessions utilisateur existantes à un instant <em>t</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un abonné du type adéquat</p>
+</li>
+<li>
+<p>Enregistrer l&#8217;abonné</p>
+</li>
+<li>
+<p>Choisir le bon contexte pour stocker le nombre de sessions</p>
+</li>
+<li>
+<p>Lorsqu&#8217;une session est créée, incrémenter le compteur de sessions.
+Lorsqu&#8217;elle est détruite, décrémenter le compteur</p>
+</li>
+<li>
+<p>Créer un composant pour afficher le compteur à l&#8217;utilisateur</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Une session est créée lorsque la méthode <code>HttpServletRequest.getSession()</code> est appelée.
+Cette méthode est appelée implicitement lors d&#8217;un <code>forward</code>/<code>include</code> de JSP.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gestion_des_erreurs"><a class="anchor" href="#_gestion_des_erreurs"></a>8. Gestion des erreurs</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_page_not_found"><a class="anchor" href="#_page_not_found"></a>8.1. Page Not Found</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer une page d&#8217;erreur dédiée de type <em>Page Not Found</em></p>
+</li>
+<li>
+<p>Configurer l&#8217;application pour que les erreurs 404 soient redirigées vers cette page</p>
+</li>
+<li>
+<p>Tester</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_erreurs_serveur"><a class="anchor" href="#_erreurs_serveur"></a>8.2. Erreurs serveur</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer une page d&#8217;erreur dédiée de type <em>Internal Server Error</em></p>
+</li>
+<li>
+<p>Configurer l&#8217;application pour que les exceptions non interceptées soient redirigées vers cette page</p>
+</li>
+<li>
+<p>Tester (avec un servlet qui lance une exception)</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_jstl"><a class="anchor" href="#_jstl"></a>9. JSTL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Soit la JSP suivante :</p>
+</div>
+<div class="listingblock">
+<div class="title">person.jsp</div>
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Personnes&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Personnes&lt;/h1&gt;
+&lt;form method="POST" action="&lt;%= request.getContextPath() %&gt;/person"&gt;
+    &lt;label for="firstName"&gt;Prénom :&lt;/label&gt;
+    &lt;input type="text" id="firstName" name="firstName"/&gt;
+    &lt;label for="lastName"&gt;Nom :&lt;/label&gt;
+    &lt;input type="text" id="lastName" name="lastName"&gt;
+    &lt;input type="submit" value="Enregistrer"&gt;
+&lt;/form&gt;
+&lt;% List persons = (List) request.getAttribute("persons"); %&gt;
+&lt;% if (persons != null) { %&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Prénom :&lt;/th&gt;
+      &lt;th&gt;Nom :&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+&lt;% for (Person person: persons) { %&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;%= person.getFirstName() %&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;%= person.getName() %&gt;&lt;/td&gt;
+&lt;% } %&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;% } %&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Créer la classe <code>Person</code> et le servlet <code>PersonServlet</code> mappé à <code>person</code> pour que le formulaire crée et affiche les personnes.</p>
+</div>
+<div class="paragraph">
+<p>L&#8217;affichage se fait via un <code>GET</code> au mapping <code>person</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_utilisation_des_librairies_jstl"><a class="anchor" href="#_utilisation_des_librairies_jstl"></a>9.1. Utilisation des librairies JSTL</h3>
+<div class="paragraph">
+<p>Remplacer l&#8217;intégralité des scriptlets de la JSP par leur équivalent de la JSTL <code>core</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_externalisation_des_libellés"><a class="anchor" href="#_externalisation_des_libellés"></a>9.2. Externalisation des libellés</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est de migrer l&#8217;intégralité des libellés d&#8217;une page JSP dans un fichier spécifique.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A l&#8217;aide des techniques d&#8217;internationalisation vues en cours, externaliser l&#8217;intégralité des libellés de la JSP dans un fichier de <em>properties</em>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_internationalisation_dapplication"><a class="anchor" href="#_internationalisation_dapplication"></a>9.3. Internationalisation d&#8217;application</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif est d&#8217;afficher la page JSP précédente en fonction de la locale du navigateur.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>En plus du fichier racine précédent, créer au moins deux fichiers de properties pour des locales différentes (mais sans relation de parenté entre elles).</p>
+</li>
+<li>
+<p>Créer un servlet qui va lire la locale du navigateur</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Il est possible de changer la locale de Chrome en allant dans <a href="chrome://settings/languages">chrome://settings/languages</a>.
+Pour les autres navigateurs, se référer à leur documentation respective.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Passer la locale à la JSP</p>
+</li>
+<li>
+<p>Afficher la JSP avec les libellés qui correspondent à la locale</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-05-22 13:21:51 UTC
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" preserveAspectRatio="true" version="1.1" viewBox="0 0 239 185" zoomAndPan="magnify"><defs><filter height="300%" id="f1no15ie1nw8s1" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--entity jpa--><rect fill="#FEFECE" filter="url(#f1no15ie1nw8s1)" height="52.5938" style="stroke: #A80036; stroke-width: 1.5;" width="60" x="82.5" y="8"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="77.5" y="13"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="77.5" y="50.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="40" x="92.5" y="30.9951">«API»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="21" x="102" y="47.292">JPA</text><!--entity hibernate--><rect fill="#FEFECE" filter="url(#f1no15ie1nw8s1)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="87" x="6" y="138"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1" y="143"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1" y="164.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="67" x="16" y="160.9951">Hibernate</text><!--entity eclipse--><rect fill="#FEFECE" filter="url(#f1no15ie1nw8s1)" height="36.2969" style="stroke: #A80036; stroke-width: 1.5;" width="96" x="128.5" y="138"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="123.5" y="143"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="123.5" y="164.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="76" x="138.5" y="160.9951">EclipseLink</text><!--link jpa to hibernate--><path d="M78.484,61.063 C69.5245,69.569 60.8707,79.7702 55.5,91 C48.4702,105.6988 47.5072,124.4482 47.9776,137.8471 " fill="none" id="jpa-hibernate" style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#A80036" points="82.3339,57.524,73.0016,60.6718,78.6535,60.9085,78.4168,66.5604,82.3339,57.524" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="76" x="56.5" y="104.0669">implements</text><!--link jpa to eclipse--><path d="M128.619,65.597 C140.857,88.4487 157.248,119.0526 167.33,137.8776 " fill="none" id="jpa-eclipse" style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#A80036" points="126.23,61.136,126.9549,70.9581,128.5915,65.5432,134.0064,67.1798,126.23,61.136" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="76" x="151.5" y="104.0669">implements</text><!--
+@startuml
+component [JPA] as jpa << API >>
+component [Hibernate] as hibernate
+component [EclipseLink] as eclipse
+hibernate .up.> jpa : implements
+eclipse .up.> jpa : implements
+@enduml
+
+PlantUML version 1.2017.16beta1(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.7.0_25-b15
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="author" content="Nicolas Frankel">
+<title>Travaux pratiques - Java Management eXtensions</title>
+<link rel="stylesheet" href="./../asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Travaux pratiques - Java Management eXtensions</h1>
+<div class="details">
+<span id="author" class="author">Nicolas Frankel</span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image left"><a class="image" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Licence Creative Commons"></a></span></p>
+</div>
+<div class="paragraph">
+<p>Ce document est mis à disposition selon les termes de la <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International</a>.</p>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle" class="title">Table des matières</div>
+<ul class="sectlevel1">
+<li><a href="#_références">1. Références</a></li>
+<li><a href="#_servlet_de_monitoring">2. Servlet de monitoring</a></li>
+<li><a href="#_monitoring_de_ressources">3. Monitoring de ressources</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_références"><a class="anchor" href="#_références"></a>1. Références</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">En français : </dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../cours/management.html">Slides</a></p>
+</li>
+<li>
+<p><a href="https://www.jmdoudoux.fr/java/dej/chap-jmx.htm" target="_blank" rel="noopener">JMX (Java Management Extensions)</a></p>
+</li>
+<li>
+<p><a href="https://blog.jetoile.fr/2010/10/jmx-pour-les-nuls-introduction.html" target="_blank" rel="noopener">JMX Pour Les Nuls&#8230;&#8203;</a></p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">En anglais : </dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.oracle.com/javase/tutorial/jmx/overview/index.html" target="_blank" rel="noopener">Lesson: Overview of the JMX Technology</a></p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/javase/tutorial/jmx/index.html" target="_blank" rel="noopener">Trail: Java Management Extensions (JMX)</a></p>
+</li>
+<li>
+<p><a href="https://www.baeldung.com/java-management-extensions" target="_blank" rel="noopener">Basic Introduction to JMX</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_servlet_de_monitoring"><a class="anchor" href="#_servlet_de_monitoring"></a>2. Servlet de monitoring</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A l&#8217;aide de JMX, développer un servlet qui affiche les informations relatives à la mémoire au moment de la requête :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Capacité maximum de la mémoire <em>heap</em>, et non-<em>heap</em></p>
+</li>
+<li>
+<p>Utilisation actuelle de la mémoire <em>heap</em>, et non-<em>heap</em></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_monitoring_de_ressources"><a class="anchor" href="#_monitoring_de_ressources"></a>3. Monitoring de ressources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Soit un cache modélisé par une simple <code>Map&lt;String, Object&gt;</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un MBean qui permet :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>De consulter la taille du cache</p>
+</li>
+<li>
+<p>De retourner la collection des clés du cache</p>
+</li>
+<li>
+<p>De vider le cache</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Développer un servlet pour peupler le cache</p>
+</li>
+<li>
+<p>Utiliser jconsole pour interagir avec le MBean</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-05-22 13:21:51 UTC
+</div>
+</div>
+</body>
+</html>

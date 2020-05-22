@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="author" content="Nicolas Frankel">
+<title>Travaux pratiques - Context and Dependency Injection</title>
+<link rel="stylesheet" href="./../asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Travaux pratiques - Context and Dependency Injection</h1>
+<div class="details">
+<span id="author" class="author">Nicolas Frankel</span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image left"><a class="image" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Licence Creative Commons"></a></span></p>
+</div>
+<div class="paragraph">
+<p>Ce document est mis à disposition selon les termes de la <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International</a>.</p>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle" class="title">Table des matières</div>
+<ul class="sectlevel1">
+<li><a href="#_références">1. Références</a></li>
+<li><a href="#_premiers_pas_avec_linjection">2. Premiers pas avec l&#8217;injection</a>
+<ul class="sectlevel2">
+<li><a href="#_injection_dans_un_servlet">2.1. Injection dans un servlet</a></li>
+<li><a href="#_injection_dans_un_ejb">2.2. Injection dans un EJB</a></li>
+<li><a href="#_injection_dans_un_objet_quelconque">2.3. Injection dans un objet quelconque</a></li>
+</ul>
+</li>
+<li><a href="#_travail_sur_les_scopes">3. Travail sur les <em>scopes</em></a>
+<ul class="sectlevel2">
+<li><a href="#_singleton_applicatif">3.1. Singleton applicatif</a></li>
+<li><a href="#_scope_de_requête">3.2. <em>Scope</em> de requête</a></li>
+<li><a href="#_gestion_de_la_session">3.3. Gestion de la session</a></li>
+</ul>
+</li>
+<li><a href="#_producers">4. <em>Producers</em></a>
+<ul class="sectlevel2">
+<li><a href="#_producer_simple">4.1. <em>Producer</em> simple</a></li>
+<li><a href="#_producer_complexe">4.2. <em>Producer</em> complexe</a></li>
+<li><a href="#_désambiguïsation">4.3. Désambiguïsation</a></li>
+</ul>
+</li>
+<li><a href="#_intercepteurs_et_décorateurs">5. Intercepteurs et décorateurs</a></li>
+<li><a href="#_programmation_évènementielle">6. Programmation évènementielle</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_références"><a class="anchor" href="#_références"></a>1. Références</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">En français : </dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../cours/injection.html">Slides</a></p>
+</li>
+<li>
+<p><a href="http://rmannibucau.developpez.com/tutoriels/cdi/introduction-cdi/">Tutoriel sur une introduction à CDI</a></p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">En anglais : </dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.oracle.com/javaee/7/tutorial/cdi-basic.htm" target="_blank" rel="noopener">Introduction to Contexts and Dependency Injection for Java EE</a></p>
+</li>
+<li>
+<p><a href="http://cdi-spec.org/" target="_blank" rel="noopener">CDI specifications</a></p>
+</li>
+<li>
+<p><a href="https://openwebbeans.apache.org/documentation.html" target="_blank" rel="noopener">OpenWebBeans (CDI implementation used by TomEE)</a></p>
+</li>
+<li>
+<p><a href="https://www.pavel.cool/javaee/cdi-events/" target="_blank" rel="noopener">CDI Events overview</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_premiers_pas_avec_linjection"><a class="anchor" href="#_premiers_pas_avec_linjection"></a>2. Premiers pas avec l&#8217;injection</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_injection_dans_un_servlet"><a class="anchor" href="#_injection_dans_un_servlet"></a>2.1. Injection dans un servlet</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un servlet</p>
+</li>
+<li>
+<p>Dans celui-ci, injecter :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Une source de données <code>DataSource</code></p>
+</li>
+<li>
+<p>Un gestionnaire d&#8217;entités <code>EntityManager</code></p>
+</li>
+<li>
+<p>Un objet d&#8217;un type quelconque <em>e.g.</em> <code>Person</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>S&#8217;assurer que les objets ne sont pas <code>null</code> à l&#8217;exécution.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_injection_dans_un_ejb"><a class="anchor" href="#_injection_dans_un_ejb"></a>2.2. Injection dans un EJB</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un EJB</p>
+</li>
+<li>
+<p>Dans celui-ci, injecter :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Une source de données <code>DataSource</code></p>
+</li>
+<li>
+<p>Un gestionnaire d&#8217;entités <code>EntityManager</code></p>
+</li>
+<li>
+<p>Un objet d&#8217;un type quelconque <em>e.g.</em> <code>Person</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>S&#8217;assurer que les objets ne sont pas <code>null</code> à l&#8217;exécution.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_injection_dans_un_objet_quelconque"><a class="anchor" href="#_injection_dans_un_objet_quelconque"></a>2.3. Injection dans un objet quelconque</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un type quelconque <em>e.g.</em> <code>Person</code></p>
+</li>
+<li>
+<p>Dans celui-ci, injecter :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Une source de données <code>DataSource</code></p>
+</li>
+<li>
+<p>Un gestionnaire d&#8217;entités <code>EntityManager</code></p>
+</li>
+<li>
+<p>Un objet d&#8217;un autre type quelconque <em>e.g.</em> <code>Adress</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>S&#8217;assurer que les objets ne sont pas <code>null</code> à l&#8217;exécution.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Rappel</div>
+<div class="paragraph">
+<p>Seuls les objets dont le cycle de vie est géré par le serveur d&#8217;applications sont la cible potentielle de l&#8217;injection.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_travail_sur_les_scopes"><a class="anchor" href="#_travail_sur_les_scopes"></a>3. Travail sur les <em>scopes</em></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_singleton_applicatif"><a class="anchor" href="#_singleton_applicatif"></a>3.1. Singleton applicatif</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Dans l&#8217;exemple précédent, combien d&#8217;instances de <code>Person</code> sont créées ?</p>
+</li>
+<li>
+<p>Comment faire pour qu&#8217;une unique instance soit créée (et qu&#8217;elle soit chacune injectée dans le servlet et l&#8217;EJB) ?</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scope_de_requête"><a class="anchor" href="#_scope_de_requête"></a>3.2. <em>Scope</em> de requête</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un bean qui a pour <em>scope</em> la requête</p>
+</li>
+<li>
+<p>Vérifier qu&#8217;un nouvel objet est créé à chaque requête</p>
+</li>
+<li>
+<p>Vérifier que le même objet est injecté tout au long de la chaîne de requête</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gestion_de_la_session"><a class="anchor" href="#_gestion_de_la_session"></a>3.3. Gestion de la session</h3>
+<div class="paragraph">
+<p>Soit le code suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@WebServlet("/preferences")
+public class PreferencesServlet extends HttpServlet {
+
+    private static final String PREFS_KEY = "ch.frankel.preferences";
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Enumeration&lt;String&gt; parameterNames = req.getParameterNames();
+        HttpSession session = req.getSession();
+        Object o = session.getAttribute(PREFS_KEY);
+        Map&lt;String, String&gt; preferences;
+        if (o == null) {
+            preferences = new HashMap&lt;&gt;();
+        } else {
+            preferences = (Map) o;
+        }
+        while (parameterNames.hasMoreElements()) {
+            String parameterName = parameterNames.nextElement();
+            if (parameterName.startsWith("preferences")) {
+                String value = req.getParameter(parameterName);
+                preferences.put(parameterName, value);
+            }
+        }
+        session.setAttribute(PREFS_KEY, preferences);
+        resp.sendRedirect("/preferences");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Object o = session.getAttribute(PREFS_KEY);
+        if (o == null) {
+            o = new HashMap&lt;String, String&gt;();
+        }
+        req.setAttribute(PREFS_KEY, o);
+        req.getRequestDispatcher("/WEB-INF/preferences.jsp").forward(req, resp);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Analyser le code précédent</p>
+</li>
+<li>
+<p>Ré-écrire celui-ci en utilisant un <em>bean</em> injecté lié à la session</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_producers"><a class="anchor" href="#_producers"></a>4. <em>Producers</em></h2>
+<div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Il est plus aisé de vérifier l&#8217;injection dans un servlet
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_producer_simple"><a class="anchor" href="#_producer_simple"></a>4.1. <em>Producer</em> simple</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Dans un objet quelconque, injecter le temps système</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Utiliser la méthode <code>System.currentTimeMillis()</code>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Vérifier</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_producer_complexe"><a class="anchor" href="#_producer_complexe"></a>4.2. <em>Producer</em> complexe</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Dans un object quelconque, injecter un objet de type <code>Random</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Si la propriété système <code>secure</code> vaut <code>true</code>, le type concret de l&#8217;objet doit être <code>SecureRandom</code></p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Utiliser la méthode <code>System.getProperty()</code>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Sinon, le type concret doit être simplement <code>Random</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Vérifier</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_désambiguïsation"><a class="anchor" href="#_désambiguïsation"></a>4.3. Désambiguïsation</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Dans un object quelconque, injecter d&#8217;une part le jour de la semaine (p.e. <code>"LUNDI"</code>), d&#8217;autre part, le mois (p.e. <code>"JANVIER"</code>).</p>
+</li>
+<li>
+<p>Vérifier</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_intercepteurs_et_décorateurs"><a class="anchor" href="#_intercepteurs_et_décorateurs"></a>5. Intercepteurs et décorateurs</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Créer un intercepteur qui écrit dans la sortie standard les paramètres d&#8217;entrée et la valeur de retour des méthodes interceptées.</p>
+</li>
+<li>
+<p>Vérifier son bon fonctionnement</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_programmation_évènementielle"><a class="anchor" href="#_programmation_évènementielle"></a>6. Programmation évènementielle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Soit l&#8217;architecture exposée précédemment (<a href="servlet.html#_filtre_de_post_processing">§ 5.1</a>).</p>
+</div>
+<div class="paragraph">
+<p>Remplacer le mécanisme des filtres par une configuration générale du format.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Créer un servlet qui permet de configurer le format désiré</p>
+</li>
+<li>
+<p>Lorsque l&#8217;URL du servlet est appelée, ce dernier envoie un évènement de type <code>FormatChanged</code></p>
+</li>
+<li>
+<p>Un composant singleton souscrit à cet évènement et conserve l&#8217;information</p>
+</li>
+<li>
+<p>Ce composant est injecté dans le servlet qui affiche la page</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-05-22 13:21:51 UTC
+</div>
+</div>
+</body>
+</html>

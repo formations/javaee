@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="author" content="Nicolas Frankel">
+<title>Travail à rendre</title>
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Travail à rendre</h1>
+<div class="details">
+<span id="author" class="author">Nicolas Frankel</span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image left"><a class="image" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Licence Creative Commons"></a></span></p>
+</div>
+<div class="paragraph">
+<p>Ce document est mis à disposition selon les termes de la <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International</a>.</p>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle" class="title">Table des matières</div>
+<ul class="sectlevel1">
+<li><a href="#_livrables">1. Livrables</a></li>
+<li><a href="#_critères_de_notation">2. Critères de notation</a></li>
+<li><a href="#_objectif">3. Objectif</a></li>
+<li><a href="#_aperçu_de_la_navigation_entre_les_écrans">4. Aperçu de la navigation entre les écrans</a></li>
+<li><a href="#_composant_partagé_barre_de_menu">5. Composant partagé : barre de menu</a>
+<ul class="sectlevel2">
+<li><a href="#_composants">5.1. Composants</a></li>
+<li><a href="#_comportement">5.2. Comportement</a></li>
+</ul>
+</li>
+<li><a href="#_composant_partagé_caddie">6. Composant partagé : caddie</a>
+<ul class="sectlevel2">
+<li><a href="#_composants_2">6.1. Composants</a></li>
+<li><a href="#_comportement_2">6.2. Comportement</a></li>
+</ul>
+</li>
+<li><a href="#_composant_partagé_produit">7. Composant partagé : produit</a>
+<ul class="sectlevel2">
+<li><a href="#_composants_3">7.1. Composants</a></li>
+<li><a href="#_comportement_3">7.2. Comportement</a></li>
+</ul>
+</li>
+<li><a href="#_ecran_daccueil">8. Ecran d&#8217;accueil</a>
+<ul class="sectlevel2">
+<li><a href="#_composants_4">8.1. Composants</a></li>
+<li><a href="#_comportement_4">8.2. Comportement</a></li>
+</ul>
+</li>
+<li><a href="#_ecran_de_liste_de_produits">9. Ecran de liste de produits</a>
+<ul class="sectlevel2">
+<li><a href="#_composants_5">9.1. Composants</a></li>
+</ul>
+</li>
+<li><a href="#_ecran_de_détail_du_produit">10. Ecran de détail du produit</a>
+<ul class="sectlevel2">
+<li><a href="#_composants_6">10.1. Composants</a></li>
+<li><a href="#_comportement_5">10.2. Comportement</a></li>
+</ul>
+</li>
+<li><a href="#_ecran_de_checkout">11. Ecran de checkout</a>
+<ul class="sectlevel2">
+<li><a href="#_composants_7">11.1. Composants</a></li>
+<li><a href="#_comportement_6">11.2. Comportement</a></li>
+</ul>
+</li>
+<li><a href="#_ecran_de_paiement">12. Ecran de paiement</a>
+<ul class="sectlevel2">
+<li><a href="#_composants_8">12.1. Composants</a></li>
+<li><a href="#_comportement_7">12.2. Comportement</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_livrables"><a class="anchor" href="#_livrables"></a>1. Livrables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Les livrables attendus sont :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Le WAR de l&#8217;application</p>
+</li>
+<li>
+<p>Les sources Java associées</p>
+</li>
+<li>
+<p>La documentation d&#8217;installation et de configuration</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>L&#8217;infrastructure cible est <a href="https://tomee.apache.org/download-ng.html" target="_blank" rel="noopener">TomEE WebProfile</a> v7.1.x.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_critères_de_notation"><a class="anchor" href="#_critères_de_notation"></a>2. Critères de notation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La notation se décompose ainsi :</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Points</th>
+<th class="tableblock halign-left valign-top">Catégories</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top" colspan="2"><p class="tableblock">Note minimale</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Respect des spécifications fonctionnelles</p>
+</li>
+<li>
+<p>Déploiement sans accroc sur un TomEE</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Ces points sont accordés "en lot".
+Si le déploiement échoue ou qu&#8217;un lien n&#8217;est pas fonctionnel, aucun point n&#8217;est accordé (0)
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Qualité du code</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>Respect des normes de nommage du langage Java, par exemple :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>le nom des classes commence par une majuscule</p>
+</li>
+<li>
+<p>le casse est de type <em>camelcase</em></p>
+</li>
+<li>
+<p>etc.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Respect des principes de Programmation Orientée Objet</p>
+</li>
+<li>
+<p>Respect des principes SOLID, par exemple :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>le principe de responsabilité unique (<em>Single Responsibility Principle</em>)</p>
+</li>
+<li>
+<p>etc.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Respect des bonnes pratiques exposées en cours, par exemple :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>préférer les <em>taglibs</em> aux <em>scriptlets</em></p>
+</li>
+<li>
+<p>préférer l&#8217;utilisation du descripteur de déploiement aux annotations quand cela est possible</p>
+</li>
+<li>
+<p>etc.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Des gratifications "bonus" peuvent être accordées pour des réalisations particulières, par exemple, un thème graphique particulièrement recherché.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Aucune gratification ne sera accordée si les 3 points de base ne l&#8217;ont pas été :
+une application qui ne fonctionne pas, belle ou pas, reste une application qui ne fonctionne pas.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_objectif"><a class="anchor" href="#_objectif"></a>3. Objectif</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>L&#8217;objectif est la réalisation d&#8217;un magasin de vente en ligne.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Afin de conserver une charge de travail adaptée, toutes les fonctionnalités attendues d’une telle application ne sont pas à implémenter, mais uniquement celles qui sont décrites dans le présent document.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_aperçu_de_la_navigation_entre_les_écrans"><a class="anchor" href="#_aperçu_de_la_navigation_entre_les_écrans"></a>4. Aperçu de la navigation entre les écrans</h2>
+<div class="sectionbody">
+<div class="imageblock text-center">
+<div class="content">
+<img src="navigation-flow.svg" alt="navigation flow" width="1122" height="673">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_composant_partagé_barre_de_menu"><a class="anchor" href="#_composant_partagé_barre_de_menu"></a>5. Composant partagé : barre de menu</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_composants"><a class="anchor" href="#_composants"></a>5.1. Composants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Caddie</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_composant_partagé_caddie">Composant caddie</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aligné à droite</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Accueil</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Icône</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aligné à gauche</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_comportement"><a class="anchor" href="#_comportement"></a>5.2. Comportement</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Lorsque l&#8217;icône d&#8217;accueil est cliqué, la page d&#8217;accueil est affichée</p>
+</li>
+<li>
+<p>Lorsque l&#8217;icône de caddie est cliqué, la page de checkout est affichée</p>
+</li>
+<li>
+<p>Le composant barre de menu est affiché sur toutes les pages, sauf la page de checkout ou la page de paiement</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_composant_partagé_caddie"><a class="anchor" href="#_composant_partagé_caddie"></a>6. Composant partagé : caddie</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_composants_2"><a class="anchor" href="#_composants_2"></a>6.1. Composants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Caddie</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aligné à gauche</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nombre d&#8217;articles dans le caddie</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Texte</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aligné à droite</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_comportement_2"><a class="anchor" href="#_comportement_2"></a>6.2. Comportement</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Le composant caddie affiche le nombre de produits dans le caddie de l&#8217;utilisateur</p>
+</li>
+<li>
+<p>Lorsqu&#8217;un produit est ajouté au caddie, le nombre de produits doit être rafraîchi</p>
+</li>
+<li>
+<p>Lorsqu&#8217;un produit est supprimé du caddie, le nombre de produits doit être rafraîchi</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_composant_partagé_produit"><a class="anchor" href="#_composant_partagé_produit"></a>7. Composant partagé : produit</h2>
+<div class="sectionbody">
+<div class="imageblock text-center">
+<div class="content">
+<img src="images/product-component.png" alt="640" width="480">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_composants_3"><a class="anchor" href="#_composants_3"></a>7.1. Composants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Texte</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Centré</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">En arrière-plan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ajouter au caddie</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bouton</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Affiche le prix et l&#8217;icône Caddie</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_comportement_3"><a class="anchor" href="#_comportement_3"></a>7.2. Comportement</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Lorsque le bouton est cliqué, le produit est ajouté au caddie</p>
+</li>
+<li>
+<p>Lorsque l&#8217;utilisateur clique n&#8217;importe où sauf sur le bouton, l&#8217;<a href="#_ecran_de_détail_du_produit">écran de détail du produit</a> est affiché</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ecran_daccueil"><a class="anchor" href="#_ecran_daccueil"></a>8. Ecran d&#8217;accueil</h2>
+<div class="sectionbody">
+<div class="imageblock text-center">
+<div class="content">
+<img src="images/welcome.png" alt="640" width="480">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_composants_4"><a class="anchor" href="#_composants_4"></a>8.1. Composants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Caddie</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_composant_partagé_caddie">Composant caddie</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Titre</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Texte</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description </p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"> Texte</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multi-lignes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"> Image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">En arrière-plan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Produit 1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="##_composant_partagé_produit">Composant produit</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Produit 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="##_composant_partagé_produit">Composant produit</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Produit 3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="##_composant_partagé_produit">Composant produit</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_comportement_4"><a class="anchor" href="#_comportement_4"></a>8.2. Comportement</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Lorsque le titre ou la description sont cliqués, l&#8217;utilisateur est redirigé vers l&#8217;<a href="#_ecran_de_liste_de_produits">écran de liste des produits</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ecran_de_liste_de_produits"><a class="anchor" href="#_ecran_de_liste_de_produits"></a>9. Ecran de liste de produits</h2>
+<div class="sectionbody">
+<div class="paragraph text-center">
+<p><span class="image"><img src="images/product-list.png" alt="640" width="480"></span></p>
+</div>
+<div class="sect2">
+<h3 id="_composants_5"><a class="anchor" href="#_composants_5"></a>9.1. Composants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Menu</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_composant_partagé_barre_de_menu">Composant barre de menu</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Produit i</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="##_composant_partagé_produit">Composant produit</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>Tous les produits sont affichés</p>
+</li>
+<li>
+<p>La barre de défilement du navigateur permet de visualiser les produits qui se situent en dehors du cadre</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ecran_de_détail_du_produit"><a class="anchor" href="#_ecran_de_détail_du_produit"></a>10. Ecran de détail du produit</h2>
+<div class="sectionbody">
+<div class="paragraph text-center">
+<p><span class="image"><img src="images/product-detail.png" alt="640" width="480"></span></p>
+</div>
+<div class="sect2">
+<h3 id="_composants_6"><a class="anchor" href="#_composants_6"></a>10.1. Composants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Menu</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_composant_partagé_barre_de_menu">Composant barre de menu</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Texte</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Texte</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Visuel 1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aligné à droite</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Visuel 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aligné à droite</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ajouter au caddie</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bouton</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Affiche le prix et l&#8217;icône Caddie</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_comportement_5"><a class="anchor" href="#_comportement_5"></a>10.2. Comportement</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Lorsque le bouton est cliqué, le produit est ajouté au caddie</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ecran_de_checkout"><a class="anchor" href="#_ecran_de_checkout"></a>11. Ecran de checkout</h2>
+<div class="sectionbody">
+<div class="paragraph text-center">
+<p><span class="image"><img src="images/checkout.png" alt="640" width="480"></span></p>
+</div>
+<div class="sect2">
+<h3 id="_composants_7"><a class="anchor" href="#_composants_7"></a>11.1. Composants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Commentaire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Produit i</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ligne de tableau</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Total</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Texte</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Affiche la somme du prix de chaque ligne</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retour au magasin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lien</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Une ligne de tableau comporte :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Le libellé du produit</p>
+</li>
+<li>
+<p>La quantité commandée</p>
+</li>
+<li>
+<p>Un bouton <b class="button">+</b></p>
+</li>
+<li>
+<p>Un bouton <b class="button">-</b></p>
+</li>
+<li>
+<p>Un bouton <b class="button">Supprimer</b></p>
+</li>
+<li>
+<p>Le prix du produit fois la quantité</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_comportement_6"><a class="anchor" href="#_comportement_6"></a>11.2. Comportement</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Lorsque la quantité d&#8217;un produit est modifiée, le prix de la ligne produit est modifié</p>
+</li>
+<li>
+<p>Lorsque le prix de la ligne produit est modifié, le prix total est modifié</p>
+</li>
+<li>
+<p>Lorsque le bouton <b class="button">Supprimer</b> est cliqué, la ligne produit est supprimée</p>
+</li>
+<li>
+<p>Lorsque la ligne produit est supprimée, le prix total est modifié</p>
+</li>
+<li>
+<p>La quantité ne peut jamais être inférieure à 1</p>
+</li>
+<li>
+<p>Lorsque le bouton <b class="button">+</b> est cliqué, la quantité de la ligne produit augmente de 1</p>
+</li>
+<li>
+<p>Lorsque le bouton <b class="button">-</b> est cliqué, la quantité de la ligne produit diminue de 1</p>
+</li>
+<li>
+<p>Lorsque le bouton <b class="button">Payer</b> est cliqué, l&#8217;utilisateur est redirigé vers l&#8217;<a href="#_ecran_de_paiement">écran de paiement</a></p>
+</li>
+<li>
+<p>Lorsque le lien Retour au magasin est cliqué, l&#8217;utilisateur est redirigé vers l&#8217;<a href="#_ecran_de_détail_du_produit">écran de liste des produits</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ecran_de_paiement"><a class="anchor" href="#_ecran_de_paiement"></a>12. Ecran de paiement</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_composants_8"><a class="anchor" href="#_composants_8"></a>12.1. Composants</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Composant</th>
+<th class="tableblock halign-left valign-top">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Somme</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Texte</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Champ de texte</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Champ de texte</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N° de carte de paiement</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Champ de texte</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mois de fin de validité</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Champ numérique sur 2 positions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Année de fin de validité</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Champ numérique sur 2 positions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retour au magasin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lien</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Commander</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bouton</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_comportement_7"><a class="anchor" href="#_comportement_7"></a>12.2. Comportement</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Lorsque le lien Retour au magasin est cliqué, l&#8217;utilisateur est redirigé vers l&#8217;<a href="#_ecran_de_détail_du_produit">écran de liste des produits</a></p>
+</li>
+<li>
+<p>Lorsque le bouton Commander est cliqué :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Le caddie est vidé</p>
+</li>
+<li>
+<p>L&#8217;utilisateur est redirigé vers l&#8217;<a href="#_ecran_de_détail_du_produit">écran de liste des produits</a></p>
+</li>
+<li>
+<p>Le message "Merci pour votre commande" s&#8217;affiche</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-05-22 13:21:51 UTC
+</div>
+</div>
+</body>
+</html>

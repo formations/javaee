@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="author" content="Nicolas Frankel">
+<title>Travaux pratiques - Java Persistence API</title>
+<link rel="stylesheet" href="./../asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Travaux pratiques - Java Persistence API</h1>
+<div class="details">
+<span id="author" class="author">Nicolas Frankel</span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image left"><a class="image" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Licence Creative Commons"></a></span></p>
+</div>
+<div class="paragraph">
+<p>Ce document est mis à disposition selon les termes de la <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International</a>.</p>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle" class="title">Table des matières</div>
+<ul class="sectlevel1">
+<li><a href="#_références">1. Références</a></li>
+<li><a href="#_mise_en_place">2. Mise en place</a>
+<ul class="sectlevel2">
+<li><a href="#_instructions_pour_eclipse">2.1. Instructions pour Eclipse</a></li>
+<li><a href="#_instructions_pour_intellij_idea">2.2. Instructions pour IntelliJ IDEA</a></li>
+<li><a href="#_base_de_données">2.3. Base de données</a></li>
+</ul>
+</li>
+<li><a href="#_manipulation_de_lapi_jpa">3. Manipulation de l&#8217;API JPA</a>
+<ul class="sectlevel2">
+<li><a href="#_implémentation_du_modèle">3.1. Implémentation du modèle</a></li>
+<li><a href="#_contraintes_sur_la_conception">3.2. Contraintes sur la conception</a></li>
+<li><a href="#_implémentation_du_service">3.3. Implémentation du service</a></li>
+<li><a href="#_implémentation_du_contrôleur">3.4. Implémentation du contrôleur</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_références"><a class="anchor" href="#_références"></a>1. Références</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">En français : </dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="../cours/jpa.html">Slides</a></p>
+</li>
+<li>
+<p><a href="https://www.jmdoudoux.fr/java/dej/chap-jpa.htm" target="_blank" rel="noopener">JPA (Java Persistence API)</a></p>
+</li>
+<li>
+<p><a href="http://blog.paumard.org/cours/jpa/" target="_blank" rel="noopener">Java Persistence API</a></p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">En anglais : </dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.oracle.com/javaee/7/tutorial/partpersist.htm" target="_blank" rel="noopener">The Java EE Tutorial - Persistence</a></p>
+</li>
+<li>
+<p><a href="http://www.vogella.com/tutorials/JavaPersistenceAPI/article.html" target="_blank" rel="noopener">Java persistence API - Tutorial</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mise_en_place"><a class="anchor" href="#_mise_en_place"></a>2. Mise en place</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_instructions_pour_eclipse"><a class="anchor" href="#_instructions_pour_eclipse"></a>2.1. Instructions pour Eclipse</h3>
+<div class="paragraph">
+<p>Suivre la <a href="servlet.html#_création_de_projet">procédure précédente</a> pour la création d&#8217;un projet Web Application.</p>
+</div>
+<div class="paragraph">
+<p>Dans la section "Configuration", cliquer sur <b class="button">Modify</b>.
+Dans la popup qui s&#8217;ouvre, sélectionner JPA - la version dépend de la version de TomEE.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/eclipse-project-facets.png" alt="Dynamic Web Project - Project Facets" width="698" height="398">
+</div>
+</div>
+<div class="paragraph">
+<p>Puis cliquer sur OK et continuer la création comme précédemment.</p>
+</div>
+<div class="paragraph">
+<p>Une nouvelle étape de configuration apparaît dans le flux de l&#8217;assistant, <em>JPA Facet</em>.
+Cette étape permet de référencer le JAR qui contient l&#8217;API JPA à la compilation.
+Remplir les champs ainsi :</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Champ</th>
+<th class="tableblock halign-left valign-top">Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Platform</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generic 2.x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JPA implementation type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User library</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Persistent class management</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annotated classes must be listed in persistence.xml</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Dans la section <em>JPA implementation</em>, cliquer sur le bouton de bibliothèque.
+Dans la fenêtre <em>pop-up</em> :</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Cliquer sur <b class="button">New&#8230;&#8203;</b> pour créer une nouvelle bibliothèque utilisateur.
+L&#8217;appeler JPA.</p>
+</li>
+<li>
+<p>Cliquer sur le <b class="button">Add External JARs&#8230;&#8203;</b> pour référencer le JAR qui contient l&#8217;API JPA.
+Il s&#8217;agit du JAR <code>javaee-api-x.y.z.jar</code> situé dans le répertoire <code>lib</code> de TomEE.</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/eclipse-jpa-library.png" alt="Configuration de la bibliothèque JPA" width="684" height="413">
+</div>
+</div>
+</li>
+<li>
+<p>Finalement, cliquer sur <b class="button">Apply and Close</b>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Dans la fenêtre, sélectionner la librairie nouvellement créée.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/eclipse-jpa-facet.png" alt="Dynamic Web Project - JPA Facet" width="527" height="693">
+</div>
+</div>
+<div class="paragraph">
+<p>Cliquer sur <b class="button">Next</b> et terminer la configuration.
+Le projet doit être similaire à la structure suivante :</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/eclipse-created-project.png" alt="Projet créé" width="285" height="288">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_instructions_pour_intellij_idea"><a class="anchor" href="#_instructions_pour_intellij_idea"></a>2.2. Instructions pour IntelliJ IDEA</h3>
+<div class="paragraph">
+<p>Suivre la <a href="servlet.html#_création_de_projet_2">procédure précédente</a> pour la création d&#8217;un projet Web Application.</p>
+</div>
+<div class="paragraph">
+<p>Cocher également la case Java EE persistence.
+Indiquer les valeurs suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>persistence.xml : 2.1</p>
+</li>
+<li>
+<p>OpenJPA (il s&#8217;agit du moteur de persistence fourni par TomEE)</p>
+</li>
+</ul>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/idea-new-project-jpa.png" alt="New Project - JPA" width="756" height="667">
+</div>
+</div>
+<div class="paragraph">
+<p>Dans la section <em>Library</em>, cliquer sur <b class="button">Create</b>. Dans la popup, sélectionner le JAR <code>openjpa-2.4.x.jar</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Ce JAR est situé dans le répertoire <code>lib</code> du répertoire d&#8217;installation de TomEE.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Le projet créé doit avoir une structure similaire à la suivante :</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/idea-created-jpa-project.png" alt="Project has been created" width="314" height="232">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_base_de_données"><a class="anchor" href="#_base_de_données"></a>2.3. Base de données</h3>
+<div class="paragraph">
+<p>La base de données utilisée est <a href="http://hsqldb.org/" target="_blank" rel="noopener">HyperSQL</a> (ou HSQLDB).
+Il s&#8217;agit d&#8217;une base de données très légère disponible au format JAR, qui contient le moteur d&#8217;exécution, le pilote JDBC ainsi qu&#8217;une console d&#8217;administration très simple.
+Il est disponible dans le répertoire TomEE.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;avantage d&#8217;HSQLDB est d&#8217;être indépendant de toute installation externe.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_configuration_de_la_source_de_données"><a class="anchor" href="#_configuration_de_la_source_de_données"></a>2.3.1. Configuration de la source de données</h4>
+<div class="paragraph">
+<p>Dans le cadre d&#8217;un projet réel, il est nécessaire de créer une source de données explicite.</p>
+</div>
+<div class="paragraph">
+<p>Dans le cadre du TP et pour des raisons de simplification, nous allons utiliser la source de données HSQLDB par défaut de TomEE.
+Son emplacement dépend de plusieurs critères, notamment de l&#8217;IDE, du système d&#8217;exploitation, etc.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, avec IntelliJ IDE sous OSX, elle est située dans <em>$HOME/Library/Caches/IntelliJIdea2017.2/tomcat/Unnamed_jpa/data/hsqldb/hsqldb</em></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">Trouver l&#8217;emplacement de la base de données sur le système de fichiers</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer un nouveau servlet</p>
+</li>
+<li>
+<p>Injecter la source de données par défaut</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Resource
+private DataSource dataSource</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Implémenter la méthode <code>doGet</code></p>
+</li>
+<li>
+<p>Mettre un point d&#8217;arrêt dans la méthode (ou dans la signature)</p>
+</li>
+<li>
+<p>Appeler le servlet</p>
+</li>
+<li>
+<p>Evaluer l&#8217;expression <code>dataSource</code></p>
+</li>
+<li>
+<p>L&#8217;URL est visible dans la feuille d&#8217;une des branches de la hiérarchie des objets (<code>dataSource.delegate.pool.poolProperties.h.delegate.url</code>)</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/datasource-default-url.png" alt="Data source object hierarchy value" width="968" height="248">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_création_automatisée_du_schéma"><a class="anchor" href="#_création_automatisée_du_schéma"></a>2.3.2. Création automatisée du schéma</h4>
+<div class="paragraph">
+<p>De même, dans le cadre d&#8217;un projet réel, il serait pertinent de créer le schéma de base de données <em>a priori</em> via les scripts DDL appropriés.</p>
+</div>
+<div class="paragraph">
+<p>Dans le cadre du TP, il est suffisant de déléguer cette opération à OpenJPA.
+Dans le fichier <code>persistence.xml</code>, ajouter une propriété supplémentaire :</p>
+</div>
+<div class="listingblock">
+<div class="title">persistence.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;persistence xmlns="http://java.sun.com/xml/ns/persistence"&gt;
+    &lt;persistence-unit ...&gt;
+        ...
+        &lt;properties&gt;
+            &lt;property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" /&gt;
+        &lt;/properties&gt;
+    &lt;/persistence-unit&gt;
+&lt;/persistence&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_logging"><a class="anchor" href="#_logging"></a>2.3.3. Logging</h4>
+<div class="paragraph">
+<p>Afin de pouvoir d&#8217;analyser les problèmes qui risquent d&#8217;apparaître dans l&#8217;utilisation d&#8217;OpenJPA, il est possible (et souhaitable) d&#8217;activer les logs.
+Pour ce faire, il faut juste ajouter une propriété supplémentaire dans le fichier <code>persistence.xml</code> :</p>
+</div>
+<div class="listingblock">
+<div class="title">persistence.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;persistence xmlns="http://java.sun.com/xml/ns/persistence"&gt;
+    &lt;persistence-unit ...&gt;
+        ...
+        &lt;properties&gt;
+            &lt;property name="openjpa.Log" value="DefaultLevel=TRACE, Tool=INFO" /&gt;
+        &lt;/properties&gt;
+    &lt;/persistence-unit&gt;
+&lt;/persistence&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_visualisation_des_données"><a class="anchor" href="#_visualisation_des_données"></a>2.3.4. Visualisation des données</h4>
+<div class="paragraph">
+<p>Pour vérifier l&#8217;état de la base, il est possible d&#8217;utiliser l&#8217;application contenue dans le JAR d&#8217;HSQLDB.
+Pour ce faire, double-cliquer sur le JAR.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/hsqldb-connect.png" alt="Connection à HSQLDB" width="792" height="307">
+</div>
+</div>
+<div class="paragraph">
+<p>Remplir les champs ainsi :</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Champ</th>
+<th class="tableblock halign-left valign-top"> Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HSQL Database Engine In-Memory</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Driver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.hsqldb.jdbc.JDBCDriver</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jdbc:hsqldb:file:&lt;path/to/hsqldb&gt;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SA</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Puis, cliquer sur <b class="button">Ok</b>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Le volet de gauche affiche les tables et les propriétés.</p>
+</li>
+<li>
+<p>Le volet du haut permet d&#8217;écrire des requêtes SQL.</p>
+</li>
+<li>
+<p>Le volet du bas affiche les résultats.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/hsqldb-console.png" alt="Console HSQLDB" width="512" height="345">
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Le fichier HSQLDB ne peut être utilisé que par un seul processus à la fois avec le protocole <code>jdbc:hsqldb:file</code>.
+Cela implique que si TomEE est démarré, il n&#8217;est pas possible d&#8217;utiliser la console (et <em>vice-versa</em>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manipulation_de_lapi_jpa"><a class="anchor" href="#_manipulation_de_lapi_jpa"></a>3. Manipulation de l&#8217;API JPA</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+L&#8217;objectif de cette section est de lire et d&#8217;écrire un entité depuis un servlet depuis &amp; vers la base de données.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_implémentation_du_modèle"><a class="anchor" href="#_implémentation_du_modèle"></a>3.1. Implémentation du modèle</h3>
+<div class="paragraph">
+<p>Créer une entité <code>Book</code> qui comprend les propriétés suivantes :</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Propriété</th>
+<th class="tableblock halign-left valign-top">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isbn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>author</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>publicationDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Date</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Créer une classe <code>Book</code> avec les champs adéquats</p>
+</li>
+<li>
+<p>La modifier pour en faire une entité JPA</p>
+</li>
+<li>
+<p>Choisir l&#8217;identifiant de manière adaptée</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_contraintes_sur_la_conception"><a class="anchor" href="#_contraintes_sur_la_conception"></a>3.2. Contraintes sur la conception</h3>
+<div class="paragraph">
+<p>Un certain nombre de raccourcis ont été pris dans le cadre du cours afin de rester dans la limite du volume horaire fixé.
+En particulier, la notion de transaction n&#8217;a pas été abordée.
+Un contexte transactionnel est en général nécessaire pour utiliser JPA.
+Contrairement aux servlets, les EJB sont des composants qui proposent un tel contexte par défaut.</p>
+</div>
+<div class="paragraph">
+<p>Il est donc nécessaire d&#8217;adopter la conception suivante :</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/servlet-ejb-em.svg" alt="servlet ejb em" width="848" height="112">
+</div>
+</div>
+<div class="paragraph">
+<p>Cela se traduit dans le code ainsi :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Stateless
+public class MyService {
+
+    // Reference the entity manager
+}
+
+public class MyServlet extends HttpServlet {
+
+    /** Reference the EJB. */
+    @EJB
+    private MyEjb myEjb;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_implémentation_du_service"><a class="anchor" href="#_implémentation_du_service"></a>3.3. Implémentation du service</h3>
+<div class="paragraph">
+<p>Dans la classe de service, implémenter les deux méthodes suivantes :</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>public void save(Book book)</code></p>
+</li>
+<li>
+<p><code>public List&lt;Book&gt; readAll()</code></p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_implémentation_du_contrôleur"><a class="anchor" href="#_implémentation_du_contrôleur"></a>3.4. Implémentation du contrôleur</h3>
+<div class="paragraph">
+<p>Le processus général à implémenter est le suivant :</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/jpa/jsp-servlet-ejb.svg" alt="jsp servlet ejb" width="596" height="537">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Alternatives</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ne pas implémenter <code>display.jsp</code> et écrire directement dans le flux de réponse via le servlet</p>
+</li>
+<li>
+<p>Ne pas implémenter <code>form.jsp</code> et appeler le servlet via un logiciel spécifique <em>p.e.</em> Postman</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-05-22 13:21:51 UTC
+</div>
+</div>
+</body>
+</html>
